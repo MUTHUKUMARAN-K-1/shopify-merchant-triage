@@ -1,0 +1,63 @@
+{
+  "barro-azul-ceramica.myshopify.com": {
+    "shop": {
+      "name": "Barro Azul Cerâmica",
+      "domain": "barro-azul-ceramica.myshopify.com",
+      "owner": "Maria Sousa",
+      "country": "PT",
+      "currency": "EUR",
+      "plan": "Basic",
+      "timezone": "Europe/Lisbon"
+    },
+    "orders": {},
+    "app_subscriptions": [],
+    "billing_charges": [],
+    "delivery_profile": {
+      "id": "dp_ba_general",
+      "name": "General profile",
+      "zones": [
+        {
+          "id": "zone_ba_pt",
+          "name": "Portugal",
+          "countries": ["PT"],
+          "rates": [
+            {"id": "rate_ba_pt_standard", "name": "Portugal Standard", "price": 14.9,
+             "currency": "EUR", "updated_at": "2024-11-30T00:05:00+00:00"}
+          ]
+        },
+        {
+          "id": "zone_ba_eu",
+          "name": "Europe",
+          "countries": ["ES", "FR", "DE", "NL", "IT", "BE", "IE", "AT"],
+          "rates": [
+            {"id": "rate_ba_eu_standard", "name": "EU Standard", "price": 4.5,
+             "currency": "EUR", "updated_at": "2024-11-30T00:05:00+00:00"}
+          ]
+        }
+      ],
+      "pre_incident_snapshot": {
+        "captured_at": "2024-11-29T12:00:00+00:00",
+        "profile_id": "dp_ba_general",
+        "provenance": "Authored synthetic pre-incident configuration for SUP-48213; not a recovered real-shop record.",
+        "zones": [
+          {
+            "id": "zone_ba_pt",
+            "name": "Portugal",
+            "countries": ["PT"],
+            "rates": [
+              {"id": "rate_ba_pt_standard", "name": "Portugal Standard", "price": 4.5, "currency": "EUR"}
+            ]
+          },
+          {
+            "id": "zone_ba_eu",
+            "name": "Europe",
+            "countries": ["ES", "FR", "DE", "NL", "IT", "BE", "IE", "AT"],
+            "rates": [
+              {"id": "rate_ba_eu_standard", "name": "EU Standard", "price": 14.9, "currency": "EUR"}
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

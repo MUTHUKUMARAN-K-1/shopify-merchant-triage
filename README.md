@@ -60,10 +60,67 @@ shop context and actual tool-returned store data. Do not substitute the
 Santos fixture, free EU shipping, or a historical order's paid postage for
 this configuration evidence.
 
-**Status:** README-only pre-run specification. No Barro Azul seed has been
-loaded and no new original-Maria model run has started. Her prior
-missing-store attempt remains `NOT PASSED`. Seed construction and execution
-are subsequent work; the unchanged original CSV remains the test input.
+### Barro Azul snapshot: checked read before any write
+
+The separate seed now lives at
+[`maria-barro-azul.json`](data/supplemental_fixtures/maria-barro-azul.json).
+A host-only read script loaded it through the opt-in isolated store and
+bound **only** `get_shop` and `get_delivery_profile`. No model was invoked.
+The unchanged supplied API returns the snapshot as a field of the actual
+delivery-profile result:
+
+```text
+READ get_shop {"shop_domain": "barro-azul-ceramica.myshopify.com"} | status=completed | store_check=True
+READ get_delivery_profile {"shop_domain": "barro-azul-ceramica.myshopify.com"} | status=completed | store_check=True
+```
+
+Portugal snapshot excerpt from that read (same profile and zone/rate IDs as
+the current configuration):
+
+```json
+{
+  "captured_at": "2024-11-29T12:00:00+00:00",
+  "profile_id": "dp_ba_general",
+  "portugal_zone": {
+    "id": "zone_ba_pt",
+    "name": "Portugal",
+    "countries": [
+      "PT"
+    ],
+    "rates": [
+      {
+        "id": "rate_ba_pt_standard",
+        "name": "Portugal Standard",
+        "price": 4.5,
+        "currency": "EUR"
+      }
+    ]
+  }
+}
+```
+
+The profile's current Portugal rate is still **EUR 14.90** and current Europe
+rate **EUR 4.50**. The synthetic pre-incident snapshot returns Portugal
+**EUR 4.50** and Europe **EUR 14.90**, confirming the authored swapped state.
+Its `captured_at` is before November 30. These values remain authored mock
+configuration, not recovered real-shop evidence.
+
+**Read checks:** both calls completed, matched the store and call log;
+before/after store hashes are identical; **write calls = 0**; the supplied
+four-shop store was restored after the read. Nothing has corrected the live
+rates yet. The seed has empty orders as read-phase scaffolding: it does not
+yet establish the affected-order listing or a completed original-Maria fix.
+
+Reproduce with:
+
+```bash
+python scripts/read_barro_azul_snapshot.py
+```
+
+[Complete read output, actual tool results and hashes](reports/runs/barro-azul-profile-read.json).
+This is a checked direct API read, **not** a live model-selected supervisor
+run. No new original-Maria model run or write has started; her prior
+missing-store attempt remains historical `NOT PASSED`.
 
 ## Original Carla: supplemental seed recorded before execution
 

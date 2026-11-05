@@ -1,0 +1,237 @@
+{
+  "mode": "host_read_only_no_model",
+  "seed_sha256": "baed4494b8ba95ca6ebf32e6efb2e162e8ccb57805cb34a3155e9d2b3102423f",
+  "bound_tools": [
+    "get_shop",
+    "get_delivery_profile"
+  ],
+  "calls": [
+    {
+      "tool": "get_shop",
+      "effect": "read",
+      "arguments": {
+        "shop_domain": "barro-azul-ceramica.myshopify.com"
+      },
+      "result": {
+        "name": "Barro Azul Cerâmica",
+        "domain": "barro-azul-ceramica.myshopify.com",
+        "owner": "Maria Sousa",
+        "country": "PT",
+        "currency": "EUR",
+        "plan": "Basic",
+        "timezone": "Europe/Lisbon"
+      },
+      "status": "completed",
+      "checked_against_store": true,
+      "call_log_matches": true,
+      "before_sha256": "471693e42aa6f1a33a4655a84aa7e7ab5dbb111155308015447250398c329b80",
+      "after_sha256": "471693e42aa6f1a33a4655a84aa7e7ab5dbb111155308015447250398c329b80",
+      "changed_paths": []
+    },
+    {
+      "tool": "get_delivery_profile",
+      "effect": "read",
+      "arguments": {
+        "shop_domain": "barro-azul-ceramica.myshopify.com"
+      },
+      "result": {
+        "id": "dp_ba_general",
+        "name": "General profile",
+        "zones": [
+          {
+            "id": "zone_ba_pt",
+            "name": "Portugal",
+            "countries": [
+              "PT"
+            ],
+            "rates": [
+              {
+                "id": "rate_ba_pt_standard",
+                "name": "Portugal Standard",
+                "price": 14.9,
+                "currency": "EUR",
+                "updated_at": "2024-11-30T00:05:00+00:00"
+              }
+            ]
+          },
+          {
+            "id": "zone_ba_eu",
+            "name": "Europe",
+            "countries": [
+              "ES",
+              "FR",
+              "DE",
+              "NL",
+              "IT",
+              "BE",
+              "IE",
+              "AT"
+            ],
+            "rates": [
+              {
+                "id": "rate_ba_eu_standard",
+                "name": "EU Standard",
+                "price": 4.5,
+                "currency": "EUR",
+                "updated_at": "2024-11-30T00:05:00+00:00"
+              }
+            ]
+          }
+        ],
+        "pre_incident_snapshot": {
+          "captured_at": "2024-11-29T12:00:00+00:00",
+          "profile_id": "dp_ba_general",
+          "provenance": "Authored synthetic pre-incident configuration for SUP-48213; not a recovered real-shop record.",
+          "zones": [
+            {
+              "id": "zone_ba_pt",
+              "name": "Portugal",
+              "countries": [
+                "PT"
+              ],
+              "rates": [
+                {
+                  "id": "rate_ba_pt_standard",
+                  "name": "Portugal Standard",
+                  "price": 4.5,
+                  "currency": "EUR"
+                }
+              ]
+            },
+            {
+              "id": "zone_ba_eu",
+              "name": "Europe",
+              "countries": [
+                "ES",
+                "FR",
+                "DE",
+                "NL",
+                "IT",
+                "BE",
+                "IE",
+                "AT"
+              ],
+              "rates": [
+                {
+                  "id": "rate_ba_eu_standard",
+                  "name": "EU Standard",
+                  "price": 14.9,
+                  "currency": "EUR"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "status": "completed",
+      "checked_against_store": true,
+      "call_log_matches": true,
+      "before_sha256": "471693e42aa6f1a33a4655a84aa7e7ab5dbb111155308015447250398c329b80",
+      "after_sha256": "471693e42aa6f1a33a4655a84aa7e7ab5dbb111155308015447250398c329b80",
+      "changed_paths": []
+    }
+  ],
+  "shop": {
+    "name": "Barro Azul Cerâmica",
+    "domain": "barro-azul-ceramica.myshopify.com",
+    "owner": "Maria Sousa",
+    "country": "PT",
+    "currency": "EUR",
+    "plan": "Basic",
+    "timezone": "Europe/Lisbon"
+  },
+  "delivery_profile": {
+    "id": "dp_ba_general",
+    "name": "General profile",
+    "zones": [
+      {
+        "id": "zone_ba_pt",
+        "name": "Portugal",
+        "countries": [
+          "PT"
+        ],
+        "rates": [
+          {
+            "id": "rate_ba_pt_standard",
+            "name": "Portugal Standard",
+            "price": 14.9,
+            "currency": "EUR",
+            "updated_at": "2024-11-30T00:05:00+00:00"
+          }
+        ]
+      },
+      {
+        "id": "zone_ba_eu",
+        "name": "Europe",
+        "countries": [
+          "ES",
+          "FR",
+          "DE",
+          "NL",
+          "IT",
+          "BE",
+          "IE",
+          "AT"
+        ],
+        "rates": [
+          {
+            "id": "rate_ba_eu_standard",
+            "name": "EU Standard",
+            "price": 4.5,
+            "currency": "EUR",
+            "updated_at": "2024-11-30T00:05:00+00:00"
+          }
+        ]
+      }
+    ],
+    "pre_incident_snapshot": {
+      "captured_at": "2024-11-29T12:00:00+00:00",
+      "profile_id": "dp_ba_general",
+      "provenance": "Authored synthetic pre-incident configuration for SUP-48213; not a recovered real-shop record.",
+      "zones": [
+        {
+          "id": "zone_ba_pt",
+          "name": "Portugal",
+          "countries": [
+            "PT"
+          ],
+          "rates": [
+            {
+              "id": "rate_ba_pt_standard",
+              "name": "Portugal Standard",
+              "price": 4.5,
+              "currency": "EUR"
+            }
+          ]
+        },
+        {
+          "id": "zone_ba_eu",
+          "name": "Europe",
+          "countries": [
+            "ES",
+            "FR",
+            "DE",
+            "NL",
+            "IT",
+            "BE",
+            "IE",
+            "AT"
+          ],
+          "rates": [
+            {
+              "id": "rate_ba_eu_standard",
+              "name": "EU Standard",
+              "price": 14.9,
+              "currency": "EUR"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "store_unchanged": true,
+  "before_sha256": "526d35f7b8862188f6ae91fdcfe3ce7991f8583e8c6614973a75f818f42391d7",
+  "after_sha256": "526d35f7b8862188f6ae91fdcfe3ce7991f8583e8c6614973a75f818f42391d7",
+  "write_calls": 0,
+  "supplied_store_restored": true
+}
