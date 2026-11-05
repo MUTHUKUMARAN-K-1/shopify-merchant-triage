@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fixture-maria-shipping",
+    "merchant_name": "Maria Santos",
+    "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+    "message": "I am Maria Santos at Azulejo Cerâmica Lisboa. Our EU Standard checkout rate accidentally became free on 28 November. Restore it to EUR 14.90 for future checkouts after checking the delivery profile and the historical order #1158 that paid the correct rate. Keep Portugal domestic shipping unchanged. List every EU Standard order charged zero from 29 November through 2 December 2024 for my follow-up. Do not reprice, refund, or add charges to any existing customer order.",
+    "expected_route": "orders"
+  },
+  {
+    "id": "fixture-billing-duplicate",
+    "merchant_name": "Owen Brooks",
+    "shop_domain": "northwind-coffee-roasters.myshopify.com",
+    "message": "I am Owen Brooks at Northwind Coffee Roasters. ReviewStream Product Reviews Growth was charged twice on my November 2024 Shopify bill. Please check my app subscriptions and invoice charges, and credit exactly one duplicate USD 19.99 charge. I want to keep using the app, so do not cancel it or touch any customer orders.",
+    "expected_route": "billing"
+  }
+]

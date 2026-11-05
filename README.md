@@ -32,6 +32,15 @@ full set scored 22/24 with one wrong route and one invalid response. Pinning
 the free model and clarifying checkout-rate and partial-refund rules fixed
 these observed failures on this development set.
 
+## Stage 2: supervisor graph
+
+The supervisor routes a Pydantic `RouteDecision` to a billing or orders agent,
+with separate read/write-marked tool bindings and checked mock-store execution.
+See [the stage-2 implementation, fixture mismatch and commands](docs/supervisor-stage.md).
+The supplied mock describes different stores from the 24-ticket CSV, so
+fixture-backed demos and original-ticket missing-store checks are reported
+separately. Stage-1 triage evidence below remains unchanged.
+
 ## Run locally
 
 Python 3.11+ is required. From this directory:

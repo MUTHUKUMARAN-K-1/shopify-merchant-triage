@@ -68,7 +68,8 @@ def test_request_uses_free_model_schema_and_separate_untrusted_message():
     result = build_graph(classifier(handler)).invoke({"message": message})
     assert result["route"] == "billing"
     assert result["resolved_model"] == "test-model:free"
-    assert "unit-test-placeholder" not in json.dumps(result)
+    assert isinstance(result["decision"], Decision)
+    assert "unit-test-placeholder" not in json.dumps(result, default=lambda value: value.model_dump())
 
 
 @pytest.mark.parametrize("content", [

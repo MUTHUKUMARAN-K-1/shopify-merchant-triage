@@ -2,17 +2,20 @@ from typing import Callable, NotRequired, Protocol, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
-from .models import Decision, Route
+from .models import Decision, Route, RouteDecision
 from .openrouter import Classification, TriageError
 
 
 class TriageState(TypedDict):
     message: str
+    shop_domain: NotRequired[str]
+    merchant_name: NotRequired[str]
+    decision: NotRequired[RouteDecision]
     route: NotRequired[Route]
     reason: NotRequired[str]
     requested_model: NotRequired[str]
     resolved_model: NotRequired[str]
-    specialist_result: NotRequired[str]
+    specialist_result: NotRequired[dict | str]
 
 
 class Classifier(Protocol):
@@ -40,6 +43,7 @@ def build_graph(
         decision = Decision.model_validate(result.decision.model_dump())
         return {
             **decision.model_dump(),
+            "decision": decision,
             "requested_model": result.requested_model,
             "resolved_model": result.resolved_model,
         }
@@ -53,7 +57,7 @@ def build_graph(
         builder.add_node("billing_specialist", billing_specialist)
         builder.add_node("orders_specialist", orders_specialist)
         builder.add_conditional_edges(
-            "triage", lambda state: state["route"],
+            "triage", lambda state: state["decision"].route,
             {"billing": "billing_specialist", "orders": "orders_specialist"},
         )
         builder.add_edge("billing_specialist", END)

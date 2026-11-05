@@ -20,8 +20,27 @@ def main(argv=None) -> int:
     validate = commands.add_parser("validate", help="Check a test set without a key or model call.")
     validate.add_argument("dataset", type=Path)
     validate.add_argument("--ticket-id", help="Require an exact record ID to exist.")
+    supervise = commands.add_parser("supervise", help="Run the supervisor and scoped specialists against mock stores.")
+    supervise.add_argument("dataset", type=Path)
+    supervise.add_argument("--ticket-id", action="append", help="Exact case ID; repeat to select more than one.")
+    supervise.add_argument("--output", type=Path, required=True, help="Full calls, results and store-check report.")
     args = parser.parse_args(argv)
     try:
+        if args.command == "supervise":
+            from .specialists import OpenRouterToolModel, build_supervisor_graph
+            from .supervisor_run import load_cases, render_summary, run_supervisor
+
+            cases, digest = load_cases(args.dataset)
+            if args.ticket_id:
+                if not set(args.ticket_id) <= {c.id for c in cases}:
+                    raise ValueError("Requested ticket ID does not exist in the supplied test set.")
+                cases = [c for c in cases if c.id in args.ticket_id]
+            graph = build_supervisor_graph(OpenRouterClassifier.from_env(), OpenRouterToolModel.from_env())
+            report = run_supervisor(graph, cases, digest)
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            print(render_summary(report))
+            return 0 if report["passed"] == report["total"] else 1
         # Validate the dataset and selection before attempting an API call.
         if args.command in {"evaluate", "validate"}:
             tickets, digest = load_tickets(args.dataset)
@@ -45,7 +64,7 @@ def main(argv=None) -> int:
         if args.command == "route":
             result = graph.invoke({"message": args.message})
             # Avoid echoing the full merchant message in terminal output.
-            print(json.dumps({k: v for k, v in result.items() if k != "message"}, indent=2))
+            print(json.dumps({k: v for k, v in result.items() if k not in {"message", "decision"}}, indent=2))
             return 0
         report = evaluate(graph, tickets, digest)
         rendered = json.dumps(report, indent=2) + "\n"

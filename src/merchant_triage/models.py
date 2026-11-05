@@ -5,11 +5,26 @@ from pydantic import BaseModel, ConfigDict, Field
 Route = Literal["billing", "orders"]
 
 
-class Decision(BaseModel):
+class RouteDecision(BaseModel):
+    """The supervisor's validated route decision; no arbitrary node names."""
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, strict=True)
 
     route: Route
     reason: str = Field(min_length=1, max_length=500)
+
+
+# Backward-compatible name for the first milestone's API and reports.
+Decision = RouteDecision
+
+
+class SupportCase(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, strict=True)
+
+    id: str = Field(min_length=1)
+    merchant_name: str = Field(min_length=1)
+    shop_domain: str = Field(pattern=r"^[a-z0-9][a-z0-9-]*\.myshopify\.com$")
+    message: str = Field(min_length=1, max_length=20000)
+    expected_route: Route
 
 
 class Ticket(BaseModel):

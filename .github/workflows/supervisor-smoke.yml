@@ -1,0 +1,57 @@
+name: Supervisor mock-store smoke
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: nvidia/nemotron-3.5-super-vl:free
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Fixture-backed Maria and billing cases
+        id: fixture
+        continue-on-error: true
+        run: merchant-triage supervise data/supervisor_demo_tickets.json --output reports/supervisor-smoke.json
+      - name: Original CSV identity checks
+        id: original
+        continue-on-error: true
+        run: merchant-triage supervise data/source/shopify_merchant_tickets.csv --ticket-id SUP-48213 --ticket-id SUP-48197 --output reports/supervisor-original.json
+      - name: Require fixture passes and honest missing-store handling
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          fixture = json.loads(Path('reports/supervisor-smoke.json').read_text())
+          original = json.loads(Path('reports/supervisor-original.json').read_text())
+          assert fixture['passed'] == fixture['total'] == 2, 'Fixture-backed actions failed checks'
+          assert original['fixture_missing'] == original['total'] == 2
+          for row in original['results']:
+              assert row['route_passed'], 'Original ticket routed incorrectly'
+              assert row['specialist']['status'] == 'needs_human'
+              assert row['changed_paths'] == []
+              assert [c['tool'] for c in row['call_log']] == ['get_shop']
+          print('PASS: 2 fixture-backed agents; 2 original tickets safely reported missing stores')
+          PY
+      - name: Preserve full machine-readable evidence in logs
+        if: always()
+        run: |
+          for report in reports/supervisor-smoke.json reports/supervisor-original.json; do
+            if [ -f "$report" ]; then cat "$report"; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: supervisor-mock-store-reports
+          path: |
+            reports/supervisor-smoke.json
+            reports/supervisor-original.json
+          if-no-files-found: ignore
