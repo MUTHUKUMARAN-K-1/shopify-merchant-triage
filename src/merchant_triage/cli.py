@@ -24,11 +24,13 @@ def main(argv=None) -> int:
     supervise.add_argument("dataset", type=Path)
     supervise.add_argument("--ticket-id", action="append", help="Exact case ID; repeat to select more than one.")
     supervise.add_argument("--output", type=Path, required=True, help="Full calls, results and store-check report.")
+    supervise.add_argument("--supplemental-fixtures", type=Path, help="Opt-in separate shop fixtures; supplied shops cannot be replaced.")
     args = parser.parse_args(argv)
     try:
         if args.command == "supervise":
             from .specialists import OpenRouterToolModel, build_supervisor_graph
             from .supervisor_run import load_cases, render_summary, run_supervisor
+            from .supplemental_fixtures import load_supplemental_fixtures
 
             cases, digest = load_cases(args.dataset)
             if args.ticket_id:
@@ -36,7 +38,11 @@ def main(argv=None) -> int:
                     raise ValueError("Requested ticket ID does not exist in the supplied test set.")
                 cases = [c for c in cases if c.id in args.ticket_id]
             graph = build_supervisor_graph(OpenRouterClassifier.from_env(), OpenRouterToolModel.from_env())
-            report = run_supervisor(graph, cases, digest)
+            supplemental = load_supplemental_fixtures(args.supplemental_fixtures) if args.supplemental_fixtures else None
+            report = run_supervisor(graph, cases, digest, supplemental_fixtures=supplemental)
+            if args.supplemental_fixtures:
+                import hashlib
+                report["supplemental_fixture_sha256"] = hashlib.sha256(args.supplemental_fixtures.read_bytes()).hexdigest()
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
             print(render_summary(report))

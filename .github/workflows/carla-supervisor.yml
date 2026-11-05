@@ -1,0 +1,44 @@
+name: Original Carla supervisor
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/carla-supervisor.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  carla:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: nvidia/nemotron-3.5-super-vl:free
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[dev]'
+      - name: Require isolation and existing regression checks
+        run: python -m pytest -q
+      - name: Live original SUP-48197 with precommitted supplemental seed
+        run: |
+          set +e
+          merchant-triage supervise data/source/shopify_merchant_tickets.csv --ticket-id SUP-48197 --supplemental-fixtures data/supplemental_fixtures/carla-reviewpop.json --output "$RUNNER_TEMP/carla-private.json" > "$RUNNER_TEMP/carla-private.txt"
+          outcome=$?
+          set -e
+          if [ -f "$RUNNER_TEMP/carla-private.json" ]; then
+            python scripts/public_supervisor_audit.py "$RUNNER_TEMP/carla-private.json" reports/carla-public.json
+          fi
+          exit "$outcome"
+      - name: Print public decisions, arguments, hashes and checks
+        if: always()
+        run: |
+          if [ -f reports/carla-public.json ]; then cat reports/carla-public.json; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original-carla-supervisor
+          path: reports/carla-public.json
+          if-no-files-found: ignore

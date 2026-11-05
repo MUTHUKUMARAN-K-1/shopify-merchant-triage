@@ -11,6 +11,7 @@ from . import mock_admin
 from .admin_tools import changed_paths, digest
 from .models import SupportCase
 from .openrouter import TriageError
+from .supplemental_fixtures import isolated_supplemental_store
 
 
 def load_cases(path):
@@ -61,39 +62,54 @@ def verify_demo(case_id, before, after, calls):
             "orders_unchanged": old["orders"] == new["orders"],
             "exactly_one_billing_credit_write": len(writes) == 1 and writes[0]["tool"] == "issue_billing_credit",
         }
+    elif case_id == "SUP-48197" and "northfork-coffee.myshopify.com" in before:
+        domain = "northfork-coffee.myshopify.com"
+        old, new = before[domain], after[domain]
+        credits = [c for c in new["billing_charges"] if c["type"] == "credit"]
+        writes = [c for c in calls if c.get("effect") == "write"]
+        completed_reads = {c["tool"] for c in calls if c.get("effect") == "read" and c.get("status") == "completed"}
+        checks = {
+            "reviewpop_subscription_and_charges_read": {"get_app_subscriptions", "list_billing_charges"} <= completed_reads,
+            "seed_establishes_post_uninstall_charge": old["app_subscriptions"][0]["cancelled_on"] == "2024-11-08" and old["billing_charges"][0]["billed_on"] == "2024-11-20",
+            "one_reviewpop_credit_29_usd": len(credits) == 1 and credits[0]["amount"] == -29.0 and credits[0]["currency"] == "USD" and credits[0]["credits_charge_id"] == "chg_nf_reviewpop_2901",
+            "original_charge_preserved": [c for c in new["billing_charges"] if c["type"] != "credit"] == old["billing_charges"],
+            "cancelled_subscription_preserved": new["app_subscriptions"] == old["app_subscriptions"],
+            "orders_and_shipping_unchanged": new["orders"] == old["orders"] and new["delivery_profile"] == old["delivery_profile"],
+            "exactly_one_targeted_credit_write": len(writes) == 1 and writes[0]["tool"] == "issue_billing_credit" and writes[0]["arguments"]["charge_id"] == "chg_nf_reviewpop_2901" and writes[0]["arguments"]["amount"] == 29.0,
+        }
     else:
         return None
     checks["other_shops_unchanged"] = all(before[d] == after[d] for d in before if d != domain)
     return {"checks": checks, "passed": all(checks.values())}
 
 
-def run_supervisor(graph, cases, dataset_sha256):
+def run_supervisor(graph, cases, dataset_sha256, *, supplemental_fixtures=None):
     rows = []
     for case in cases:
-        mock_admin.reset_store()
-        before = copy.deepcopy(mock_admin.FIXTURES)
-        row = {"id": case.id, "merchant_name": case.merchant_name, "shop_domain": case.shop_domain,
-               "expected_route": case.expected_route, "fixture_available": case.shop_domain in before}
-        try:
-            # Labels and source expected fixes/tool calls never enter graph state.
-            result = graph.invoke({"message": case.message, "shop_domain": case.shop_domain,
-                                   "merchant_name": case.merchant_name})
-            specialist = result["specialist_result"]
-            calls = specialist["tool_calls"]
-            state_check = verify_demo(case.id, before, mock_admin.FIXTURES, calls)
-            row.update(decision=result["decision"].model_dump(), actual_route=result["route"],
-                       requested_model=result["requested_model"], resolved_model=result["resolved_model"],
-                       specialist=specialist, fixture_checks=state_check,
-                       changed_paths=changed_paths(before, mock_admin.FIXTURES),
-                       before_sha256=digest(before), after_sha256=digest(mock_admin.FIXTURES),
-                       call_log=copy.deepcopy(mock_admin.CALL_LOG))
-            row["route_passed"] = result["route"] == case.expected_route
-            row["passed"] = (row["route_passed"] and specialist["status"] == "completed"
-                and bool(calls) and all(c.get("checked_against_store") and c.get("call_log_matches") for c in calls)
-                and (state_check is None or state_check["passed"]))
-        except TriageError as exc:
-            row.update(passed=False, error=str(exc))
-        rows.append(row)
+        with isolated_supplemental_store(supplemental_fixtures):
+            before = copy.deepcopy(mock_admin.FIXTURES)
+            row = {"id": case.id, "merchant_name": case.merchant_name, "shop_domain": case.shop_domain,
+                   "expected_route": case.expected_route, "fixture_available": case.shop_domain in before}
+            try:
+                # Labels and source expected fixes/tool calls never enter graph state.
+                result = graph.invoke({"message": case.message, "shop_domain": case.shop_domain,
+                                       "merchant_name": case.merchant_name})
+                specialist = result["specialist_result"]
+                calls = specialist["tool_calls"]
+                state_check = verify_demo(case.id, before, mock_admin.FIXTURES, calls)
+                row.update(decision=result["decision"].model_dump(), actual_route=result["route"],
+                           requested_model=result["requested_model"], resolved_model=result["resolved_model"],
+                           specialist=specialist, fixture_checks=state_check,
+                           changed_paths=changed_paths(before, mock_admin.FIXTURES),
+                           before_sha256=digest(before), after_sha256=digest(mock_admin.FIXTURES),
+                           call_log=copy.deepcopy(mock_admin.CALL_LOG))
+                row["route_passed"] = result["route"] == case.expected_route
+                row["passed"] = (row["route_passed"] and specialist["status"] == "completed"
+                    and bool(calls) and all(c.get("checked_against_store") and c.get("call_log_matches") for c in calls)
+                    and (state_check is None or state_check["passed"]))
+            except TriageError as exc:
+                row.update(passed=False, error=str(exc))
+            rows.append(row)
     mock_admin.reset_store()
     return {"evaluated_at": datetime.now(timezone.utc).isoformat(), "dataset_sha256": dataset_sha256,
             "mode": "mock_admin_only", "total": len(rows), "passed": sum(r["passed"] for r in rows),

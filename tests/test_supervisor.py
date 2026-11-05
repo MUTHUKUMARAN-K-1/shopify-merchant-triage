@@ -295,3 +295,53 @@ def test_tool_call_budget_blocks_a_valid_write_after_24_reads():
     assert len(mock_admin.CALL_LOG) == 24
     assert not any(call["tool"] == "issue_billing_credit" for call in mock_admin.CALL_LOG)
     assert mock_admin.FIXTURES == before
+
+
+def test_original_carla_uses_separate_seed_and_checks_credit():
+    from merchant_triage.supplemental_fixtures import load_supplemental_fixtures
+    seed = load_supplemental_fixtures(Path('data/supplemental_fixtures/carla-reviewpop.json'))
+    original = copy.deepcopy(mock_admin.FIXTURES)
+    frozen = copy.deepcopy(seed)
+    cases, digest = load_cases(Path('data/source/shopify_merchant_tickets.csv'))
+    case = next(c for c in cases if c.id == 'SUP-48197')
+    domain = case.shop_domain
+    model = ScriptedTools('billing', [
+        ('get_shop', {'shop_domain': domain}),
+        ('get_app_subscriptions', {'shop_domain': domain}),
+        ('list_billing_charges', {'shop_domain': domain, 'billing_period': '2024-11'}),
+        ('issue_billing_credit', {'shop_domain': domain, 'amount': 29.0,
+                                 'description': 'ReviewPop charge after uninstall',
+                                 'charge_id': 'chg_nf_reviewpop_2901'}), None])
+    report = run_supervisor(build_supervisor_graph(FixedClassifier('billing'), model),
+                            [case], digest, supplemental_fixtures=seed)
+    row = report['results'][0]
+    assert row['passed'] and all(row['fixture_checks']['checks'].values())
+    assert row['changed_paths'] == ['/northfork-coffee.myshopify.com/billing_charges']
+    assert seed == frozen and mock_admin.FIXTURES == original
+    assert domain not in mock_admin.FIXTURES and mock_admin.CALL_LOG == []
+    from merchant_triage.supervisor_run import verify_demo
+    before = {**original, **copy.deepcopy(seed)}
+    # A specialist claiming completion without issuing the credit must not pass.
+    failed = verify_demo(case.id, before, copy.deepcopy(before), row['specialist']['tool_calls'][:3])
+    assert not failed['passed']
+
+
+def test_supplemental_store_restores_supplied_data_even_on_failure():
+    from merchant_triage.supplemental_fixtures import isolated_supplemental_store, load_supplemental_fixtures
+    seed = load_supplemental_fixtures(Path('data/supplemental_fixtures/carla-reviewpop.json'))
+    original = copy.deepcopy(mock_admin.FIXTURES)
+    with pytest.raises(RuntimeError):
+        with isolated_supplemental_store(seed):
+            mock_admin.FIXTURES.clear()
+            raise RuntimeError('unexpected graph failure')
+    assert mock_admin.FIXTURES == original and mock_admin.CALL_LOG == []
+
+
+def test_supplemental_store_cannot_replace_a_supplied_shop():
+    from merchant_triage.supplemental_fixtures import isolated_supplemental_store
+    original = copy.deepcopy(mock_admin.FIXTURES)
+    domain = next(iter(original))
+    with pytest.raises(ValueError, match='cannot replace'):
+        with isolated_supplemental_store({domain: original[domain]}):
+            pytest.fail('replacement was allowed')
+    assert mock_admin.FIXTURES == original

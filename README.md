@@ -45,6 +45,19 @@ The supplied `mock_admin.py` remains byte-for-byte unchanged. Execution will
 explicitly opt into this separate supplemental seed, with reset/isolation
 between cases. No merchant-domain substitution is used. **Live run: pending.**
 
+Seed values were pushed first in
+[`6a09ad6`](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/commit/6a09ad68f70e6d812b78c92500b615d3a77a29b6),
+before the execution workflow existed. Invocation for this original ticket:
+
+```bash
+merchant-triage supervise data/source/shopify_merchant_tickets.csv --ticket-id SUP-48197 --supplemental-fixtures data/supplemental_fixtures/carla-reviewpop.json --output "$RUNNER_TEMP/carla-private.json"
+```
+
+Offline regression suite: **71 passed**, including supplemental-store
+isolation on normal and exceptional exits, rejection of supplied-store
+replacement, and independent detection of a missing required credit. Those
+tests use scripted model replies and do not count as live evidence.
+
 ## Billing invoice probe: prediction recorded before live triage
 
 Ticket `probe-merchant-invoice-1999`, outside the original 24:
