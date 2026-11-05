@@ -170,12 +170,66 @@ These two API calls are not atomic. After success, read the profile again
 and independently check both restored prices and preservation of all other
 store data, allowing only the stated price/timestamp changes.
 
-**Pre-write status:** this is the documented execution contract, not evidence
-that the two-call allowlist/cap has already been added to the dispatcher.
-No Maria write or model run has occurred. The checked read remains the only
-new Maria execution evidence. A completed full-ticket run must also address
-the requested affected-order listing; the current empty-order seed cannot
-establish that part.
+### Dispatcher enforcement and tests for Maria's write boundary
+
+The contract is now enforced in
+[`admin_tools.py`](src/merchant_triage/admin_tools.py), inside
+`ToolSession._check_maria_shipping_write`. Every Barro Azul write passes this
+guard before observed-ID checks and before `tool.function(**args)`.
+Other shops retain their existing checks. The named, immutable policy is:
+
+```python
+MARIA_SHIPPING_WRITE_LIMIT = 2
+MARIA_SHIPPING_TARGETS = MappingProxyType({
+    "rate_ba_pt_standard": 4.50,
+    "rate_ba_eu_standard": 14.90,
+})
+```
+
+The dispatcher checks the budget first, then the tool/rate allowlist:
+
+```python
+if self.maria_write_attempts >= MARIA_SHIPPING_WRITE_LIMIT:
+    block("maria_write_budget", "Maria correction permits at most two write attempts")
+if name != "update_shipping_rate" or args.get("rate_id") not in MARIA_SHIPPING_TARGETS:
+    block("maria_rate_allowlist", "Only the two approved Maria shipping rates may be written")
+```
+
+`block` appends a `blocked`, `executed=False` audit entry and raises
+`WriteLimitError` before the API call. That exception produces `needs_human`
+in the specialist node. Exact target prices and one attempt per rate are
+also enforced. The counter is reserved before dispatch, so API failures
+consume an attempt; a failed write halts further writes. Reads cannot reset
+the budget. Fresh-profile/snapshot checks require both crossed prices and
+matching zone/rate/currency evidence before the first write, and reject
+unexpected profile changes between writes. The snapshot timestamp must
+precede November 30.
+
+[`test_maria_shipping_guard.py`](tests/test_maria_shipping_guard.py) proves
+the boundaries using spies around the actual mock write functions:
+
+- `test_maria_third_write_blocked_before_mock_function` executes both allowed
+  updates in an isolated test store, reads again, then attempts a third
+  update. The guard reports `maria_write_budget`; the write spy stays at two
+  calls, the API log stays at two writes, and the entire store is unchanged
+  by the rejected attempt.
+- `test_maria_out_of_scope_write_never_runs` tests an existing, observed third
+  rate, a wrong target price and an unrelated write tool. Every write spy
+  remains uncalled, and the store/API log stay unchanged. This cannot pass
+  merely because the disallowed rate is missing or has not been read.
+- Additional cases reject a duplicate rate before the cap, changed profile
+  evidence before/between writes, and any retry after a failed write.
+
+Command: `python -m pytest -q`. Result: **79 passed**, including eight new
+Maria boundary cases; [captured stdout](reports/runs/maria-shipping-guard-tests.txt).
+The two permitted changes occur only inside isolated tests and are reset
+afterward. No model is called by these tests; the supplied mock and original
+CSV are unchanged.
+
+**Live status:** no live/model-selected Maria write or supervisor run has
+started. The checked host-only read remains her read evidence; test writes
+are separate offline evidence. A completed full-ticket run must also address
+the affected-order listing; the current empty-order seed cannot establish it.
 
 ## Original Carla: supplemental seed recorded before execution
 
@@ -598,7 +652,7 @@ its printed decisions/calls and the prior partial failure are recorded below.
 Validation is covered by `test_missing_confidence_is_rejected_without_a_default_or_dispatch`,
 `test_invalid_confidence_never_dispatches_a_specialist`, and
 `test_confidence_endpoints_preserve_only_the_validated_route`, alongside the
-existing invalid-route test. Current suite: **71 passed**.
+existing invalid-route test. Current suite: **79 passed**.
 
 ## Latest live confidence run — 2/2 passed
 

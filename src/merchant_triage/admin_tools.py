@@ -4,13 +4,22 @@ import copy
 import hashlib
 import inspect
 import json
+from datetime import datetime
 from dataclasses import dataclass
 from typing import Callable, Literal, get_type_hints
+from types import MappingProxyType
 
 from pydantic import ConfigDict, ValidationError, create_model
 
 from . import mock_admin
 from .models import Route
+
+MARIA_SHOP_DOMAIN = "barro-azul-ceramica.myshopify.com"
+MARIA_SHIPPING_WRITE_LIMIT = 2
+MARIA_SHIPPING_TARGETS = MappingProxyType({
+    "rate_ba_pt_standard": 4.50,
+    "rate_ba_eu_standard": 14.90,
+})
 
 
 TOOL_OWNERS = {
@@ -202,6 +211,10 @@ class ToolSession:
         self.shop_domain = shop_domain
         self.audit = []
         self.shop_verified = False
+        self.maria_write_attempts = 0
+        self.maria_written_rates = set()
+        self._maria_expected_profile = None
+        self._maria_writes_stopped = False
         self.seen_orders, self.seen_rates, self.seen_charges, self.seen_subscriptions = set(), set(), set(), set()
 
     def _observe(self, value):
@@ -221,6 +234,60 @@ class ToolSession:
                     self.seen_rates.add(value["id"])
             for item in value.values():
                 self._observe(item)
+
+    def _block_maria_write(self, name, args, kind, message):
+        self._maria_writes_stopped = True
+        self.audit.append({"tool": name, "effect": "write", "arguments": args,
+                           "status": "blocked", "executed": False,
+                           "checked_against_store": True, "limit_kind": kind,
+                           "write_attempts": self.maria_write_attempts, "error": message})
+        raise WriteLimitError(message)
+
+    def _check_maria_shipping_write(self, name, args):
+        """Reject out-of-scope writes BEFORE invoking any mock function."""
+        if self.shop_domain != MARIA_SHOP_DOMAIN:
+            return
+        block = lambda kind, message: self._block_maria_write(name, args, kind, message)
+        if self._maria_writes_stopped:
+            block("maria_stopped", "Maria writes stopped; human review required")
+        if self.maria_write_attempts >= MARIA_SHIPPING_WRITE_LIMIT:
+            block("maria_write_budget", "Maria correction permits at most two write attempts")
+        if name != "update_shipping_rate" or args.get("rate_id") not in MARIA_SHIPPING_TARGETS:
+            block("maria_rate_allowlist", "Only the two approved Maria shipping rates may be written")
+        rate_id = args["rate_id"]
+        if args["price"] != MARIA_SHIPPING_TARGETS[rate_id]:
+            block("maria_target_price", "Maria rate price must equal its approved snapshot target")
+        if rate_id in self.maria_written_rates:
+            block("maria_duplicate_rate", "Maria correction permits only one write attempt per rate")
+        profile = mock_admin.FIXTURES[self.shop_domain]["delivery_profile"]
+        if self._maria_expected_profile is None:
+            reads = [c for c in self.audit if c["tool"] == "get_delivery_profile" and c["status"] == "completed"]
+            if not reads or reads[-1]["result"] != profile:
+                block("maria_configuration", "Read and verify the fresh Maria delivery profile before writing")
+            try:
+                snapshot = profile["pre_incident_snapshot"]
+                current = {z["id"]: z for z in profile["zones"]}
+                previous = {z["id"]: z for z in snapshot["zones"]}
+                captured = datetime.fromisoformat(snapshot["captured_at"])
+                valid = (profile["id"] == snapshot["profile_id"] == "dp_ba_general"
+                         and captured < datetime.fromisoformat("2024-11-30T00:00:00+00:00"))
+                for zone_id, target_id in (("zone_ba_pt", "rate_ba_pt_standard"), ("zone_ba_eu", "rate_ba_eu_standard")):
+                    old_zone, zone = previous[zone_id], current[zone_id]
+                    old = next(r for r in old_zone["rates"] if r["id"] == target_id)
+                    now = next(r for r in zone["rates"] if r["id"] == target_id)
+                    other_target = next(v for k, v in MARIA_SHIPPING_TARGETS.items() if k != target_id)
+                    valid = valid and (old_zone["countries"] == zone["countries"]
+                        and old["currency"] == now["currency"] == "EUR"
+                        and old["price"] == MARIA_SHIPPING_TARGETS[target_id] and now["price"] == other_target)
+            except (KeyError, TypeError, ValueError, StopIteration):
+                valid = False
+            if not valid:
+                block("maria_configuration", "Maria snapshot and both swapped-zone preconditions must match")
+        elif profile != self._maria_expected_profile:
+            block("maria_configuration", "Maria configuration changed between writes; stop for review")
+        # Reserve before dispatch: an API failure consumes the attempt too.
+        self.maria_write_attempts += 1
+        self.maria_written_rates.add(rate_id)
 
     def _check_write_limit(self, name, args):
         """Enforce the supplied mock's monetary ceilings BEFORE dispatch."""
@@ -261,6 +328,7 @@ class ToolSession:
         if name != "get_shop" and not self.shop_verified:
             raise ToolBoundaryError("Read get_shop successfully before any other call")
         if tool.effect == "write":
+            self._check_maria_shipping_write(name, args)
             for key, seen in [("order_id", self.seen_orders), ("rate_id", self.seen_rates),
                               ("charge_id", self.seen_charges), ("subscription_id", self.seen_subscriptions)]:
                 if key in args and args[key] not in seen:
@@ -273,6 +341,8 @@ class ToolSession:
         try:
             result = tool.function(**args)
         except mock_admin.ToolError as exc:
+            if self.shop_domain == MARIA_SHOP_DOMAIN and tool.effect == "write":
+                self._maria_writes_stopped = True
             unchanged = before == mock_admin.FIXTURES.get(self.shop_domain)
             # A not-found read can be checked against store absence just as a
             # successful read can be checked against the returned record.
@@ -296,7 +366,11 @@ class ToolSession:
                            "call_log_matches": log_checked, "before_sha256": digest(before),
                            "after_sha256": digest(after), "changed_paths": changed_paths(before, after)})
         if not checked or not log_checked:
+            if self.shop_domain == MARIA_SHOP_DOMAIN and tool.effect == "write":
+                self._maria_writes_stopped = True
             raise ToolBoundaryError("Tool result or call log did not match fixture data")
+        if self.shop_domain == MARIA_SHOP_DOMAIN and tool.effect == "write":
+            self._maria_expected_profile = copy.deepcopy(after["delivery_profile"])
         self.shop_verified = self.shop_verified or name == "get_shop"
         self._observe(result)
         return result
