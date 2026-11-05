@@ -198,6 +198,34 @@ Both valid confidences passed Pydantic before either specialist executed.
 The 68-test CI run for the tested source is
 [42059805370](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42059805370).
 
+### Owen live run: verification of every tool argument
+
+This note checks all four Owen calls printed above from **live run
+42059977921**, case `fixture-billing-duplicate`, against the supplied
+[`mock_admin.py`](src/merchant_triage/mock_admin.py) store and function
+contracts. It is about the authored Owen fixture, not a ticket from the
+original 24. Exact calls and audit flags are preserved in
+[`42059977921-audit.json`](reports/runs/42059977921-audit.json).
+
+| Live call | Argument actually chosen | Mock value or contract checked |
+| --- | --- | --- |
+| 1. `get_shop` | `shop_domain="northwind-coffee-roasters.myshopify.com"` | Exact key in `FIXTURES`; `shop.domain` matches, `shop.owner` is Owen Brooks and `shop.currency` is USD. |
+| 2. `get_app_subscriptions` | `shop_domain="northwind-coffee-roasters.myshopify.com"` | Same shop's `app_subscriptions` contains `sub_rvw_2207`, ReviewStream Product Reviews, Growth, USD 19.99, `status="active"`, `cancelled_on=None`. The model sends the domain only; subscription ID is returned evidence, not an argument. |
+| 3. `list_billing_charges` | `shop_domain="northwind-coffee-roasters.myshopify.com"` | Reads this shop's `billing_charges`, not another merchant's charges. |
+| 3. `list_billing_charges` | `billing_period="2024-11"` | Both duplicate lines, `chg_nw_5502` and `chg_nw_5503`, are billed on `2024-11-30`; `_charge` derives `billing_period="2024-11"`. Each line is USD 19.99 for the same `sub_rvw_2207`. This matches the request's November 2024 bill. |
+| 4. `issue_billing_credit` | `shop_domain="northwind-coffee-roasters.myshopify.com"` | Targets the same verified Northwind store and its billing charges. |
+| 4. `issue_billing_credit` | `charge_id="chg_nw_5503"` | Existing non-credit app-subscription line under Northwind; same description, subscription ID, amount, currency and billed date as `chg_nw_5502`. The selected ID is one of the duplicate pair; the other remains untouched. |
+| 4. `issue_billing_credit` | `amount=19.99` | Equals the selected charge's USD 19.99 amount. The seed has no prior credits, so the available credit balance is exactly 19.99. The API records a negative USD 19.99 credit linked by `credits_charge_id="chg_nw_5503"`. |
+| 4. `issue_billing_credit` | `description="Credit for duplicate ReviewStream Product Reviews - Growth app subscription charge on November 2024 bill"` | Generated explanatory text, not an ID or pre-existing fixture value. Its app/plan/month agree with the selected charge and request. The API copies this supplied description onto the new credit; the audit's call-log match checks the exact submitted string. |
+
+**Observed result:** all four calls completed with `checked_against_store=true`
+and `call_log_matches=true`. The three reads left store hashes unchanged;
+the write changed only Northwind's `billing_charges`. Independent checks
+confirmed exactly one USD 19.99 credit against `chg_nw_5503`, preservation of
+the original charge lines, the active subscription, all customer orders and
+other shops. Final agent status: **completed**; final case status: **PASS**.
+This note documents the existing live evidence; no new model run is claimed.
+
 **Additional verification note:** first confidence-schema run `42058395511`
 returned valid scores (Maria 0.97, Owen 0.98) but scored 1/2 because Maria
 initially sent datetime strings to date-only `list_orders` arguments. The
