@@ -17,15 +17,30 @@ def main(argv=None) -> int:
     check.add_argument("dataset", type=Path)
     check.add_argument("--ticket-id", help="Evaluate exactly one ID, e.g. Maria's original case ID.")
     check.add_argument("--output", type=Path, help="Optional report; may contain ticket information.")
+    validate = commands.add_parser("validate", help="Check a test set without a key or model call.")
+    validate.add_argument("dataset", type=Path)
+    validate.add_argument("--ticket-id", help="Require an exact record ID to exist.")
     args = parser.parse_args(argv)
     try:
         # Validate the dataset and selection before attempting an API call.
-        if args.command == "evaluate":
+        if args.command in {"evaluate", "validate"}:
             tickets, digest = load_tickets(args.dataset)
             if args.ticket_id:
                 tickets = [t for t in tickets if t.id == args.ticket_id]
                 if not tickets:
                     raise ValueError("Requested ticket ID does not exist in the supplied test set.")
+            if args.command == "validate":
+                print(json.dumps({
+                    "status": "valid",
+                    "selected_tickets": len(tickets),
+                    "dataset_sha256": digest,
+                    "expected_routes": {
+                        route: sum(t.expected_route == route for t in tickets)
+                        for route in ("billing", "orders")
+                    },
+                    "model_called": False,
+                }, indent=2))
+                return 0
         graph = build_graph(OpenRouterClassifier.from_env())
         if args.command == "route":
             result = graph.invoke({"message": args.message})

@@ -109,9 +109,15 @@ Place the authorized original test set at `data/shopify_merchant_tickets.json`
 using the format in `data/README.md`. Select Maria by her exact record ID:
 
 ```bash
+merchant-triage validate data/shopify_merchant_tickets.json --ticket-id ORIGINAL_MARIA_ID
 merchant-triage evaluate data/shopify_merchant_tickets.json \
   --ticket-id ORIGINAL_MARIA_ID --output reports/maria-live.json
 ```
+
+`validate` works without an API key or network access. It checks the JSON schema,
+unique IDs and optional case selection, then prints the selected count, label
+counts and dataset checksum without printing messages. This checks dataset
+structure; it does not establish that the supplied labels are correct.
 
 The evaluator sends only the message to the graph. It compares the output with
 the expected label afterward and reports expected route, actual route, reason,
@@ -127,6 +133,19 @@ retry limits, error handling, label isolation and evaluation exit codes. Mocked
 responses do **not** establish classification accuracy or a successful live
 OpenRouter call. A route match also does not independently grade reason quality.
 The original Maria check is pending until its inputs and credentials are available.
+
+## Remaining handoff
+
+1. Receive the original test set or its source, including Maria's exact record
+   and expected route. See `data/README.md` for import and provenance requirements.
+2. Run `merchant-triage validate` against the complete set and Maria's exact ID.
+3. Configure `OPENROUTER_API_KEY` outside the repository using the session-only
+   instructions above, then run the Maria evaluation and the complete set.
+4. Inspect mismatches and reasons, record the live model and results, and push
+   the publishable dataset and reviewed reports at a new immutable commit.
+
+The repository is ready for these steps. Offline tests and synthetic examples
+do not replace the pending original-ticket acceptance check.
 
 ## Primary references
 

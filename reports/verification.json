@@ -1,9 +1,15 @@
 {
   "offline_tests": {
     "command": "python -m pytest -q",
-    "passed": 32,
+    "passed": 35,
     "failed": 0,
     "uses_mock_model_responses": true
+  },
+  "offline_dataset_validation": {
+    "command": "merchant-triage validate data/example_tickets.json",
+    "status": "valid",
+    "selected_tickets": 8,
+    "model_called": false
   },
   "live_openrouter": {
     "status": "not_run",

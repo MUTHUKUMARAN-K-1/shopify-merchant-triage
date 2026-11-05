@@ -202,3 +202,34 @@ def test_evaluation_exit_code_on_route_mismatch(monkeypatch, capsys):
     monkeypatch.setattr(OpenRouterClassifier, "from_env", lambda: classifier(lambda _: response("billing")))
     assert main(["evaluate", "data/example_tickets.json", "--ticket-id", "example-order-tracking"]) == 1
     assert '"passed": false' in capsys.readouterr().out
+
+
+def test_validate_dataset_without_model_or_credentials(monkeypatch, capsys):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setattr(OpenRouterClassifier, "from_env", lambda: pytest.fail("Validation must not create a model"))
+    assert main(["validate", "data/example_tickets.json"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["selected_tickets"] == 8
+    assert sum(report["expected_routes"].values()) == 8
+    assert report["model_called"] is False
+    assert "message" not in report
+    assert len(report["dataset_sha256"]) == 64
+
+
+def test_validate_selection_and_missing_record(capsys):
+    assert main(["validate", "data/example_tickets.json", "--ticket-id", "example-order-tracking"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["selected_tickets"] == 1
+    assert report["expected_routes"] == {"billing": 0, "orders": 1}
+    assert main(["validate", "data/example_tickets.json", "--ticket-id", "maria"]) == 2
+    assert "does not exist" in capsys.readouterr().err
+
+
+def test_validate_rejects_bad_dataset_without_echoing_content(tmp_path, capsys):
+    path = tmp_path / "bad.json"
+    path.write_text('[{"message": "private merchant text", "expected_route": "sales"}]')
+    assert main(["validate", str(path)]) == 2
+    captured = capsys.readouterr()
+    assert not captured.out
+    assert "private merchant text" not in captured.err
+    assert "Test set must" in captured.err
