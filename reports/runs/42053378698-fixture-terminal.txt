@@ -1,0 +1,106 @@
+Maria Santos (fixture-maria-shipping) | azulejo-ceramica-lisboa.myshopify.com
+Route: orders | expected: orders
+Reason: The merchant's primary request is to correct an EU Standard checkout shipping rate in their delivery profile for future checkouts, which is a checkout shipping rate/zones/profiles issue; reviewing historical order #1158 and listing zero-charge EU Standard orders is secondary context, and no customer-order refund or repricing is requested.
+Agent: orders | status: completed
+  READ get_shop {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com"} | status=completed | store_check=True
+  READ get_delivery_profile {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com"} | status=completed | store_check=True
+  READ get_order {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com", "order_id": "#1158"} | status=completed | store_check=True
+  WRITE update_shipping_rate {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com", "rate_id": "rate_eu_standard", "price": 14.9} | status=completed | store_check=True
+  READ list_orders {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com", "created_on_min": "2024-11-29", "created_on_max": "2024-12-02", "shipping_rate_title": "EU Standard"} | status=completed | store_check=True
+Response: **Findings**
+
+- Shop confirmed: Azulejo Cerâmica Lisboa, owner Maria Santos, currency EUR.
+- Delivery profile: EU Standard rate (`rate_eu_standard`) was EUR 0.00, last changed 28 Nov 2024 23:41 UTC. Portugal domestic rate (CTT Domestic, EUR 4.90) was untouched.
+- Historical order #1158 (28 Nov 2024, Berlin, EU Standard) confirms the correct rate: shipping EUR 14.90, total EUR 72.90, paid and fulfilled.
+
+**Actions executed**
+
+- Restored EU Standard shipping rate to **EUR 14.90** for future checkouts. Previous price was EUR 0.00; rate now shows EUR 14.90.
+- No changes were made to Portugal domestic shipping.
+- No existing orders were repriced, refunded, or charged.
+
+**EU Standard orders charged EUR 0.00, 29 Nov – 2 Dec 2024 (for your follow-up)**
+
+| Order | Date (UTC) | Customer | Destination | Total |
+|-------|------------|----------|-------------|-------|
+| #1160 | 2024-11-29 08:00 | Lucía Moreno | ES | EUR 42.00 |
+| #1161 | 2024-11-29 09:07 | Camille Laurent | FR | EUR 116.00 |
+| #1162 | 2024-11-29 10:14 | Jonas Becker | DE | EUR 24.50 |
+| #1163 | 2024-11-29 11:21 | Sanne de Vries | NL | EUR 38.00 |
+| #1164 | 2024-11-29 12:28 | Giulia Ricci | IT | EUR 16.00 |
+| #1165 | 2024-11-29 13:35 | Thomas Peeters | BE | EUR 84.00 |
+| #1166 | 2024-11-29 14:42 | Aoife Byrne | IE | EUR 58.00 |
+| #1167 | 2024-11-29 15:49 | Stefan Huber | AT | EUR 49.00 |
+| #1168 | 2024-11-29 16:56 | Inès Moreno | ES | EUR 19.00 |
+| #1169 | 2024-11-29 17:03 | Pieter Laurent | FR | EUR 32.00 |
+| #1170 | 2024-11-30 08:10 | Lucía Becker | DE | EUR 42.00 |
+| #1171 | 2024-11-30 09:17 | Camille de Vries | NL | EUR 116.00 |
+| #1172 | 2024-11-30 10:24 | Jonas Ricci | IT | EUR 24.50 |
+| #1173 | 2024-11-30 11:31 | Sanne Peeters | BE | EUR 38.00 |
+| #1174 | 2024-11-30 12:38 | Giulia Byrne | IE | EUR 16.00 |
+| #1175 | 2024-11-30 13:45 | Thomas Huber | AT | EUR 84.00 |
+| #1176 | 2024-11-30 14:52 | Aoife Moreno | ES | EUR 58.00 |
+| #1177 | 2024-11-30 15:59 | Stefan Laurent | FR | EUR 49.00 |
+| #1178 | 2024-11-30 16:06 | Inès Becker | DE | EUR 19.00 |
+| #1179 | 2024-11-30 17:13 | Pieter de Vries | NL | EUR 32.00 |
+| #1180 | 2024-12-01 08:20 | Lucía Ricci | IT | EUR 42.00 |
+| #1181 | 2024-12-01 09:27 | Camille Peeters | BE | EUR 116.00 |
+| #1182 | 2024-12-01 10:34 | Jonas Byrne | IE | EUR 24.50 |
+| #1183 | 2024-12-01 11:41 | Sanne Huber | AT | EUR 38.00 |
+| #1184 | 2024-12-01 12:48 | Giulia Moreno | ES | EUR 16.00 |
+| #1185 | 2024-12-01 13:55 | Thomas Laurent | FR | EUR 84.00 |
+| #1186 | 2024-12-01 14:02 | Aoife Becker | DE | EUR 58.00 |
+| #1187 | 2024-12-01 15:09 | Stefan de Vries | NL | EUR 49.00 |
+| #1188 | 2024-12-01 16:16 | Inès Ricci | IT | EUR 19.00 |
+| #1189 | 2024-12-01 17:23 | Pieter Peeters | BE | EUR 32.00 |
+| #1190 | 2024-12-02 08:30 | Lucía Byrne | IE | EUR 42.00 |
+| #1191 | 2024-12-02 09:37 | Camille Huber | AT | EUR 116.00 |
+| #1192 | 2024-12-02 10:44 | Jonas Moreno | ES | EUR 24.50 |
+| #1193 | 2024-12-02 11:51 | Sanne Laurent | FR | EUR 38.00 |
+| #1194 | 2024-12-02 12:58 | Giulia Becker | DE | EUR 16.00 |
+| #1195 | 2024-12-02 13:05 | Thomas de Vries | NL | EUR 84.00 |
+| #1196 | 2024-12-02 14:12 | Aoife Ricci | IT | EUR 58.00 |
+| #1197 | 2024-12-02 15:19 | Stefan Peeters | BE | EUR 49.00 |
+| #1198 | 2024-12-02 16:26 | Inès Byrne | IE | EUR 19.00 |
+| #1199 | 2024-12-02 17:33 | Pieter Huber | AT | EUR 32.00 |
+
+**Unresolved problem**
+
+None. All requested actions were completed. No existing orders were modified.
+  CHECK eu_standard_corrected_from_zero_to_14_90: PASS
+  CHECK domestic_rate_preserved_at_4_90: PASS
+  CHECK all_existing_orders_unchanged: PASS
+  CHECK billing_unchanged: PASS
+  CHECK exactly_one_targeted_shipping_write: PASS
+  CHECK all_40_affected_orders_discovered: PASS
+  CHECK historical_rate_evidence_read: PASS
+  CHECK other_shops_unchanged: PASS
+Case: PASS
+Owen Brooks (fixture-billing-duplicate) | northwind-coffee-roasters.myshopify.com
+Route: billing | expected: billing
+Reason: The merchant reports a duplicate app subscription charge on their November 2024 Shopify invoice and requests a credit for the duplicate USD 19.99 charge, which concerns their own Shopify bill/invoice rather than any customer order.
+Agent: billing | status: completed
+  READ get_shop {"shop_domain": "northwind-coffee-roasters.myshopify.com"} | status=completed | store_check=True
+  READ get_app_subscriptions {"shop_domain": "northwind-coffee-roasters.myshopify.com"} | status=completed | store_check=True
+  READ list_billing_charges {"shop_domain": "northwind-coffee-roasters.myshopify.com", "billing_period": "2024-11"} | status=completed | store_check=True
+  WRITE issue_billing_credit {"shop_domain": "northwind-coffee-roasters.myshopify.com", "amount": 19.99, "description": "Credit for duplicate ReviewStream Product Reviews - Growth app subscription charge on November 2024 bill", "charge_id": "chg_nw_5503"} | status=completed | store_check=True
+Response: **Findings**
+- Shop: Northwind Coffee Roasters (Owen Brooks), currency USD, plan Shopify.
+- Active app subscription: ReviewStream Product Reviews – Growth, $19.99 USD/month, active since 2024-05-14, not cancelled.
+- November 2024 bill shows two identical app-subscription charges for ReviewStream Product Reviews – Growth:
+  - `chg_nw_5502` — $19.99 USD
+  - `chg_nw_5503` — $19.99 USD
+
+**Action executed**
+- Issued a billing credit of **$19.99 USD** against charge `chg_nw_5503` (credit ID `crd_703db1f0e3`), offsetting the duplicate charge.
+
+**Unresolved problem**
+- None. The app subscription remains active; no customer orders were touched.
+  CHECK one_duplicate_charge_credited_19_99: PASS
+  CHECK original_charge_lines_preserved: PASS
+  CHECK active_subscription_not_cancelled: PASS
+  CHECK orders_unchanged: PASS
+  CHECK exactly_one_billing_credit_write: PASS
+  CHECK other_shops_unchanged: PASS
+Case: PASS
+Summary: 2/2 passed; missing fixtures: 0

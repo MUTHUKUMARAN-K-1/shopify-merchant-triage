@@ -1,0 +1,1015 @@
+{
+  "evaluated_at": "2026-11-05T15:17:51.625683+00:00",
+  "dataset_sha256": "c949343512a87f94f8804e84bbd7f74e1f4997be9b3c96cb92ac92d0b01eebf0",
+  "mode": "mock_admin_only",
+  "total": 2,
+  "passed": 2,
+  "fixture_missing": 0,
+  "results": [
+    {
+      "id": "fixture-maria-shipping",
+      "merchant_name": "Maria Santos",
+      "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+      "expected_route": "orders",
+      "fixture_available": true,
+      "decision": {
+        "route": "orders",
+        "reason": "The merchant's primary request is to correct an EU Standard checkout shipping rate in their delivery profile for future checkouts, which is a checkout shipping rate/zones/profiles issue; reviewing historical order #1158 and listing zero-charge EU Standard orders is secondary context, and no customer-order refund or repricing is requested."
+      },
+      "actual_route": "orders",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "specialist": {
+        "agent": "orders",
+        "status": "completed",
+        "response": "**Findings**\n\n- Shop confirmed: Azulejo Cerâmica Lisboa, owner Maria Santos, currency EUR.\n- Delivery profile: EU Standard rate (`rate_eu_standard`) was EUR 0.00, last changed 28 Nov 2024 23:41 UTC. Portugal domestic rate (CTT Domestic, EUR 4.90) was untouched.\n- Historical order #1158 (28 Nov 2024, Berlin, EU Standard) confirms the correct rate: shipping EUR 14.90, total EUR 72.90, paid and fulfilled.\n\n**Actions executed**\n\n- Restored EU Standard shipping rate to **EUR 14.90** for future checkouts. Previous price was EUR 0.00; rate now shows EUR 14.90.\n- No changes were made to Portugal domestic shipping.\n- No existing orders were repriced, refunded, or charged.\n\n**EU Standard orders charged EUR 0.00, 29 Nov – 2 Dec 2024 (for your follow-up)**\n\n| Order | Date (UTC) | Customer | Destination | Total |\n|-------|------------|----------|-------------|-------|\n| #1160 | 2024-11-29 08:00 | Lucía Moreno | ES | EUR 42.00 |\n| #1161 | 2024-11-29 09:07 | Camille Laurent | FR | EUR 116.00 |\n| #1162 | 2024-11-29 10:14 | Jonas Becker | DE | EUR 24.50 |\n| #1163 | 2024-11-29 11:21 | Sanne de Vries | NL | EUR 38.00 |\n| #1164 | 2024-11-29 12:28 | Giulia Ricci | IT | EUR 16.00 |\n| #1165 | 2024-11-29 13:35 | Thomas Peeters | BE | EUR 84.00 |\n| #1166 | 2024-11-29 14:42 | Aoife Byrne | IE | EUR 58.00 |\n| #1167 | 2024-11-29 15:49 | Stefan Huber | AT | EUR 49.00 |\n| #1168 | 2024-11-29 16:56 | Inès Moreno | ES | EUR 19.00 |\n| #1169 | 2024-11-29 17:03 | Pieter Laurent | FR | EUR 32.00 |\n| #1170 | 2024-11-30 08:10 | Lucía Becker | DE | EUR 42.00 |\n| #1171 | 2024-11-30 09:17 | Camille de Vries | NL | EUR 116.00 |\n| #1172 | 2024-11-30 10:24 | Jonas Ricci | IT | EUR 24.50 |\n| #1173 | 2024-11-30 11:31 | Sanne Peeters | BE | EUR 38.00 |\n| #1174 | 2024-11-30 12:38 | Giulia Byrne | IE | EUR 16.00 |\n| #1175 | 2024-11-30 13:45 | Thomas Huber | AT | EUR 84.00 |\n| #1176 | 2024-11-30 14:52 | Aoife Moreno | ES | EUR 58.00 |\n| #1177 | 2024-11-30 15:59 | Stefan Laurent | FR | EUR 49.00 |\n| #1178 | 2024-11-30 16:06 | Inès Becker | DE | EUR 19.00 |\n| #1179 | 2024-11-30 17:13 | Pieter de Vries | NL | EUR 32.00 |\n| #1180 | 2024-12-01 08:20 | Lucía Ricci | IT | EUR 42.00 |\n| #1181 | 2024-12-01 09:27 | Camille Peeters | BE | EUR 116.00 |\n| #1182 | 2024-12-01 10:34 | Jonas Byrne | IE | EUR 24.50 |\n| #1183 | 2024-12-01 11:41 | Sanne Huber | AT | EUR 38.00 |\n| #1184 | 2024-12-01 12:48 | Giulia Moreno | ES | EUR 16.00 |\n| #1185 | 2024-12-01 13:55 | Thomas Laurent | FR | EUR 84.00 |\n| #1186 | 2024-12-01 14:02 | Aoife Becker | DE | EUR 58.00 |\n| #1187 | 2024-12-01 15:09 | Stefan de Vries | NL | EUR 49.00 |\n| #1188 | 2024-12-01 16:16 | Inès Ricci | IT | EUR 19.00 |\n| #1189 | 2024-12-01 17:23 | Pieter Peeters | BE | EUR 32.00 |\n| #1190 | 2024-12-02 08:30 | Lucía Byrne | IE | EUR 42.00 |\n| #1191 | 2024-12-02 09:37 | Camille Huber | AT | EUR 116.00 |\n| #1192 | 2024-12-02 10:44 | Jonas Moreno | ES | EUR 24.50 |\n| #1193 | 2024-12-02 11:51 | Sanne Laurent | FR | EUR 38.00 |\n| #1194 | 2024-12-02 12:58 | Giulia Becker | DE | EUR 16.00 |\n| #1195 | 2024-12-02 13:05 | Thomas de Vries | NL | EUR 84.00 |\n| #1196 | 2024-12-02 14:12 | Aoife Ricci | IT | EUR 58.00 |\n| #1197 | 2024-12-02 15:19 | Stefan Peeters | BE | EUR 49.00 |\n| #1198 | 2024-12-02 16:26 | Inès Byrne | IE | EUR 19.00 |\n| #1199 | 2024-12-02 17:33 | Pieter Huber | AT | EUR 32.00 |\n\n**Unresolved problem**\n\nNone. All requested actions were completed. No existing orders were modified.",
+        "bound_tools": [
+          "get_shop",
+          "get_order",
+          "list_orders",
+          "list_order_transactions",
+          "calculate_refund",
+          "get_delivery_profile",
+          "create_refund",
+          "update_shipping_rate",
+          "recalculate_order_shipping",
+          "update_order_shipping_address",
+          "cancel_order",
+          "add_order_note"
+        ],
+        "resolved_models": [
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_shop",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+            },
+            "result": {
+              "name": "Azulejo Cerâmica Lisboa",
+              "domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "owner": "Maria Santos",
+              "country": "PT",
+              "currency": "EUR",
+              "plan": "Basic",
+              "timezone": "Europe/Lisbon"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "changed_paths": []
+          },
+          {
+            "tool": "get_delivery_profile",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+            },
+            "result": {
+              "id": "dp_azulejo_general",
+              "name": "General profile",
+              "origin": "Rua de São Bento 212, 1200-821 Lisboa, PT",
+              "zones": [
+                {
+                  "id": "zone_pt",
+                  "name": "Portugal",
+                  "countries": [
+                    "PT"
+                  ],
+                  "rates": [
+                    {
+                      "id": "rate_pt_ctt",
+                      "name": "CTT Domestic",
+                      "price": 4.9,
+                      "currency": "EUR",
+                      "updated_at": "2024-03-11T09:14:00+00:00"
+                    }
+                  ]
+                },
+                {
+                  "id": "zone_eu",
+                  "name": "European Union",
+                  "countries": [
+                    "ES",
+                    "FR",
+                    "DE",
+                    "NL",
+                    "IT",
+                    "BE",
+                    "IE",
+                    "AT"
+                  ],
+                  "rates": [
+                    {
+                      "id": "rate_eu_standard",
+                      "name": "EU Standard",
+                      "price": 0,
+                      "currency": "EUR",
+                      "updated_at": "2024-11-28T23:41:00+00:00"
+                    },
+                    {
+                      "id": "rate_eu_express",
+                      "name": "EU Express",
+                      "price": 24.9,
+                      "currency": "EUR",
+                      "updated_at": "2024-03-11T09:14:00+00:00"
+                    }
+                  ]
+                },
+                {
+                  "id": "zone_row",
+                  "name": "Rest of world",
+                  "countries": [
+                    "*"
+                  ],
+                  "rates": [
+                    {
+                      "id": "rate_row_tracked",
+                      "name": "International Tracked",
+                      "price": 29.9,
+                      "currency": "EUR",
+                      "updated_at": "2024-03-11T09:14:00+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "changed_paths": []
+          },
+          {
+            "tool": "get_order",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "order_id": "#1158"
+            },
+            "result": {
+              "order_id": "#1158",
+              "created_at": "2024-11-28T17:22:00+00:00",
+              "customer": {
+                "name": "Mathilde Krause"
+              },
+              "line_items": [
+                {
+                  "title": "Hand-painted serving platter",
+                  "quantity": 1,
+                  "price": 58
+                }
+              ],
+              "subtotal_price": 58,
+              "shipping_lines": [
+                {
+                  "title": "EU Standard",
+                  "price": 14.9,
+                  "rate_id": "rate_eu_standard",
+                  "currency": "EUR"
+                }
+              ],
+              "total_price": 72.9,
+              "total_outstanding": 0,
+              "currency": "EUR",
+              "shipping_address": {
+                "name": "Mathilde Krause",
+                "address1": "Schönhauser Allee 41",
+                "city": "Berlin",
+                "zip": "10435",
+                "country_code": "DE"
+              },
+              "financial_status": "paid",
+              "fulfillment_status": "fulfilled",
+              "cancelled_at": null,
+              "cancel_reason": null,
+              "note": "",
+              "refunds": [],
+              "transactions": [
+                {
+                  "id": "txn_1158_1",
+                  "kind": "sale",
+                  "status": "success",
+                  "amount": 72.9,
+                  "currency": "EUR",
+                  "gateway": "shopify_payments",
+                  "processed_at": "2024-11-28T17:22:00+00:00"
+                }
+              ]
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "changed_paths": []
+          },
+          {
+            "tool": "update_shipping_rate",
+            "effect": "write",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "rate_id": "rate_eu_standard",
+              "price": 14.9
+            },
+            "result": {
+              "id": "rate_eu_standard",
+              "name": "EU Standard",
+              "price": 14.9,
+              "currency": "EUR",
+              "updated_at": "2026-11-05T15:17:25+00:00",
+              "zone": "European Union",
+              "previous_price": 0
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "7d97c45d3f26f901f4096e0678addfe6d69393dd110e957c2b3a92974dc6405c",
+            "changed_paths": [
+              "/delivery_profile/zones/1/rates/0/price",
+              "/delivery_profile/zones/1/rates/0/updated_at"
+            ]
+          },
+          {
+            "tool": "list_orders",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "created_on_min": "2024-11-29",
+              "created_on_max": "2024-12-02",
+              "shipping_rate_title": "EU Standard"
+            },
+            "result": [
+              {
+                "order_id": "#1160",
+                "created_at": "2024-11-29T08:00:00+00:00",
+                "customer_name": "Lucía Moreno",
+                "destination_country": "ES",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 42,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1161",
+                "created_at": "2024-11-29T09:07:00+00:00",
+                "customer_name": "Camille Laurent",
+                "destination_country": "FR",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 116,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1162",
+                "created_at": "2024-11-29T10:14:00+00:00",
+                "customer_name": "Jonas Becker",
+                "destination_country": "DE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 24.5,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1163",
+                "created_at": "2024-11-29T11:21:00+00:00",
+                "customer_name": "Sanne de Vries",
+                "destination_country": "NL",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 38,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1164",
+                "created_at": "2024-11-29T12:28:00+00:00",
+                "customer_name": "Giulia Ricci",
+                "destination_country": "IT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 16,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1165",
+                "created_at": "2024-11-29T13:35:00+00:00",
+                "customer_name": "Thomas Peeters",
+                "destination_country": "BE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 84,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1166",
+                "created_at": "2024-11-29T14:42:00+00:00",
+                "customer_name": "Aoife Byrne",
+                "destination_country": "IE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 58,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1167",
+                "created_at": "2024-11-29T15:49:00+00:00",
+                "customer_name": "Stefan Huber",
+                "destination_country": "AT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 49,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1168",
+                "created_at": "2024-11-29T16:56:00+00:00",
+                "customer_name": "Inès Moreno",
+                "destination_country": "ES",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 19,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1169",
+                "created_at": "2024-11-29T17:03:00+00:00",
+                "customer_name": "Pieter Laurent",
+                "destination_country": "FR",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 32,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1170",
+                "created_at": "2024-11-30T08:10:00+00:00",
+                "customer_name": "Lucía Becker",
+                "destination_country": "DE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 42,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1171",
+                "created_at": "2024-11-30T09:17:00+00:00",
+                "customer_name": "Camille de Vries",
+                "destination_country": "NL",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 116,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1172",
+                "created_at": "2024-11-30T10:24:00+00:00",
+                "customer_name": "Jonas Ricci",
+                "destination_country": "IT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 24.5,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1173",
+                "created_at": "2024-11-30T11:31:00+00:00",
+                "customer_name": "Sanne Peeters",
+                "destination_country": "BE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 38,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1174",
+                "created_at": "2024-11-30T12:38:00+00:00",
+                "customer_name": "Giulia Byrne",
+                "destination_country": "IE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 16,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1175",
+                "created_at": "2024-11-30T13:45:00+00:00",
+                "customer_name": "Thomas Huber",
+                "destination_country": "AT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 84,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1176",
+                "created_at": "2024-11-30T14:52:00+00:00",
+                "customer_name": "Aoife Moreno",
+                "destination_country": "ES",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 58,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1177",
+                "created_at": "2024-11-30T15:59:00+00:00",
+                "customer_name": "Stefan Laurent",
+                "destination_country": "FR",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 49,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1178",
+                "created_at": "2024-11-30T16:06:00+00:00",
+                "customer_name": "Inès Becker",
+                "destination_country": "DE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 19,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1179",
+                "created_at": "2024-11-30T17:13:00+00:00",
+                "customer_name": "Pieter de Vries",
+                "destination_country": "NL",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 32,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1180",
+                "created_at": "2024-12-01T08:20:00+00:00",
+                "customer_name": "Lucía Ricci",
+                "destination_country": "IT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 42,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1181",
+                "created_at": "2024-12-01T09:27:00+00:00",
+                "customer_name": "Camille Peeters",
+                "destination_country": "BE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 116,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1182",
+                "created_at": "2024-12-01T10:34:00+00:00",
+                "customer_name": "Jonas Byrne",
+                "destination_country": "IE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 24.5,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1183",
+                "created_at": "2024-12-01T11:41:00+00:00",
+                "customer_name": "Sanne Huber",
+                "destination_country": "AT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 38,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1184",
+                "created_at": "2024-12-01T12:48:00+00:00",
+                "customer_name": "Giulia Moreno",
+                "destination_country": "ES",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 16,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1185",
+                "created_at": "2024-12-01T13:55:00+00:00",
+                "customer_name": "Thomas Laurent",
+                "destination_country": "FR",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 84,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1186",
+                "created_at": "2024-12-01T14:02:00+00:00",
+                "customer_name": "Aoife Becker",
+                "destination_country": "DE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 58,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1187",
+                "created_at": "2024-12-01T15:09:00+00:00",
+                "customer_name": "Stefan de Vries",
+                "destination_country": "NL",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 49,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1188",
+                "created_at": "2024-12-01T16:16:00+00:00",
+                "customer_name": "Inès Ricci",
+                "destination_country": "IT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 19,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1189",
+                "created_at": "2024-12-01T17:23:00+00:00",
+                "customer_name": "Pieter Peeters",
+                "destination_country": "BE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 32,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "fulfilled"
+              },
+              {
+                "order_id": "#1190",
+                "created_at": "2024-12-02T08:30:00+00:00",
+                "customer_name": "Lucía Byrne",
+                "destination_country": "IE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 42,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1191",
+                "created_at": "2024-12-02T09:37:00+00:00",
+                "customer_name": "Camille Huber",
+                "destination_country": "AT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 116,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1192",
+                "created_at": "2024-12-02T10:44:00+00:00",
+                "customer_name": "Jonas Moreno",
+                "destination_country": "ES",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 24.5,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1193",
+                "created_at": "2024-12-02T11:51:00+00:00",
+                "customer_name": "Sanne Laurent",
+                "destination_country": "FR",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 38,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1194",
+                "created_at": "2024-12-02T12:58:00+00:00",
+                "customer_name": "Giulia Becker",
+                "destination_country": "DE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 16,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1195",
+                "created_at": "2024-12-02T13:05:00+00:00",
+                "customer_name": "Thomas de Vries",
+                "destination_country": "NL",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 84,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1196",
+                "created_at": "2024-12-02T14:12:00+00:00",
+                "customer_name": "Aoife Ricci",
+                "destination_country": "IT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 58,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1197",
+                "created_at": "2024-12-02T15:19:00+00:00",
+                "customer_name": "Stefan Peeters",
+                "destination_country": "BE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 49,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1198",
+                "created_at": "2024-12-02T16:26:00+00:00",
+                "customer_name": "Inès Byrne",
+                "destination_country": "IE",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 19,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              },
+              {
+                "order_id": "#1199",
+                "created_at": "2024-12-02T17:33:00+00:00",
+                "customer_name": "Pieter Huber",
+                "destination_country": "AT",
+                "shipping_title": "EU Standard",
+                "shipping_price": 0,
+                "total_price": 32,
+                "currency": "EUR",
+                "financial_status": "paid",
+                "fulfillment_status": "unfulfilled"
+              }
+            ],
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "7d97c45d3f26f901f4096e0678addfe6d69393dd110e957c2b3a92974dc6405c",
+            "after_sha256": "7d97c45d3f26f901f4096e0678addfe6d69393dd110e957c2b3a92974dc6405c",
+            "changed_paths": []
+          }
+        ]
+      },
+      "fixture_checks": {
+        "checks": {
+          "eu_standard_corrected_from_zero_to_14_90": true,
+          "domestic_rate_preserved_at_4_90": true,
+          "all_existing_orders_unchanged": true,
+          "billing_unchanged": true,
+          "exactly_one_targeted_shipping_write": true,
+          "all_40_affected_orders_discovered": true,
+          "historical_rate_evidence_read": true,
+          "other_shops_unchanged": true
+        },
+        "passed": true
+      },
+      "changed_paths": [
+        "/azulejo-ceramica-lisboa.myshopify.com/delivery_profile/zones/1/rates/0/price",
+        "/azulejo-ceramica-lisboa.myshopify.com/delivery_profile/zones/1/rates/0/updated_at"
+      ],
+      "before_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "after_sha256": "ae420ce793e77bda3d74d60ee5c6dcc9ca59f9dc54f2457bb1a7a2e4332b795c",
+      "call_log": [
+        {
+          "tool": "get_shop",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:17:23+00:00"
+        },
+        {
+          "tool": "get_delivery_profile",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:17:23+00:00"
+        },
+        {
+          "tool": "get_order",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+            "order_id": "#1158"
+          },
+          "timestamp": "2026-11-05T15:17:23+00:00"
+        },
+        {
+          "tool": "update_shipping_rate",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+            "rate_id": "rate_eu_standard",
+            "price": 14.9
+          },
+          "timestamp": "2026-11-05T15:17:25+00:00"
+        },
+        {
+          "tool": "list_orders",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+            "created_on_min": "2024-11-29",
+            "created_on_max": "2024-12-02",
+            "shipping_rate_title": "EU Standard"
+          },
+          "timestamp": "2026-11-05T15:17:25+00:00"
+        }
+      ],
+      "route_passed": true,
+      "passed": true
+    },
+    {
+      "id": "fixture-billing-duplicate",
+      "merchant_name": "Owen Brooks",
+      "shop_domain": "northwind-coffee-roasters.myshopify.com",
+      "expected_route": "billing",
+      "fixture_available": true,
+      "decision": {
+        "route": "billing",
+        "reason": "The merchant reports a duplicate app subscription charge on their November 2024 Shopify invoice and requests a credit for the duplicate USD 19.99 charge, which concerns their own Shopify bill/invoice rather than any customer order."
+      },
+      "actual_route": "billing",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "specialist": {
+        "agent": "billing",
+        "status": "completed",
+        "response": "**Findings**\n- Shop: Northwind Coffee Roasters (Owen Brooks), currency USD, plan Shopify.\n- Active app subscription: ReviewStream Product Reviews – Growth, $19.99 USD/month, active since 2024-05-14, not cancelled.\n- November 2024 bill shows two identical app-subscription charges for ReviewStream Product Reviews – Growth:\n  - `chg_nw_5502` — $19.99 USD\n  - `chg_nw_5503` — $19.99 USD\n\n**Action executed**\n- Issued a billing credit of **$19.99 USD** against charge `chg_nw_5503` (credit ID `crd_703db1f0e3`), offsetting the duplicate charge.\n\n**Unresolved problem**\n- None. The app subscription remains active; no customer orders were touched.",
+        "bound_tools": [
+          "get_shop",
+          "get_app_subscriptions",
+          "list_billing_charges",
+          "cancel_app_subscription",
+          "issue_billing_credit"
+        ],
+        "resolved_models": [
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_shop",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com"
+            },
+            "result": {
+              "name": "Northwind Coffee Roasters",
+              "domain": "northwind-coffee-roasters.myshopify.com",
+              "owner": "Owen Brooks",
+              "country": "US",
+              "currency": "USD",
+              "plan": "Shopify",
+              "timezone": "America/Chicago"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "changed_paths": []
+          },
+          {
+            "tool": "get_app_subscriptions",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com"
+            },
+            "result": [
+              {
+                "id": "sub_rvw_2207",
+                "app_name": "ReviewStream Product Reviews",
+                "plan": "Growth",
+                "price": 19.99,
+                "currency": "USD",
+                "status": "active",
+                "activated_on": "2024-05-14",
+                "cancelled_on": null
+              }
+            ],
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "changed_paths": []
+          },
+          {
+            "tool": "list_billing_charges",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com",
+              "billing_period": "2024-11"
+            },
+            "result": [
+              {
+                "id": "chg_nw_5501",
+                "type": "subscription",
+                "description": "Shopify plan",
+                "subscription_id": null,
+                "amount": 105,
+                "currency": "USD",
+                "billed_on": "2024-11-30",
+                "billing_period": "2024-11"
+              },
+              {
+                "id": "chg_nw_5502",
+                "type": "app_subscription",
+                "description": "ReviewStream Product Reviews - Growth",
+                "subscription_id": "sub_rvw_2207",
+                "amount": 19.99,
+                "currency": "USD",
+                "billed_on": "2024-11-30",
+                "billing_period": "2024-11"
+              },
+              {
+                "id": "chg_nw_5503",
+                "type": "app_subscription",
+                "description": "ReviewStream Product Reviews - Growth",
+                "subscription_id": "sub_rvw_2207",
+                "amount": 19.99,
+                "currency": "USD",
+                "billed_on": "2024-11-30",
+                "billing_period": "2024-11"
+              }
+            ],
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "changed_paths": []
+          },
+          {
+            "tool": "issue_billing_credit",
+            "effect": "write",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com",
+              "amount": 19.99,
+              "description": "Credit for duplicate ReviewStream Product Reviews - Growth app subscription charge on November 2024 bill",
+              "charge_id": "chg_nw_5503"
+            },
+            "result": {
+              "id": "crd_703db1f0e3",
+              "type": "credit",
+              "description": "Credit for duplicate ReviewStream Product Reviews - Growth app subscription charge on November 2024 bill",
+              "subscription_id": null,
+              "amount": -19.99,
+              "currency": "USD",
+              "billed_on": "2026-11-05",
+              "billing_period": "2026-11",
+              "credits_charge_id": "chg_nw_5503"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "13ed5f2b1d0dfb9cac27d098a8daad8321f4d15c9ab33befdea9e3b6ad3b089d",
+            "changed_paths": [
+              "/billing_charges"
+            ]
+          }
+        ]
+      },
+      "fixture_checks": {
+        "checks": {
+          "one_duplicate_charge_credited_19_99": true,
+          "original_charge_lines_preserved": true,
+          "active_subscription_not_cancelled": true,
+          "orders_unchanged": true,
+          "exactly_one_billing_credit_write": true,
+          "other_shops_unchanged": true
+        },
+        "passed": true
+      },
+      "changed_paths": [
+        "/northwind-coffee-roasters.myshopify.com/billing_charges"
+      ],
+      "before_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "after_sha256": "fe10316be62a4413a2d3ea6984a259d7b73bfcfe4c94ee42867fd178059b7194",
+      "call_log": [
+        {
+          "tool": "get_shop",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:17:48+00:00"
+        },
+        {
+          "tool": "get_app_subscriptions",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:17:48+00:00"
+        },
+        {
+          "tool": "list_billing_charges",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com",
+            "billing_period": "2024-11"
+          },
+          "timestamp": "2026-11-05T15:17:48+00:00"
+        },
+        {
+          "tool": "issue_billing_credit",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com",
+            "amount": 19.99,
+            "description": "Credit for duplicate ReviewStream Product Reviews - Growth app subscription charge on November 2024 bill",
+            "charge_id": "chg_nw_5503"
+          },
+          "timestamp": "2026-11-05T15:17:50+00:00"
+        }
+      ],
+      "route_passed": true,
+      "passed": true
+    }
+  ]
+}
+

@@ -1,0 +1,17 @@
+Carla Jennings (SUP-48197) | northfork-coffee.myshopify.com
+Route: billing | expected: billing
+Reason: The merchant is disputing a $29 app subscription charge on their Shopify bill for ReviewPop after uninstalling it, which concerns their merchant account invoice rather than a customer order.
+Agent: billing | status: needs_human
+  READ get_shop {"shop_domain": "northfork-coffee.myshopify.com"} | status=tool_error | store_check=True
+    Error: Shop 'northfork-coffee.myshopify.com' not found. Use the full *.myshopify.com domain.
+Response: Shop 'northfork-coffee.myshopify.com' not found. Use the full *.myshopify.com domain.
+Case: NOT PASSED
+Maria Sousa (SUP-48213) | barro-azul-ceramica.myshopify.com
+Route: orders | expected: orders
+Reason: Merchant reports wrong checkout shipping rates/zones since Saturday—European buyers charged domestic Portugal rates and Portugal buyers charged international rates—affecting customer orders at checkout; checkout shipping rates always route to orders.
+Agent: orders | status: needs_human
+  READ get_shop {"shop_domain": "barro-azul-ceramica.myshopify.com"} | status=tool_error | store_check=True
+    Error: Shop 'barro-azul-ceramica.myshopify.com' not found. Use the full *.myshopify.com domain.
+Response: Shop 'barro-azul-ceramica.myshopify.com' not found. Use the full *.myshopify.com domain.
+Case: NOT PASSED
+Summary: 0/2 passed; missing fixtures: 2

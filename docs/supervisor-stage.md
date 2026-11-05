@@ -141,7 +141,7 @@ A single minimal diagnostic probe in workflow 42051079177 confirmed
 `free-models-per-day`: 50 requests allowed, zero remaining, reset at
 2026-11-06 00:00 UTC / 05:30 IST. The key and raw error body were not printed.
 The README now includes the exact live failure output and quota metadata.
-Model-selected specialist actions remain unverified until quota is available.
+That earlier key was quota-limited; the later live success below supersedes this blocker.
 
 ## Updated-key live run and read-error recovery
 
@@ -164,4 +164,22 @@ retains every failed read and its arguments. A verified not-found read has
 the lookup failed and the store stayed unchanged; this is not a successful
 read. Final scenario checks still require the actual requested state change.
 53 offline tests pass, including read-error recovery and no retry after a
-failed write. Fresh live model evidence is still needed for the updated code.
+failed write. The corrected implementation was then tested live as below.
+
+## Successful live run
+
+OpenRouter workflow [42053378698](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053378698)
+passed on tested source `343f7a46bccd305f1288e66e64565d435e837da8`.
+Both triage and specialist choices used the pinned live free model, not the
+scripted classes. Maria used `#1158` correctly, changed `rate_eu_standard` to
+EUR 14.90 and listed the 40 affected orders. Owen credited `chg_nw_5503` for
+USD 19.99. All nine executed calls completed, all call/store checks passed,
+and every independent end-state assertion passed. No read-error recovery was
+needed in this successful run. The earlier wrong-ID attempt remains recorded.
+
+The README contains the complete printed live output for both cases and the
+exact specialist prompt. Raw reports and exact stdout are under
+`reports/runs/42053378698-*`. The original Maria Sousa and Carla Jennings
+cases in that same run ended `needs_human`, with missing stores and no writes;
+they are not counted as passed. The 2/2 claim applies only to the two authored
+fixture-backed integration cases.
