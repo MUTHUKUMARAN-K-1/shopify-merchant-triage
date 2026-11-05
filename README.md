@@ -16,8 +16,12 @@ tickets manually; this node is the common entry point before specialist agents.
 **Current status:** the supplied 24-ticket test set is imported, with 12 billing
 and 12 orders labels. Maria Sousa is `SUP-48213`, expected `orders`: her Portugal
 and Europe checkout shipping rates are swapped. The node and offline checks are
-available. A configured OpenRouter key is still needed for a live prediction;
-Maria has not yet been marked as passed. See `reports/verification.json`.
+available. The first live run authenticated successfully but exposed inconsistent
+routes across the free router's selected models: Maria failed standalone and
+passed within the full set; the full set scored 22/24 with one wrong route and
+one invalid response. The default is now pinned to a single free model with
+clearer checkout-rate and partial-refund rules, pending a fresh live check.
+See `reports/verification.json` and the preserved baseline in `reports/runs/`.
 
 ## Run locally
 
@@ -37,7 +41,7 @@ For example, a session-only Bash prompt avoids including the key in history:
 ```bash
 read -rsp 'OpenRouter key: ' OPENROUTER_API_KEY
 export OPENROUTER_API_KEY
-export OPENROUTER_MODEL=openrouter/free
+export OPENROUTER_MODEL=nvidia/nemotron-3.5-super-vl:free
 ```
 
 Or in PowerShell:
@@ -45,7 +49,7 @@ Or in PowerShell:
 ```powershell
 $triageSecret = Read-Host 'OpenRouter key' -AsSecureString
 $env:OPENROUTER_API_KEY = [System.Net.NetworkCredential]::new('', $triageSecret).Password
-$env:OPENROUTER_MODEL = 'openrouter/free'
+$env:OPENROUTER_MODEL = 'nvidia/nemotron-3.5-super-vl:free'
 ```
 
 ```bash
@@ -55,9 +59,11 @@ merchant-triage evaluate data/shopify_merchant_tickets.json --output reports/tic
 python -m pytest -q
 ```
 
-`openrouter/free` selects an available free model; its selection can change.
-Reports record both requested and resolved models. You may set an explicit
-`:free` model ID for more repeatable comparisons. Paid model IDs are rejected.
+The default is `nvidia/nemotron-3.5-super-vl:free`, pinned to avoid switching
+models between cases. Reports record both requested and resolved models.
+You may override it with another explicit `:free` model or `openrouter/free`;
+the latter dynamically selects models and produced inconsistent baseline
+results. Paid model IDs are rejected.
 Free endpoint limits and structured-output availability can prevent a request;
 these failures remain errors and do not produce a guessed route.
 
@@ -136,8 +142,10 @@ Offline tests verify orchestration, HTTP request construction, strict validation
 retry limits, error handling, label isolation and evaluation exit codes. Mocked
 responses do **not** establish classification accuracy or a successful live
 OpenRouter call. A route match also does not independently grade reason quality.
-Maria's original inputs and label are now available; her live check is pending
-only the configured API key. The meeting notes describe eventual autonomous
+Maria's original inputs and label are available, and the repository Actions
+secret is configured. Her initial standalone prediction was wrong, while the
+separate full-set prediction matched; neither is hidden by rerunning. The
+meeting notes describe eventual autonomous
 specialists, simulated admin tools and human handoffs. Those later milestones
 are outside this first route-and-reason node. The notes mention Anthropic;
 this implementation uses OpenRouter as explicitly requested for this step.

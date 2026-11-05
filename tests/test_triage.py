@@ -8,7 +8,7 @@ from merchant_triage.cli import main
 from merchant_triage.evaluate import evaluate, load_tickets
 from merchant_triage.graph import build_graph
 from merchant_triage.models import Decision, Ticket
-from merchant_triage.openrouter import Classification, OpenRouterClassifier, TriageError
+from merchant_triage.openrouter import DEFAULT_MODEL, Classification, OpenRouterClassifier, TriageError
 
 
 def response(route="billing", reason="This concerns the merchant's Shopify invoice.", **updates):
@@ -56,8 +56,9 @@ def test_request_uses_free_model_schema_and_separate_untrusted_message():
     def handler(request):
         assert str(request.url) == "https://openrouter.ai/api/v1/chat/completions"
         body = json.loads(request.content)
-        assert body["model"] == "openrouter/free"
+        assert body["model"] == DEFAULT_MODEL
         assert body["provider"]["require_parameters"] is True
+        assert body["max_tokens"] == 2048
         assert body["messages"][1] == {"role": "user", "content": message}
         assert body["response_format"]["json_schema"]["strict"] is True
         schema = body["response_format"]["json_schema"]["schema"]

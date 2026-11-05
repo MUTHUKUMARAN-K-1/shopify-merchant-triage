@@ -1,0 +1,21 @@
+{
+  "evaluated_at": "2026-11-05T13:35:51.883002+00:00",
+  "dataset_sha256": "237d2697c5fc05451844ccf041c65c69b62d720371a19b4f1bfa2c708bcf0653",
+  "total": 1,
+  "passed": 0,
+  "errors": 0,
+  "route_accuracy": 0,
+  "results": [
+    {
+      "id": "SUP-48213",
+      "expected_route": "orders",
+      "actual_route": "billing",
+      "reason": "The merchant reports incorrect shipping rates being applied since Saturday - buyers in Europe are being charged domestic Portugal rates when they should be international, and buyers in Portugal are being charged international rates when they should be domestic. This is a shipping rate configuration issue affecting multiple orders (about 40) and requires billing/pricing review of the merchant's shipping zones and rates.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "liquid/lfm-2.5-2.6b:free",
+      "passed": false,
+      "status": "completed"
+    }
+  ]
+}
+

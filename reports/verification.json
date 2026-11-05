@@ -17,8 +17,18 @@
     "model_called": false
   },
   "live_openrouter": {
-    "status": "not_run",
-    "reason": "OPENROUTER_API_KEY is not configured"
+    "status": "completed_with_failures",
+    "run_id": 42037117474,
+    "source_commit": "693fee199b5b921bbdbe54e8c36957c401846c86",
+    "workflow_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42037117474",
+    "authentication": "successful",
+    "requested_model": "openrouter/free",
+    "passed": 22,
+    "total": 24,
+    "errors": 1,
+    "mismatches": 1,
+    "report": "reports/runs/42037117474-tickets.json",
+    "evidence_source": "JSON reports reconstructed from job 127278038246 stdout; original downloadable workflow artifact also retained by GitHub"
   },
   "original_shopify_test_set": {
     "status": "imported",
@@ -29,11 +39,23 @@
     "supplemental_examples": "8 separate synthetic examples"
   },
   "maria": {
-    "status": "not_run",
     "ticket_id": "SUP-48213",
     "merchant_name": "Maria Sousa",
     "expected_route": "orders",
-    "input_validation": "passed; exact record selected without model call",
-    "reason": "OPENROUTER_API_KEY is not configured; no live prediction or route match recorded"
+    "status": "inconsistent_baseline",
+    "standalone_route": "billing",
+    "standalone_passed": false,
+    "full_set_route": "orders",
+    "full_set_passed": true,
+    "report": "reports/runs/42037117474-maria.json"
+  },
+  "follow_up": {
+    "status": "awaiting_live_run",
+    "model": "nvidia/nemotron-3.5-super-vl:free",
+    "changes": [
+      "Pin one free model rather than changing model per case",
+      "Clarify checkout shipping rates and all customer-order refunds route to orders",
+      "Increase completion budget to 2048 tokens; incomplete output still fails validation"
+    ]
   }
 }

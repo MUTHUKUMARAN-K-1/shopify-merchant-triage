@@ -8,6 +8,8 @@ from pydantic import ValidationError
 
 from .models import Decision
 
+DEFAULT_MODEL = "nvidia/nemotron-3.5-super-vl:free"
+
 SYSTEM_PROMPT = """You triage messages from Shopify merchants to one specialist.
 Return only a JSON object with route and a short, specific reason grounded in
 the message. Choose exactly one of billing or orders.
@@ -20,6 +22,14 @@ orders: checkout shipping rates/zones/profiles, a customer's purchase, order
 status, fulfilment, shipping, tracking,
 order cancellation, returns, refunds or payment problems on a customer order.
 Distinguish a Shopify bill from a customer's order even if both mention money.
+Shipping prices charged to buyers at checkout, including incorrect domestic or
+international zone rates, ALWAYS go to orders. Shipping labels charged to the
+merchant's Shopify invoice go to billing. Do not classify checkout rates as
+billing merely because prices or charges are mentioned.
+ALL customer-order refunds, including partial, goodwill and amount-only refunds
+that keep the item or exclude shipping, go to orders. An order refund is not a
+merchant billing adjustment. Reserve billing for the merchant's own Shopify
+account/invoice/payout issues and chargeback disputes.
 Routing alone does not authorize a refund, account change or any other fix.
 For mixed messages, use the merchant's explicit primary request; otherwise the
 first actionable issue. For a vague message with no actionable issue, choose
@@ -45,7 +55,7 @@ class OpenRouterClassifier:
     def __init__(
         self,
         api_key: str,
-        model: str = "openrouter/free",
+        model: str = DEFAULT_MODEL,
         *,
         transport: httpx.BaseTransport | None = None,
         sleep: Callable[[float], None] = time.sleep,
@@ -63,7 +73,7 @@ class OpenRouterClassifier:
     def from_env(cls):
         return cls(
             os.environ.get("OPENROUTER_API_KEY", ""),
-            os.environ.get("OPENROUTER_MODEL", "openrouter/free"),
+            os.environ.get("OPENROUTER_MODEL", DEFAULT_MODEL),
         )
 
     def classify(self, message: str) -> Classification:
@@ -76,7 +86,7 @@ class OpenRouterClassifier:
                 {"role": "user", "content": message},
             ],
             "temperature": 0,
-            "max_tokens": 1024,
+            "max_tokens": 2048,
             "provider": {"require_parameters": True},
             "response_format": {
                 "type": "json_schema",

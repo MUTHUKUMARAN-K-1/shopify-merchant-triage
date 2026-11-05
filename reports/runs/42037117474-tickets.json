@@ -1,0 +1,248 @@
+{
+  "evaluated_at": "2026-11-05T13:37:57.002216+00:00",
+  "dataset_sha256": "237d2697c5fc05451844ccf041c65c69b62d720371a19b4f1bfa2c708bcf0653",
+  "total": 24,
+  "passed": 22,
+  "errors": 1,
+  "route_accuracy": 0.9166666666666666,
+  "results": [
+    {
+      "id": "SUP-48197",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a $29 app charge on their Shopify bill for ReviewPop after uninstalling it, which concerns a platform/app invoice charge rather than a customer order.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48204",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is reporting a delayed Shopify payments payout to their bank, which is explicitly categorized under billing as it involves merchant payouts and payment account issues.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "dots-studio/dots-3-note-preview:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48213",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant reports incorrect checkout shipping rates/zones (Portugal vs international swapped) affecting customer orders, which is an order shipping configuration issue rather than a Shopify bill or account charge.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48226",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "Order #1043 stuck in unfulfilled status despite label purchase and USPS scan; customer not receiving tracking email.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "dots-studio/dots-3-note-preview:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48241",
+      "expected_route": "orders",
+      "passed": false,
+      "status": "error",
+      "error": "OpenRouter returned an invalid or incomplete triage response; no route emitted."
+    },
+    {
+      "id": "SUP-48258",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The issue involves unexpected app usage charges and billing caps, which fall under billing for platform/app invoices.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "dots-studio/dots-3-note-preview:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48266",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant is reporting an order (10-88) that is stuck in progress with a fulfillment app, not shipping to the warehouse, and wants to know what's happening and how to resend it. This is an order fulfillment/shipping issue.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "dots-studio/dots-3-note-preview:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48279",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing charges for voided Royal Mail shipping labels on their Shopify invoice, which falls under billing per the rule that charges for purchased or voided shipping labels on the merchant's bill belong to billing.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48288",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant needs help partially refunding a specific customer order (order 2215) for one damaged item while excluding shipping, which is a customer-order refund/returns issue rather than a Shopify subscription or platform invoice.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48302",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a €190 annual app charge on their Shopify bill instead of the €19 monthly plan they selected, which concerns a platform/app invoice charge rather than a customer order.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48315",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a chargeback where funds were pulled from their payout due to a customer's claim of non-receipt.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "dots-studio/dots-3-note-preview:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48327",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "Merchant requests cancellation and full refund of a duplicate customer order (#1533), asking about restock/refund options during order cancellation.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48339",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "Merchant reports double charge of $105 for Shopify plan on Dec 1 (two pending charges that both posted), requesting refund of one charge. This is a billing issue requiring verification of actual charges and potential refund.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "liquid/lfm-2.5-2.6b:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48346",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant reports order 3071 has 3 linen napkin sets but only 1 item is marked shipped, causing customer confusion. This is an order fulfillment/fulfillment tracking issue that requires order-specific investigation.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "liquid/lfm-2.5-2.6b:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48361",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant requests cancellation and refund of all customer orders placed with a leaked discount code, which directly involves order management and refunds.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "dots-studio/dots-3-note-preview:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48377",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "Customer needs shipping address updated on paid order 4419 from Galway to Salthill - order cannot be edited through normal channels as it's already paid.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "liquid/lfm-2.5-2.6b:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48394",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "Customer wants to cancel and refund order 1906 for a walnut dining table before it was shipped; the merchant is asking for a refund to be processed, which is an order-level action.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "xingchen-agi/xing4.0-29b-a4b:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48412",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing an app subscription charge on their Shopify bill after a free trial and asking about future app charges upon uninstall.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48436",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant reports order #2764 is 'on hold' since Saturday with the fulfil button greyed out, and needs it released urgently for a customer who needs it before the 12th. This is an order status issue requiring investigation and potential release.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "liquid/lfm-2.5-2.6b:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48455",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "Merchant is inquiring about a delayed payout of CAD 2,140.75 from Black Friday weekend, with the payout page still showing as scheduled. They're concerned about whether the Thanksgiving holiday affected the timing and want to know when it will actually deposit, as well as checking for any account or bank info issues that might be causing the delay.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "liquid/lfm-2.5-2.6b:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48478",
+      "expected_route": "orders",
+      "actual_route": "billing",
+      "reason": "Merchant requests a partial refund of $25 for a customer order (5102) due to engraving error; this is a payment-account adjustment, not a full order refund or shipping refund.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "xingchen-agi/xing4.0-29b-a4b:free",
+      "passed": false,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48502",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant reports a hold on their payouts and an account under review, which are billing issues related to payment-account holds and merchant payouts.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "dots-studio/dots-3-note-preview:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48531",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "Merchant reports duplicate Basic plan charges (€36 x2) on invoice dated 28 Nov for a single store with one plan. The second charge needs to be refunded. Card update may explain the duplicate but does not authorize a refund; merchant must request it via Shopify support.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "xingchen-agi/xing4.0-29b-a4b:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48577",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a POS Pro charge on their Shopify bill and wants it removed and refunded, which concerns their platform subscription/account charges rather than a customer order.",
+      "requested_model": "openrouter/free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    }
+  ]
+}
+
