@@ -147,6 +147,8 @@ routing explanations and case IDs; review them before committing.
 
 ## Requirement 4: Maria terminal output and exact prompt
 
+Checked Maria's predicted route and printed reason against her source ticket and expected `orders` label; her first standalone run was a mismatch (`billing`), so I pinned the free model, clarified the checkout-rate and partial-refund routing rules, increased the response token budget, and reran Maria plus all 24 tickets successfully.
+
 Merchant: **Maria Sousa**. Her source CSV record is **SUP-48213** and
 its expected route is **orders**. The original CLI prints the ticket ID rather
 than the merchant-name column; the name above is the verified CSV identity,
