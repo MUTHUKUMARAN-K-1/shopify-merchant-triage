@@ -1,0 +1,39 @@
+{
+  "northfork-coffee.myshopify.com": {
+    "shop": {
+      "name": "Northfork Coffee",
+      "domain": "northfork-coffee.myshopify.com",
+      "owner": "Carla Jennings",
+      "country": "US",
+      "currency": "USD",
+      "plan": "Basic",
+      "timezone": "America/New_York"
+    },
+    "orders": {},
+    "delivery_profile": {"id": "dp_nf_general", "name": "General profile", "zones": []},
+    "app_subscriptions": [
+      {
+        "id": "sub_nf_reviewpop_2901",
+        "app_name": "ReviewPop",
+        "plan": "Standard",
+        "price": 29.0,
+        "currency": "USD",
+        "status": "cancelled",
+        "activated_on": "2024-10-01",
+        "cancelled_on": "2024-11-08"
+      }
+    ],
+    "billing_charges": [
+      {
+        "id": "chg_nf_reviewpop_2901",
+        "type": "app_subscription",
+        "description": "ReviewPop - Standard recurring charge after uninstall",
+        "subscription_id": "sub_nf_reviewpop_2901",
+        "amount": 29.0,
+        "currency": "USD",
+        "billed_on": "2024-11-20",
+        "billing_period": "2024-11"
+      }
+    ]
+  }
+}

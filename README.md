@@ -4,6 +4,47 @@ A small LangGraph entry node that reads a merchant's message and returns one
 route (`billing` or `orders`) plus a short reason. Advisors currently sort these
 tickets manually; this node is the common entry point before specialist agents.
 
+## Original Carla: supplemental seed recorded before execution
+
+The task owner approved keeping the original 24 and adding matching fixtures,
+with Carla's seed separate from the supplied mock and the seed values written
+here before any run. This supersedes the pending approach decision below;
+historical missing-store traces remain failures. No policy-limit or reviewer
+decision is implied by this fixture approval.
+
+The original CSV ticket **SUP-48197** is unchanged. Its exact message will go
+through triage and the billing agent with live model-selected tools. The
+following are **authored mock values**, not facts recovered from a real shop:
+
+| Seed field | Value fixed before execution |
+| --- | --- |
+| Shop domain / owner / currency | `northfork-coffee.myshopify.com` / Carla Jennings / USD |
+| ReviewPop subscription ID | `sub_nf_reviewpop_2901` |
+| App / plan / recurring price | ReviewPop / Standard / USD 29.00 |
+| Status / activation / uninstall | `cancelled` / `2024-10-01` / `2024-11-08` |
+| **ReviewPop charge ID** | **`chg_nf_reviewpop_2901`** |
+| **Charge amount / currency** | **29.00 / USD** |
+| Charge type / subscription link | `app_subscription` / `sub_nf_reviewpop_2901` |
+| Billed date / period | `2024-11-20` / `2024-11` |
+| Charge description | `ReviewPop - Standard recurring charge after uninstall` |
+| Existing credits / available credit balance | None / USD 29.00 |
+| Orders | Empty; no customer order is involved |
+| Other scaffolding | Basic shop plan; `America/New_York`; empty General delivery profile `dp_nf_general` |
+
+Source: [`carla-reviewpop.json`](data/supplemental_fixtures/carla-reviewpop.json).
+The domain, owner, app, USD 29 amount and November 8 uninstall come from the
+original ticket. IDs, plan names, activation and billed dates, timezone and
+empty scaffolding are explicit synthetic additions. The billed date follows
+uninstall and precedes the ticket's November 22 creation date. This fixture
+represents the ticket's expected incorrect post-uninstall charge; it does not
+establish real Shopify billing policy. The expected correction is one USD 29
+billing credit against the observed charge, with the cancelled subscription,
+original charge, orders and all four supplied stores unchanged.
+
+The supplied `mock_admin.py` remains byte-for-byte unchanged. Execution will
+explicitly opt into this separate supplemental seed, with reset/isolation
+between cases. No merchant-domain substitution is used. **Live run: pending.**
+
 ## Billing invoice probe: prediction recorded before live triage
 
 Ticket `probe-merchant-invoice-1999`, outside the original 24:
