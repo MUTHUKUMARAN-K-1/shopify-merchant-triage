@@ -1,0 +1,21 @@
+{
+  "evaluated_at": "2026-11-05T17:08:44.263760+00:00",
+  "dataset_sha256": "599cd15bba8a4e8f7bcf32f1d58a0b85800e05fa705ca58250167dcb2bcd35f4",
+  "total": 1,
+  "passed": 1,
+  "errors": 0,
+  "route_accuracy": 1,
+  "results": [
+    {
+      "id": "probe-merchant-invoice-1999",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is questioning an unrecognized app subscription charge on their Shopify invoice and asking for an account credit, which concerns the merchant's own Shopify account charges rather than a customer order.",
+      "confidence": 0.98,
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    }
+  ]
+}

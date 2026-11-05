@@ -22,7 +22,36 @@ in the source commit before the new workflow runs. The existing evaluator
 sends only the message to triage, withholding the ID and expected route.
 The prompt and model are unchanged. The workflow uses the repository's
 OpenRouter secret with `nvidia/nemotron-3.5-super-vl:free`; it invokes triage
-only and performs no Admin calls. Live result: **pending**.
+only and performs no Admin calls.
+
+**Live result: `billing`, matching the recorded prediction.** The prediction
+was committed in
+[`3673fdc`](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/commit/3673fdc6f6f0944884f9542be935e571eb902617)
+before [run 42071629289](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42071629289)
+executed that source. The unchanged free model returned:
+
+```json
+{
+  "id": "probe-merchant-invoice-1999",
+  "expected_route": "billing",
+  "actual_route": "billing",
+  "reason": "The merchant is questioning an unrecognized app subscription charge on their Shopify invoice and asking for an account credit, which concerns the merchant's own Shopify account charges rather than a customer order.",
+  "confidence": 0.98,
+  "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+  "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+  "passed": true,
+  "status": "completed"
+}
+```
+
+Confidence 0.98 is an uncalibrated self-report. This was one matching route
+on one probe, with no prompt changes or reruns. The expected label was used
+only by the evaluator after the model returned its decision. Exit code: 0.
+The [complete printed evaluation](reports/runs/42071629289-billing-probe-terminal.txt)
+and [JSON report](reports/runs/42071629289-billing-probe.json) were captured
+from Actions job `127400811153`; only log timestamp prefixes were removed
+from the printed evaluation. Dataset SHA-256:
+`599cd15bba8a4e8f7bcf32f1d58a0b85800e05fa705ca58250167dcb2bcd35f4`.
 
 This is an authored prospective probe, previously discussed in this chat but
 not previously run through the triage model. It is separate from both the
