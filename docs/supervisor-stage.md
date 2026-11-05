@@ -104,4 +104,34 @@ The triage prompt is `SYSTEM_PROMPT` in `openrouter.py`. The specialist prompt
 is `SPECIALIST_PROMPT` in `specialists.py`, formatted with the selected role.
 The user content is a JSON object with `trusted_context.shop_domain` and
 `merchant_message`. No expected label or fix enters either model's input.
-Live evidence will identify the tested source commit and preserve actual output.
+The supplied mock's SHA-256 is
+`6b84780323dd50abb331bb9828fc72772acbf9bd3ba14242c70b5f2021c4d91d`.
+
+## Current evidence and live-run blocker
+
+51 offline tests passed. Run this reproducible integration smoke test without
+an API key or network:
+
+```bash
+python scripts/offline_supervisor_smoke.py
+```
+
+It executes the real supplied mock functions with explicitly scripted routing
+and model tool-call replies. It is not a live-model result or an accuracy score.
+Checked audit reports and exact terminal summaries are committed under `reports/runs/`:
+
+- `stage2-offline-fixture.json` and `.txt`: Maria Santos and Owen Brooks,
+  actual store mutations, return-check outcomes and independent state assertions.
+- `stage2-offline-original.json` and `.txt`: original Maria Sousa and Carla
+  Jennings keep their original identities and report missing mock stores,
+  with no write or substitute store. Raw result payloads (including mock
+  customer/address data) are omitted from these committed offline reports;
+  they were checked locally. Arguments, call log, hashes, changed paths and
+  check outcomes remain available.
+
+Automatic approval review rejected the stage-2 live workflow dispatch. Its
+stated reason was that the workflow would send ticket data through OpenRouter
+and publish full machine-readable reports as public GitHub artifacts without
+approval of that specific processing/publication scope. No stage-2 live run
+was launched. The manual workflow is prepared for approval; stage-1 live
+triage results remain historical evidence, not stage-2 specialist evidence.

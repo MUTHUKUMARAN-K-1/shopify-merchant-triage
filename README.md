@@ -41,6 +41,12 @@ The supplied mock describes different stores from the 24-ticket CSV, so
 fixture-backed demos and original-ticket missing-store checks are reported
 separately. Stage-1 triage evidence below remains unchanged.
 
+Stage-2 status: 51 offline tests pass; scripted integration runs verify the
+actual mock rate update and billing credit. The live specialist workflow has
+not run: automatic approval review requires approval for sending the new
+ticket/store payloads to OpenRouter and publishing full public run artifacts.
+See the stage-2 notes and committed offline traces for the exact limits.
+
 ## Run locally
 
 Python 3.11+ is required. From this directory:

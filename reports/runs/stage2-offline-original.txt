@@ -1,0 +1,15 @@
+Maria Sousa (SUP-48213) | barro-azul-ceramica.myshopify.com
+Route: orders | expected: orders
+Reason: Scripted offline decision for branch/store-effect testing; not model inference.
+Agent: orders | status: needs_human
+  READ get_shop {"shop_domain": "barro-azul-ceramica.myshopify.com"} | store_check=False
+Response: Shop 'barro-azul-ceramica.myshopify.com' not found. Use the full *.myshopify.com domain.
+Case: NOT PASSED
+Carla Jennings (SUP-48197) | northfork-coffee.myshopify.com
+Route: billing | expected: billing
+Reason: Scripted offline decision for branch/store-effect testing; not model inference.
+Agent: billing | status: needs_human
+  READ get_shop {"shop_domain": "northfork-coffee.myshopify.com"} | store_check=False
+Response: Shop 'northfork-coffee.myshopify.com' not found. Use the full *.myshopify.com domain.
+Case: NOT PASSED
+Summary: 0/2 passed; missing fixtures: 2

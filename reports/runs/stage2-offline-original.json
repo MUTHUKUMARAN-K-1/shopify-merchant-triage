@@ -1,0 +1,131 @@
+{
+  "evaluated_at": "2026-11-05T14:41:47.450518+00:00",
+  "dataset_sha256": "9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294",
+  "mode": "mock_admin_only",
+  "total": 2,
+  "passed": 0,
+  "fixture_missing": 2,
+  "results": [
+    {
+      "id": "SUP-48213",
+      "merchant_name": "Maria Sousa",
+      "shop_domain": "barro-azul-ceramica.myshopify.com",
+      "expected_route": "orders",
+      "fixture_available": false,
+      "decision": {
+        "route": "orders",
+        "reason": "Scripted offline decision for branch/store-effect testing; not model inference."
+      },
+      "actual_route": "orders",
+      "requested_model": "scripted-offline",
+      "resolved_model": "scripted-offline",
+      "specialist": {
+        "agent": "orders",
+        "status": "needs_human",
+        "response": "Shop 'barro-azul-ceramica.myshopify.com' not found. Use the full *.myshopify.com domain.",
+        "bound_tools": [
+          "get_shop",
+          "get_order",
+          "list_orders",
+          "list_order_transactions",
+          "calculate_refund",
+          "get_delivery_profile",
+          "create_refund",
+          "update_shipping_rate",
+          "recalculate_order_shipping",
+          "update_order_shipping_address",
+          "cancel_order",
+          "add_order_note"
+        ],
+        "resolved_models": [
+          "scripted-offline"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_shop",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "barro-azul-ceramica.myshopify.com"
+            },
+            "status": "tool_error",
+            "error": "Shop 'barro-azul-ceramica.myshopify.com' not found. Use the full *.myshopify.com domain.",
+            "store_changed": false
+          }
+        ]
+      },
+      "fixture_checks": null,
+      "changed_paths": [],
+      "before_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "after_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "call_log": [
+        {
+          "tool": "get_shop",
+          "args": {
+            "shop_domain": "barro-azul-ceramica.myshopify.com"
+          },
+          "timestamp": "2026-11-05T14:41:47+00:00"
+        }
+      ],
+      "route_passed": true,
+      "passed": false
+    },
+    {
+      "id": "SUP-48197",
+      "merchant_name": "Carla Jennings",
+      "shop_domain": "northfork-coffee.myshopify.com",
+      "expected_route": "billing",
+      "fixture_available": false,
+      "decision": {
+        "route": "billing",
+        "reason": "Scripted offline decision for branch/store-effect testing; not model inference."
+      },
+      "actual_route": "billing",
+      "requested_model": "scripted-offline",
+      "resolved_model": "scripted-offline",
+      "specialist": {
+        "agent": "billing",
+        "status": "needs_human",
+        "response": "Shop 'northfork-coffee.myshopify.com' not found. Use the full *.myshopify.com domain.",
+        "bound_tools": [
+          "get_shop",
+          "get_app_subscriptions",
+          "list_billing_charges",
+          "cancel_app_subscription",
+          "issue_billing_credit"
+        ],
+        "resolved_models": [
+          "scripted-offline"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_shop",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northfork-coffee.myshopify.com"
+            },
+            "status": "tool_error",
+            "error": "Shop 'northfork-coffee.myshopify.com' not found. Use the full *.myshopify.com domain.",
+            "store_changed": false
+          }
+        ]
+      },
+      "fixture_checks": null,
+      "changed_paths": [],
+      "before_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "after_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "call_log": [
+        {
+          "tool": "get_shop",
+          "args": {
+            "shop_domain": "northfork-coffee.myshopify.com"
+          },
+          "timestamp": "2026-11-05T14:41:47+00:00"
+        }
+      ],
+      "route_passed": true,
+      "passed": false
+    }
+  ],
+  "model_mode": "scripted_offline_no_network",
+  "claims": "Integration/store effects only; routing and tool selection are scripted, not live model evidence."
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "supervisor",
+  "implementation_commit": "40b56969bfb5aec952c6ceb3329852903ce3cf61",
+  "offline_tests": {
+    "passed": 51,
+    "failed": 0,
+    "ci_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42046936408",
+    "uses_scripted_or_mocked_model_replies": true
+  },
+  "mock_api_sha256": "6b84780323dd50abb331bb9828fc72772acbf9bd3ba14242c70b5f2021c4d91d",
+  "fixture_integration": {
+    "mode": "scripted_offline_no_network",
+    "passed": 2,
+    "total": 2,
+    "report": "reports/runs/stage2-offline-fixture.json",
+    "terminal_output": "reports/runs/stage2-offline-fixture.txt",
+    "claims": "Real mock API calls and store effects verified; no live routing/tool-selection accuracy claim"
+  },
+  "original_csv_checks": {
+    "ids": [
+      "SUP-48213",
+      "SUP-48197"
+    ],
+    "fixture_missing": 2,
+    "writes": 0,
+    "remapped_domains": 0,
+    "report": "reports/runs/stage2-offline-original.json",
+    "terminal_output": "reports/runs/stage2-offline-original.txt"
+  },
+  "full_original_set": {
+    "cases": 24,
+    "matching_fixture_domains": 0,
+    "live_supervisor_run": "not_run"
+  },
+  "live_supervisor": {
+    "status": "blocked_by_automatic_approval_review",
+    "launched": false,
+    "reason": "Specific approval required to send stage-2 ticket and mock store results through OpenRouter and publish full reports as public GitHub Actions artifacts."
+  }
+}
