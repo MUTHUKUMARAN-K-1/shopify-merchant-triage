@@ -41,13 +41,15 @@ The supplied mock describes different stores from the 24-ticket CSV, so
 fixture-backed demos and original-ticket missing-store checks are reported
 separately. Stage-1 triage evidence below remains unchanged.
 
-Stage-2 status: 51 offline tests pass; scripted integration runs verify the
-actual mock rate update and billing credit. After explicit user approval, live
-workflow [42050052555](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42050052555)
-ran against OpenRouter but every triage request returned HTTP 429. The diagnostic confirmed the daily free quota is exhausted (50 allowed, 0
-remaining), resetting 6 November 2026 at 05:30 IST. No live route or agent tool
-call was emitted; the live specialist requirement remains open.
-See the stage-2 notes and committed reports for the exact limits.
+Stage-2 status: 53 offline tests pass. The updated key enabled live model
+inference in run [42052313736](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42052313736):
+Owen passed with a model-selected USD 19.99 credit against `chg_nw_5503`.
+Maria routed to orders but the model omitted the `#` in order ID `#1158`, so
+her first live specialist attempt stopped without a write. The failure is
+preserved under `reports/runs/42052313736-*`. The tool schema/prompt now spell
+out literal order-ID formatting, and read errors are returned to the model
+for a corrected call; no argument is silently rewritten. A fresh live run
+is pending. Earlier quota failures and scripted traces remain below.
 
 ### Mock Admin function ownership and effects
 

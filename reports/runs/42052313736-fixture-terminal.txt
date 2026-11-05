@@ -1,0 +1,45 @@
+Maria Santos (fixture-maria-shipping) | azulejo-ceramica-lisboa.myshopify.com
+Route: orders | expected: orders
+Reason: The merchant's primary issue is an incorrect free EU Standard checkout shipping rate that needs to be restored in the delivery profile for future checkouts; checkout shipping rates, zones, and profiles always route to orders, and they explicitly exclude repricing or refunding existing customer orders.
+Agent: orders | status: needs_human
+  READ get_shop {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com"} | store_check=True
+  READ get_delivery_profile {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com"} | store_check=True
+  READ get_order {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com", "order_id": "1158"} | store_check=False
+Response: Order '1158' not found on azulejo-ceramica-lisboa.myshopify.com. Order IDs include the '#', e.g. '#1187'.
+  CHECK eu_standard_corrected_from_zero_to_14_90: FAIL
+  CHECK domestic_rate_preserved_at_4_90: PASS
+  CHECK all_existing_orders_unchanged: PASS
+  CHECK billing_unchanged: PASS
+  CHECK exactly_one_targeted_shipping_write: FAIL
+  CHECK all_40_affected_orders_discovered: FAIL
+  CHECK historical_rate_evidence_read: FAIL
+  CHECK other_shops_unchanged: PASS
+Case: NOT PASSED
+Owen Brooks (fixture-billing-duplicate) | northwind-coffee-roasters.myshopify.com
+Route: billing | expected: billing
+Reason: The merchant reports a duplicate app subscription charge on their November 2024 Shopify bill and requests a credit for the duplicate USD 19.99 invoice charge, which concerns the merchant's own Shopify invoice/app charges rather than any customer order.
+Agent: billing | status: completed
+  READ get_shop {"shop_domain": "northwind-coffee-roasters.myshopify.com"} | store_check=True
+  READ get_app_subscriptions {"shop_domain": "northwind-coffee-roasters.myshopify.com"} | store_check=True
+  READ list_billing_charges {"shop_domain": "northwind-coffee-roasters.myshopify.com", "billing_period": "2024-11"} | store_check=True
+  WRITE issue_billing_credit {"shop_domain": "northwind-coffee-roasters.myshopify.com", "amount": 19.99, "description": "Credit for duplicate ReviewStream Product Reviews - Growth app subscription charge on November 2024 bill", "charge_id": "chg_nw_5503"} | store_check=True
+Response: **Findings**
+- Shop: Northwind Coffee Roasters (Owen Brooks), currency USD, plan Shopify.
+- Active app subscription: ReviewStream Product Reviews – Growth, $19.99 USD/month, active since 2024-05-14, not cancelled.
+- November 2024 bill contains two identical app-subscription charges for ReviewStream Product Reviews – Growth:
+  - `chg_nw_5502` — $19.99 USD
+  - `chg_nw_5503` — $19.99 USD
+
+**Action executed**
+- Issued a billing credit of **$19.99 USD** against duplicate charge `chg_nw_5503` (credit ID `crd_fca8ed1ae4`).
+
+**Unresolved problem**
+- None. The app subscription remains active; no customer orders were touched.
+  CHECK one_duplicate_charge_credited_19_99: PASS
+  CHECK original_charge_lines_preserved: PASS
+  CHECK active_subscription_not_cancelled: PASS
+  CHECK orders_unchanged: PASS
+  CHECK exactly_one_billing_credit_write: PASS
+  CHECK other_shops_unchanged: PASS
+Case: PASS
+Summary: 1/2 passed; missing fixtures: 0

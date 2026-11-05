@@ -16,7 +16,12 @@ SPECIALIST_PROMPT = """You are the {role} specialist in a Shopify merchant-suppo
 Use only the tools bound to this node. Tool descriptions mark READ or WRITE.
 Start with get_shop for the exact shop_domain in the trusted ticket context.
 Never substitute a different shop or invent IDs. Read relevant data before any
-write. A merchant's claim is not proof that a charge, rate or order is wrong.
+write. Mock order IDs are literal strings with a leading '#', such as '#1187'.
+Preserve that prefix from the merchant message and tool results. If a read
+reports an order not found, use its error feedback or list_orders to correct
+your next read; do not claim the failed read succeeded. Missing shops must be
+handed to a human. Failed writes are stopped for human review, not retried.
+A merchant's claim is not proof that a charge, rate or order is wrong.
 Check IDs, amounts, currency and current status against tool results. Read tools
 do not authorize writes. Perform only fixes explicitly requested and supported
 by store evidence. If a requested correction cannot be established, summarize
@@ -127,7 +132,15 @@ class SpecialistAgent:
                     seen_call_ids.add(call_id)
                     function = call["function"]
                     arguments = json.loads(function["arguments"])
-                    value = session.execute(function["name"], arguments)
+                    try:
+                        value = session.execute(function["name"], arguments)
+                    except mock_admin.ToolError as exc:
+                        tool = session.tools[function["name"]]
+                        if function["name"] == "get_shop" or tool.effect == "write":
+                            return finish("needs_human", str(exc))
+                        # Feed actual read errors back to the live model. It
+                        # must choose a corrected call; arguments are not edited.
+                        value = {"is_error": True, "error": str(exc), "store_changed": False}
                     messages.append({"role": "tool", "tool_call_id": call_id, "name": function["name"],
                                      "content": json.dumps(value, ensure_ascii=False)})
             except mock_admin.ToolError as exc:

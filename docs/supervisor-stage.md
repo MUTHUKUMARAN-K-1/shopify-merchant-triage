@@ -142,3 +142,26 @@ A single minimal diagnostic probe in workflow 42051079177 confirmed
 2026-11-06 00:00 UTC / 05:30 IST. The key and raw error body were not printed.
 The README now includes the exact live failure output and quota metadata.
 Model-selected specialist actions remain unverified until quota is available.
+
+## Updated-key live run and read-error recovery
+
+Live workflow 42052313736 used source `fc42bb100d2890d1e1ac499dc10cd8516c19aeb0`.
+Owen completed the model-driven path and credited `chg_nw_5503` for USD 19.99;
+all billing store assertions passed. Maria routed correctly but the model
+called `get_order` with `1158`, while the mock requires `#1158`. Her agent
+stopped with `needs_human` and no write; the run scored 1/2 fixture cases.
+Both original CSV identities were correctly routed and then reported absent
+stores, still not passed. Exact reports and terminal output are preserved
+under `reports/runs/42052313736-*`.
+
+The corrective change makes the order-ID contract explicit in tool schemas
+and the specialist prompt. Read-only tool errors now return to the model as
+actual error feedback so it may choose a corrected call. Missing shops and
+failed writes still stop for human review; failed writes are never retried.
+No ID normalization or scripted tool-selection fallback is used. The trace
+retains every failed read and its arguments. A verified not-found read has
+`status=tool_error` and can have `store_check=True` when the fixture proves
+the lookup failed and the store stayed unchanged; this is not a successful
+read. Final scenario checks still require the actual requested state change.
+53 offline tests pass, including read-error recovery and no retry after a
+failed write. Fresh live model evidence is still needed for the updated code.

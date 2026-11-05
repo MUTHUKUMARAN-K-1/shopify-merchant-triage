@@ -156,3 +156,42 @@ def test_tool_model_sends_only_node_tools_and_fails_closed_on_truncation():
     model = OpenRouterToolModel("offline-placeholder", transport=httpx.MockTransport(handler))
     with pytest.raises(TriageError, match="incomplete"):
         model.reply([], [t.schema() for t in bind_tools("billing")])
+
+
+def test_model_can_correct_a_failed_read_without_silent_id_rewriting():
+    cases, digest = load_cases(Path("data/supervisor_demo_tickets.json"))
+    case = cases[0]
+    args = {"shop_domain": case.shop_domain}
+
+    class RecoveringModel(ScriptedTools):
+        def reply(self, messages, tools):
+            if messages[-1]["role"] == "tool" and '"is_error": true' in messages[-1]["content"]:
+                feedback = json.loads(messages[-1]["content"])
+                assert "include the '#'" in feedback["error"]
+            return super().reply(messages, tools)
+
+    model = RecoveringModel("orders", [
+        ("get_shop", args), ("get_delivery_profile", args),
+        ("get_order", {**args, "order_id": "1158"}),
+        ("get_order", {**args, "order_id": "#1158"}),
+        ("list_orders", {**args, "created_on_min": "2024-11-29", "created_on_max": "2024-12-02", "shipping_rate_title": "EU Standard"}),
+        ("update_shipping_rate", {**args, "rate_id": "rate_eu_standard", "price": 14.90}), None])
+    row = run_supervisor(build_supervisor_graph(FixedClassifier("orders"), model), [case], digest)["results"][0]
+    assert row["passed"]
+    reads = [c for c in row["specialist"]["tool_calls"] if c["tool"] == "get_order"]
+    assert reads[0]["arguments"]["order_id"] == "1158"
+    assert reads[0]["status"] == "tool_error" and reads[0]["checked_against_store"]
+    assert reads[1]["arguments"]["order_id"] == "#1158" and reads[1]["status"] == "completed"
+    assert [c["args"]["order_id"] for c in row["call_log"] if c["tool"] == "get_order"] == ["1158", "#1158"]
+
+
+def test_failed_write_stops_without_retrying_or_claiming_completion():
+    domain = "northwind-coffee-roasters.myshopify.com"
+    args = {"shop_domain": domain}
+    agent = SpecialistAgent("billing", ScriptedTools("billing", [
+        ("get_shop", args), ("list_billing_charges", {**args, "billing_period": "2024-11"}),
+        ("issue_billing_credit", {**args, "amount": 100.0, "description": "Too much", "charge_id": "chg_nw_5503"})]))
+    result = agent({"shop_domain": domain, "message": "Credit my duplicate app charge"})["specialist_result"]
+    assert result["status"] == "needs_human"
+    assert sum(call["tool"] == "issue_billing_credit" for call in mock_admin.CALL_LOG) == 1
+    assert not any(c["type"] == "credit" for c in mock_admin.FIXTURES[domain]["billing_charges"])

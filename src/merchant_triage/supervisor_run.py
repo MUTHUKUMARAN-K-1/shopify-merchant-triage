@@ -113,7 +113,9 @@ def render_summary(report):
         lines.append(f"Agent: {specialist['agent']} | status: {specialist['status']}")
         for call in specialist["tool_calls"]:
             checked = call.get("checked_against_store", False)
-            lines.append(f"  {call['effect'].upper()} {call['tool']} {json.dumps(call['arguments'], ensure_ascii=False)} | store_check={checked}")
+            lines.append(f"  {call['effect'].upper()} {call['tool']} {json.dumps(call['arguments'], ensure_ascii=False)} | status={call['status']} | store_check={checked}")
+            if "error" in call:
+                lines.append(f"    Error: {call['error']}")
         lines.append(f"Response: {specialist['response']}")
         if row["fixture_checks"]:
             for name, passed in row["fixture_checks"]["checks"].items():

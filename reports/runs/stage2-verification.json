@@ -2,9 +2,9 @@
   "stage": "supervisor",
   "implementation_commit": "40b56969bfb5aec952c6ceb3329852903ce3cf61",
   "offline_tests": {
-    "passed": 51,
+    "passed": 53,
     "failed": 0,
-    "ci_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42046936408",
+    "command": "python -m pytest -q",
     "uses_scripted_or_mocked_model_replies": true
   },
   "mock_api_sha256": "6b84780323dd50abb331bb9828fc72772acbf9bd3ba14242c70b5f2021c4d91d",
@@ -33,6 +33,21 @@
     "live_supervisor_run": "not_run"
   },
   "live_supervisor": {
+    "status": "partial_success_before_read_id_fix",
+    "launched": true,
+    "user_approved": true,
+    "run_id": 42052313736,
+    "tested_source_commit": "fc42bb100d2890d1e1ac499dc10cd8516c19aeb0",
+    "fixture_cases_passed": 1,
+    "fixture_cases_total": 2,
+    "billing_case_passed": true,
+    "maria_case_passed": false,
+    "maria_failure": "Model called get_order with 1158 instead of #1158; no write performed",
+    "report": "reports/runs/42052313736-fixture.json",
+    "terminal_output": "reports/runs/42052313736-fixture-terminal.txt",
+    "follow_up": "Explicit order-ID contract and model-visible read-error feedback; new live run pending"
+  },
+  "prior_live_quota_failure": {
     "status": "blocked_by_openrouter_free_daily_quota",
     "launched": true,
     "user_approved": true,

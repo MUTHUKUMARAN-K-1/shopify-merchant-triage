@@ -62,10 +62,16 @@ class BoundAdminTool:
     arguments_model: type
 
     def schema(self):
+        parameters = self.arguments_model.model_json_schema()
+        if "order_id" in parameters.get("properties", {}):
+            parameters["properties"]["order_id"]["description"] = (
+                "Exact mock order ID including its leading #, for example '#1187'. "
+                "Preserve the ID returned by reads or written in the merchant message."
+            )
         return {"type": "function", "function": {
             "name": self.name,
             "description": f"[{self.effect.upper()}] {inspect.getdoc(self.function)}",
-            "parameters": self.arguments_model.model_json_schema(),
+            "parameters": parameters,
         }}
 
 
@@ -230,8 +236,19 @@ class ToolSession:
         try:
             result = tool.function(**args)
         except mock_admin.ToolError as exc:
+            unchanged = before == mock_admin.FIXTURES.get(self.shop_domain)
+            # A not-found read can be checked against store absence just as a
+            # successful read can be checked against the returned record.
+            expected_missing = (name == "get_shop" and before is None) or (
+                name in {"get_order", "list_order_transactions", "calculate_refund"}
+                and before is not None and args["order_id"] not in before["orders"]
+            )
+            log_checked = mock_admin.CALL_LOG[log_start:] == [{"tool": name, "args": args,
+                                                             "timestamp": mock_admin.CALL_LOG[-1]["timestamp"]}]
             self.audit.append({"tool": name, "effect": tool.effect, "arguments": args,
-                               "status": "tool_error", "error": str(exc), "store_changed": before != mock_admin.FIXTURES.get(self.shop_domain)})
+                               "status": "tool_error", "error": str(exc), "store_changed": not unchanged,
+                               "checked_against_store": unchanged and expected_missing,
+                               "call_log_matches": log_checked})
             raise
         after = copy.deepcopy(mock_admin.FIXTURES[self.shop_domain])
         checked = check_result(name, args, result, before, after)
