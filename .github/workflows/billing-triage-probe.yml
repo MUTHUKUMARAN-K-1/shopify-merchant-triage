@@ -1,0 +1,33 @@
+name: Billing invoice triage probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - data/triage_probes/merchant-invoice-1999.json
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: nvidia/nemotron-3.5-super-vl:free
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Validate frozen prediction without a model call
+        run: merchant-triage validate data/triage_probes/merchant-invoice-1999.json
+      - name: Run live triage with expected label withheld from model
+        run: merchant-triage evaluate data/triage_probes/merchant-invoice-1999.json --output "$RUNNER_TEMP/billing-triage-probe.json"
+      - name: Save synthetic-ticket result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: billing-triage-probe
+          path: ${{ runner.temp }}/billing-triage-probe.json
+          if-no-files-found: ignore

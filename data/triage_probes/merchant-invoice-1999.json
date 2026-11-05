@@ -1,0 +1,7 @@
+[
+  {
+    "id": "probe-merchant-invoice-1999",
+    "message": "My Shopify invoice includes a $19.99 app subscription charge I don't recognise. Please check it and credit my account.",
+    "expected_route": "billing"
+  }
+]

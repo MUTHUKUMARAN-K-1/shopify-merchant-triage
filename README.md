@@ -4,6 +4,31 @@ A small LangGraph entry node that reads a merchant's message and returns one
 route (`billing` or `orders`) plus a short reason. Advisors currently sort these
 tickets manually; this node is the common entry point before specialist agents.
 
+## Billing invoice probe: prediction recorded before live triage
+
+Ticket `probe-merchant-invoice-1999`, outside the original 24:
+
+> My Shopify invoice includes a $19.99 app subscription charge I don't
+> recognise. Please check it and credit my account.
+
+**Prediction before execution: `billing`.** The disputed resource is the
+merchant's own Shopify invoice and app subscription charge; the requested
+credit concerns that account bill. There is no buyer-facing checkout shipping
+configuration to repair.
+
+The exact message and predicted label are frozen in
+[`merchant-invoice-1999.json`](data/triage_probes/merchant-invoice-1999.json)
+in the source commit before the new workflow runs. The existing evaluator
+sends only the message to triage, withholding the ID and expected route.
+The prompt and model are unchanged. The workflow uses the repository's
+OpenRouter secret with `nvidia/nemotron-3.5-super-vl:free`; it invokes triage
+only and performs no Admin calls. Live result: **pending**.
+
+This is an authored prospective probe, previously discussed in this chat but
+not previously run through the triage model. It is separate from both the
+original 24 and the reviewer-labelled calibration/test set that is awaiting
+Erik's nominations. One result will not establish held-out accuracy.
+
 ## Design question for Erik: original 24 tickets versus mock scope — pending
 
 Erik, as the mock owner, which evaluation contract should this stage use?
