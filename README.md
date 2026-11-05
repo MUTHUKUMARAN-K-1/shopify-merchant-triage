@@ -122,6 +122,61 @@ This is a checked direct API read, **not** a live model-selected supervisor
 run. No new original-Maria model run or write has started; her prior
 missing-store attempt remains historical `NOT PASSED`.
 
+### Maria pre-write verification and permitted changes
+
+The checked delivery-profile read above establishes the following authored
+configuration for `barro-azul-ceramica.myshopify.com`, owner Maria Sousa,
+profile `dp_ba_general`. Snapshot timestamp: **2024-11-29T12:00:00+00:00**,
+before the November 30 incident.
+
+| Zone / rate | Current configured EUR price | Same-zone snapshot EUR price | Permitted target |
+| --- | --- | --- | --- |
+| Portugal `zone_ba_pt` / `rate_ba_pt_standard` | 14.90 | 4.50 | 4.50 |
+| Europe `zone_ba_eu` / `rate_ba_eu_standard` | 4.50 | 14.90 | 14.90 |
+
+**Trigger rule:** after a fresh read of this exact shop/profile, confirm the
+snapshot predates November 30 and refers to the same zone IDs, countries,
+rate IDs and EUR currency. Confirm both current values are swapped:
+Portugal.current = Europe.snapshot and Europe.current = Portugal.snapshot.
+Then restore each rate to its own zone's snapshot price. Buyer-paid postage
+and merchant fulfilment cost do not authorize either change. The snapshot
+remains explicitly authored fixture evidence.
+
+**Write scope:** only `update_shipping_rate` on this shop, for these exact
+rate/target pairs:
+
+```json
+{"shop_domain":"barro-azul-ceramica.myshopify.com","rate_id":"rate_ba_pt_standard","price":4.5}
+{"shop_domain":"barro-azul-ceramica.myshopify.com","rate_id":"rate_ba_eu_standard","price":14.9}
+```
+
+The allowed store changes are each selected current rate's `price` and the
+API-maintained `updated_at` timestamp, plus the normal audit-log entries.
+Leave the snapshot, zone membership, countries, rate IDs/names/currency,
+all other rates/shops, billing and every existing customer order unchanged.
+No order repricing, refund, credit, cancellation, note or address write is
+authorized by this correction.
+
+**Limit: at most TWO write attempts for this correction, at most ONE per
+rate ID.** A fully successful repair of the confirmed swapped state needs
+exactly those two calls. Count failed attempts too; no retry or duplicate
+write and no third write is permitted. Reads remain subject to the existing
+per-ticket tool-call budget.
+
+If fresh evidence differs from the recorded preconditions, stop before
+writing and re-evaluate; do not overwrite a newer configuration. If either
+write fails, stop for human review and report any partial change honestly.
+These two API calls are not atomic. After success, read the profile again
+and independently check both restored prices and preservation of all other
+store data, allowing only the stated price/timestamp changes.
+
+**Pre-write status:** this is the documented execution contract, not evidence
+that the two-call allowlist/cap has already been added to the dispatcher.
+No Maria write or model run has occurred. The checked read remains the only
+new Maria execution evidence. A completed full-ticket run must also address
+the requested affected-order listing; the current empty-order seed cannot
+establish that part.
+
 ## Original Carla: supplemental seed recorded before execution
 
 The task owner approved keeping the original 24 and adding matching fixtures,
