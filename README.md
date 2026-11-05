@@ -4,6 +4,67 @@ A small LangGraph entry node that reads a merchant's message and returns one
 route (`billing` or `orders`) plus a short reason. Advisors currently sort these
 tickets manually; this node is the common entry point before specialist agents.
 
+## Original Maria: intended-rate rule recorded before any run
+
+Original ticket **SUP-48213**, **Maria Sousa**, domain
+`barro-azul-ceramica.myshopify.com`. The CSV describes Portugal and Europe
+rates being charged to the wrong zones. Its expected fix explicitly says to
+swap those zone rates back in the General shipping profile. **That supports
+restoring zone ownership of configured tariffs; it does not establish their
+numeric prices from a customer's payment or the merchant's postage cost.**
+
+### Intended-value rule
+
+For each zone, restore the price recorded for that same zone in a
+pre-incident shipping-configuration snapshot. In the authored swapped-state
+scenario, the live Portugal price must equal the snapshot's EU price and the
+live EU price must equal the snapshot's Portugal price before calling the
+problem a confirmed swap:
+
+```text
+intended_portugal_price = pre_incident_configuration[Portugal].price
+intended_eu_price       = pre_incident_configuration[Europe].price
+
+confirm current[Portugal].price == intended_eu_price
+confirm current[Europe].price   == intended_portugal_price
+then restore each zone to its own pre-incident configured price
+```
+
+The separate seed must expose that configuration snapshot through the
+delivery-profile read, with a timestamp before the incident beginning
+Saturday, November 30, 2024. The agent must inspect configuration evidence
+before either write. A matching buyer-paid amount alone cannot establish a
+correct tariff. If configuration evidence is absent or does not establish
+the swap, the run must remain unresolved rather than guess prices.
+
+### Number provenance and proposed synthetic configuration
+
+| Value | Source and meaning |
+| --- | --- |
+| EUR 14.90 | CSV: postage paid by the Braga buyer. This is an observed wrong-zone charge, not proof of the correct EU tariff. |
+| EUR 4.50 | CSV: merchant's stated cost to send that mug inside Portugal. This is a shipping cost, not proof of a configured checkout tariff. |
+| EUR 312.00 | CSV `amount_in_question`; not used as a shipping-rate target. |
+| Portugal pre-incident configured price = EUR 4.50 | **Authored fixture assumption.** Reuses a number mentioned in the ticket, but the assignment as a configured tariff is synthetic. |
+| Europe pre-incident configured price = EUR 14.90 | **Authored fixture assumption.** Reuses a number mentioned in the ticket, but the assignment as a configured tariff is synthetic. |
+| Portugal current configured price = EUR 14.90 | **Authored swapped-state value:** takes Europe's price from the synthetic pre-incident configuration. |
+| Europe current configured price = EUR 4.50 | **Authored swapped-state value:** takes Portugal's price from the synthetic pre-incident configuration. |
+| Corrected Portugal / Europe = EUR 4.50 / EUR 14.90 | Derived by the rule from the **authored configuration snapshot**, not inferred from the buyer's payment or postage cost. |
+| `rate_ba_pt_standard` / `rate_ba_eu_standard` | Authored rate IDs for the Portugal and Europe zones; not supplied by the CSV. |
+
+These numeric tariffs are one explicit mock scenario compatible with the
+ticket's swap; they are not uniquely determined by the CSV or independently
+verified real-shop rates. The snapshot is authored test evidence, not a
+recovered merchant configuration. Expected fixes and route labels remain
+outside model input; the agent will see only the original message, trusted
+shop context and actual tool-returned store data. Do not substitute the
+Santos fixture, free EU shipping, or a historical order's paid postage for
+this configuration evidence.
+
+**Status:** README-only pre-run specification. No Barro Azul seed has been
+loaded and no new original-Maria model run has started. Her prior
+missing-store attempt remains `NOT PASSED`. Seed construction and execution
+are subsequent work; the unchanged original CSV remains the test input.
+
 ## Original Carla: supplemental seed recorded before execution
 
 The task owner approved keeping the original 24 and adding matching fixtures,
