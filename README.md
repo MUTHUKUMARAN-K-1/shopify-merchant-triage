@@ -121,6 +121,23 @@ completion gap remains open pending Erik's fixture/scope decision.
 
 Erik, as the mock owner, which evaluation contract should this stage use?
 
+The exact missing domains requiring your decision are:
+
+| Original ticket | Merchant | Missing fixture key |
+| --- | --- | --- |
+| `SUP-48197` | Carla Jennings | `northfork-coffee.myshopify.com` |
+| `SUP-48213` | Maria Sousa | `barro-azul-ceramica.myshopify.com` |
+
+Please confirm whether to add matching fixtures for these domains or revise
+the evaluation scope as below. I recommend adding matching fixtures and
+running **Carla's original billing ticket first**. For Carla, the store data
+must establish the ReviewPop subscription/uninstall history and the USD 29
+charge, including its actual charge ID and credit eligibility. Please supply
+or approve that seed data; Northwind's ReviewStream records are not a match.
+The stage remains **open** until an original ticket completes against
+matching approved store data with every argument verified and printed in
+this README. The blocker note and fixture passes do not satisfy that bar.
+
 1. **Keep the original 24 tickets and add their missing shop fixtures.** This
    is the recommended option: preserve the supplied tickets and expected
    outcomes, and supply matching store evidence for the agents to inspect.
