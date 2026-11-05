@@ -21,6 +21,7 @@ class ScriptedTriage:
 
     def classify(self, message):
         return Classification(RouteDecision(route=next(self.decisions),
+            confidence=0.0,  # Explicit scripted test value, never live confidence.
             reason="Scripted offline decision for branch/store-effect testing; not model inference."),
             "scripted-offline", "scripted-offline")
 

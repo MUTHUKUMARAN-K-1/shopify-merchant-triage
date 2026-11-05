@@ -11,8 +11,10 @@ from .models import Decision
 DEFAULT_MODEL = "nvidia/nemotron-3.5-super-vl:free"
 
 SYSTEM_PROMPT = """You triage messages from Shopify merchants to one specialist.
-Return only a JSON object with route and a short, specific reason grounded in
-the message. Choose exactly one of billing or orders.
+Return only a JSON object with route, confidence, and a short, specific reason
+grounded in the message. Choose exactly one of billing or orders. confidence
+is a required number from 0 to 1 expressing your assessment of the route.
+It is self-reported uncertainty, not a calibrated probability or accuracy score.
 
 billing: the merchant's Shopify subscription, plan, platform/app invoice,
 account charges, payment method for Shopify bills, fees, merchant payouts,

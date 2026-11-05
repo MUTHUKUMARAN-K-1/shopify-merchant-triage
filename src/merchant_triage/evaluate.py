@@ -36,6 +36,7 @@ def evaluate(graph, tickets: list[Ticket], dataset_sha256: str) -> dict:
                 "expected_route": ticket.expected_route,
                 "actual_route": result["route"],
                 "reason": result["reason"],
+                "confidence": result["confidence"],
                 "requested_model": result["requested_model"],
                 "resolved_model": result["resolved_model"],
                 "passed": result["route"] == ticket.expected_route,

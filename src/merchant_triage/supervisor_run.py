@@ -109,6 +109,8 @@ def render_summary(report):
             continue
         lines.append(f"Route: {row['actual_route']} | expected: {row['expected_route']}")
         lines.append(f"Reason: {row['decision']['reason']}")
+        if "confidence" in row["decision"]:
+            lines.append(f"Confidence: {row['decision']['confidence']} (uncalibrated)")
         specialist = row["specialist"]
         lines.append(f"Agent: {specialist['agent']} | status: {specialist['status']}")
         for call in specialist["tool_calls"]:

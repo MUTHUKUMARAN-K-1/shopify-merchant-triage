@@ -11,6 +11,8 @@ class RouteDecision(BaseModel):
 
     route: Route
     reason: str = Field(min_length=1, max_length=500)
+    confidence: float = Field(ge=0, le=1, allow_inf_nan=False,
+                              description="Model-reported routing confidence from 0 to 1; not calibrated accuracy.")
 
 
 # Backward-compatible name for the first milestone's API and reports.

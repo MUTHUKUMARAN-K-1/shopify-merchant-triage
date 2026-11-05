@@ -29,7 +29,7 @@ class FixedClassifier:
 
     def classify(self, message):
         assert "expected_route" not in message
-        return Classification(RouteDecision(route=self.route, reason="Offline scripted routing decision"), "scripted:free", "scripted:free")
+        return Classification(RouteDecision(route=self.route, reason="Offline scripted routing decision", confidence=0.0), "scripted:free", "scripted:free")
 
 
 class ScriptedTools:
@@ -52,7 +52,7 @@ class ScriptedTools:
 @pytest.mark.parametrize("route", ["sales", "orders_agent", "", None])
 def test_route_decision_rejects_every_non_specialist(route):
     with pytest.raises(ValidationError):
-        RouteDecision(route=route, reason="Attempted arbitrary dispatch")
+        RouteDecision(route=route, reason="Attempted arbitrary dispatch", confidence=0.5)
 
 
 def test_complete_explicit_tool_partition_and_effects():

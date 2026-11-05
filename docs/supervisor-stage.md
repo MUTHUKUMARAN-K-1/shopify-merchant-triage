@@ -14,7 +14,8 @@ flowchart TD
 ## Pydantic decision and actual bindings
 
 `RouteDecision` is a strict Pydantic `BaseModel` with
-`route: Literal["billing", "orders"]` and a nonempty `reason`. `Decision`
+`route: Literal["billing", "orders"]`, a nonempty `reason`, and required finite
+`confidence: float` between 0 and 1. `Decision`
 remains an alias for stage-1 compatibility. Triage returns this model in
 `state["decision"]`; the conditional edge uses its validated `.route`.
 Here “route decision” means named fields, rather than a scalar `RootModel`.
@@ -199,3 +200,14 @@ The call-budget test also proves a valid monetary write cannot execute as the
 prove no forbidden execution or mutation. Exact-boundary credit/refund writes
 are positive controls. The README names each test and contains the checks.
 58 tests pass; the captured pytest output is `reports/runs/write-limit-tests.txt`.
+
+## Required confidence field
+
+The earlier decision had route/reason only. The current schema additionally
+requires a finite numeric `confidence` in [0, 1], with no default. Missing,
+string, boolean, NaN, infinity and out-of-range values fail before dispatch;
+only the validated billing/orders route can activate a specialist. Confidence
+is propagated to state, reports and printed output. It is self-reported,
+uncalibrated and is not used as an automatic escalation threshold. Older live
+transcripts retain their original two-field decisions. 68 offline tests pass;
+a fresh live schema check is pending.

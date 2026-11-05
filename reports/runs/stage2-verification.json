@@ -2,10 +2,10 @@
   "stage": "supervisor",
   "implementation_commit": "40b56969bfb5aec952c6ceb3329852903ce3cf61",
   "offline_tests": {
-    "passed": 58,
+    "passed": 68,
     "failed": 0,
     "command": "python -m pytest -q",
-    "captured_stdout": "reports/runs/write-limit-tests.txt",
+    "captured_stdout": "reports/runs/confidence-tests.txt",
     "uses_scripted_or_mocked_model_replies": true,
     "scope": "Current guard regression tests; historical live run source is recorded separately in live_supervisor"
   },
@@ -123,5 +123,24 @@
     ],
     "assertions": "No forbidden write-function invocation, no extra write in CALL_LOG, unchanged full store; positive controls execute valid boundary writes once",
     "global_monetary_approval_threshold": "not supplied; not invented"
+  },
+  "route_decision_contract": {
+    "fields_required": [
+      "route",
+      "reason",
+      "confidence"
+    ],
+    "allowed_routes": [
+      "billing",
+      "orders"
+    ],
+    "confidence_range": [
+      0,
+      1
+    ],
+    "confidence_finite": true,
+    "confidence_default": null,
+    "confidence_interpretation": "uncalibrated model self-report; not held-out accuracy or authorization",
+    "live_confidence_schema_check": "pending; prior live source returned route/reason only"
   }
 }

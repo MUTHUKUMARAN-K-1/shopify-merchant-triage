@@ -4,6 +4,39 @@ A small LangGraph entry node that reads a merchant's message and returns one
 route (`billing` or `orders`) plus a short reason. Advisors currently sort these
 tickets manually; this node is the common entry point before specialist agents.
 
+## Current RouteDecision contract: route, reason and confidence
+
+The current Pydantic decision has three **required** fields:
+
+```python
+class RouteDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, strict=True)
+    route: Literal["billing", "orders"]
+    reason: str = Field(min_length=1, max_length=500)
+    confidence: float = Field(ge=0, le=1, allow_inf_nan=False)
+```
+
+The implementation uses the equivalent `Route` literal alias. There is no
+confidence default. The strict response schema requires all three fields;
+Pydantic rejects missing/non-numeric/non-finite or out-of-range confidence
+before any specialist executes. The graph stores the model as
+`state["decision"]` and dispatches only on its validated `.route`.
+Confidence is also included in state, evaluation JSON and printed supervisor
+output. It does not add a third route, authorize writes, or implement an
+escalation threshold.
+
+Confidence is model-reported and **uncalibrated**. It is not a measured
+probability, held-out accuracy, or evidence that a two-problem ticket is fully
+resolved. The scripted test harness uses an explicit 0.0 fixture value, not
+claimed model confidence. Older live transcripts are preserved unchanged:
+those earlier code versions returned route/reason only. A fresh live check
+of the new mandatory-confidence schema is pending.
+
+Validation is covered by `test_missing_confidence_is_rejected_without_a_default_or_dispatch`,
+`test_invalid_confidence_never_dispatches_a_specialist`, and
+`test_confidence_endpoints_preserve_only_the_validated_route`, alongside the
+existing invalid-route test. Current suite: **68 passed**.
+
 ## Latest Stage 2 live evidence — 2/2 passed
 
 [OpenRouter supervisor run 42053378698](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053378698)
@@ -200,7 +233,7 @@ execute; it does not merely check that the mock rejects a write after entry.
 python -m pytest -q
 ```
 
-The current suite has **58 passing tests**; its captured output is in
+The guard-test snapshot has **58 passing tests**; its captured output is in
 [`reports/runs/write-limit-tests.txt`](reports/runs/write-limit-tests.txt).
 These deterministic guard tests are separate from the model-selected live
 trace above, whose tested source commit remains explicitly recorded.
@@ -279,7 +312,7 @@ Stage-2 status: **live fixture smoke passed 2/2** in
 [run 42053378698](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053378698).
 The model routed Maria Santos to orders, restored her EU Standard rate to EUR
 14.90, and routed Owen to billing, crediting one USD 19.99 duplicate charge.
-All actual calls and store assertions passed. The current suite has 58 passing
+All actual calls and store assertions passed. The current suite has 68 passing
 offline tests; the tested live source commit's CI also passed. Exact live stdout and prompts are below; historical
 scripted runs, partial failures and original missing-store results remain
 separately identified.

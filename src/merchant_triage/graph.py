@@ -13,6 +13,7 @@ class TriageState(TypedDict):
     decision: NotRequired[RouteDecision]
     route: NotRequired[Route]
     reason: NotRequired[str]
+    confidence: NotRequired[float]
     requested_model: NotRequired[str]
     resolved_model: NotRequired[str]
     specialist_result: NotRequired[dict | str]

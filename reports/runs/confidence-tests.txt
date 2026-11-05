@@ -1,0 +1,9 @@
+Command: python -m pytest -q
+....................................................................     [100%]
+68 passed in 0.74s
+
+New schema checks cover missing confidence, string/boolean/null values,
+NaN/infinity, values below 0 or above 1, and valid boundaries 0 and 1.
+Invalid outputs never dispatch a specialist. Valid decisions activate only
+the billing/orders route. These are deterministic tests, not live accuracy
+or confidence-calibration evidence.

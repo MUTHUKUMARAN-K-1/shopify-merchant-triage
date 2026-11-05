@@ -15,7 +15,7 @@ def response(route="billing", reason="This concerns the merchant's Shopify invoi
     payload = {
         "model": "test-model:free",
         "choices": [{"finish_reason": "stop", "message": {
-            "content": json.dumps({"route": route, "reason": reason})}}],
+            "content": json.dumps({"route": route, "reason": reason, "confidence": 0.9})}}],
     }
     payload.update(updates)
     return httpx.Response(200, json=payload)
@@ -63,22 +63,26 @@ def test_request_uses_free_model_schema_and_separate_untrusted_message():
         assert body["response_format"]["json_schema"]["strict"] is True
         schema = body["response_format"]["json_schema"]["schema"]
         assert schema["properties"]["route"]["enum"] == ["billing", "orders"]
+        assert set(schema["required"]) == {"route", "reason", "confidence"}
+        assert schema["properties"]["confidence"]["minimum"] == 0
+        assert schema["properties"]["confidence"]["maximum"] == 1
         return response()
 
     result = build_graph(classifier(handler)).invoke({"message": message})
     assert result["route"] == "billing"
     assert result["resolved_model"] == "test-model:free"
+    assert result["decision"].confidence == result["confidence"] == 0.9
     assert isinstance(result["decision"], Decision)
     assert "unit-test-placeholder" not in json.dumps(result, default=lambda value: value.model_dump())
 
 
 @pytest.mark.parametrize("content", [
-    '{"route":"sales","reason":"Other department"}',
-    '{"route":"billing","reason":"   "}',
-    '{"route":"billing","reason":"Fine","extra":"not allowed"}',
-    '```json\n{"route":"orders","reason":"Order issue"}\n```',
+    '{"route":"sales","reason":"Other department","confidence":0.9}',
+    '{"route":"billing","reason":"   ","confidence":0.9}',
+    '{"route":"billing","reason":"Fine","confidence":0.9,"extra":"not allowed"}',
+    '```json\n{"route":"orders","reason":"Order issue","confidence":0.9}\n```',
     '{"route":"orders"',
-    '{"route":"orders","reason":5}',
+    '{"route":"orders","reason":5,"confidence":0.9}',
 ])
 def test_invalid_output_never_dispatches_a_specialist(content):
     called = []
@@ -95,12 +99,49 @@ def test_invalid_output_never_dispatches_a_specialist(content):
     assert called == []
 
 
+@pytest.mark.parametrize("confidence", [-0.01, 1.01, "0.9", None, True, float("nan"), float("inf")])
+def test_invalid_confidence_never_dispatches_a_specialist(confidence):
+    called = []
+    payload = {"route": "orders", "reason": "Checkout shipping configuration", "confidence": confidence}
+    model = classifier(lambda _: httpx.Response(200, json={"model": "test:free", "choices": [{
+        "finish_reason": "stop", "message": {"content": json.dumps(payload)}}]}))
+    graph = build_graph(model, billing_specialist=lambda _: called.append("billing"),
+                        orders_specialist=lambda _: called.append("orders"))
+    with pytest.raises(TriageError, match="invalid or incomplete"):
+        graph.invoke({"message": "Checkout postage is wrong"})
+    assert called == []
+
+
+def test_missing_confidence_is_rejected_without_a_default_or_dispatch():
+    called = []
+    model = classifier(lambda _: httpx.Response(200, json={"model": "test:free", "choices": [{
+        "finish_reason": "stop", "message": {"content": '{"route":"orders","reason":"Shipping issue"}'}}]}))
+    graph = build_graph(model, billing_specialist=lambda _: called.append("billing"),
+                        orders_specialist=lambda _: called.append("orders"))
+    with pytest.raises(TriageError):
+        graph.invoke({"message": "Checkout postage is wrong"})
+    assert called == []
+
+
+@pytest.mark.parametrize("route,confidence", [("billing", 0.0), ("orders", 1.0)])
+def test_confidence_endpoints_preserve_only_the_validated_route(route, confidence):
+    called = []
+    payload = {"route": route, "reason": "An issue owned by this specialist", "confidence": confidence}
+    model = classifier(lambda _: httpx.Response(200, json={"model": "test:free", "choices": [{
+        "finish_reason": "stop", "message": {"content": json.dumps(payload)}}]}))
+    graph = build_graph(model, billing_specialist=lambda _: called.append("billing") or {},
+                        orders_specialist=lambda _: called.append("orders") or {})
+    result = graph.invoke({"message": "Merchant support message"})
+    assert result["decision"].confidence == result["confidence"] == confidence
+    assert called == [route]
+
+
 @pytest.mark.parametrize("finish", ["length", "content_filter", "error", None])
 def test_incomplete_response_is_rejected(finish):
     with pytest.raises(TriageError):
         classifier(lambda _: response(choices=[{
             "finish_reason": finish,
-            "message": {"content": '{"route":"orders","reason":"Order status"}'},
+            "message": {"content": '{"route":"orders","reason":"Order status","confidence":0.9}'},
         }])).classify("Where is this order?")
 
 
