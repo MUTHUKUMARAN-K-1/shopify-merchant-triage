@@ -58,6 +58,31 @@ not previously run through the triage model. It is separate from both the
 original 24 and the reviewer-labelled calibration/test set that is awaiting
 Erik's nominations. One result will not establish held-out accuracy.
 
+## Checkout pickup probe: prediction recorded before live triage
+
+Ticket `probe-checkout-pickup-850`, outside the original 24, preserves the
+mixed-money example discussed before execution:
+
+> This looks like a billing error. Customers choosing local pickup are being
+> charged $8.50 shipping at checkout. Please fix the pickup settings so future
+> pickup orders have no delivery charge.
+
+**Prediction before execution: `orders`.** The broken resource is the
+buyer-facing checkout's pickup/shipping configuration. The requested action
+is to repair future pickup charges. The words "billing error", "charged" and
+the price describe symptoms; they do not make this a merchant invoice issue.
+
+The exact message and expected route are frozen in
+[`checkout-pickup-850.json`](data/triage_probes/checkout-pickup-850.json) before
+its scoped workflow executes. As with the billing probe, the evaluator sends
+only the message, withholding the ID and expected label. The triage prompt
+and pinned model `nvidia/nemotron-3.5-super-vl:free` are unchanged; no Admin
+calls are made. Live result: **pending**.
+
+This is the other side of a two-case, authored ownership probe. It is not an
+independently labelled held-out evaluation, and the original-24 supervisor
+completion gap remains open pending Erik's fixture/scope decision.
+
 ## Design question for Erik: original 24 tickets versus mock scope — pending
 
 Erik, as the mock owner, which evaluation contract should this stage use?

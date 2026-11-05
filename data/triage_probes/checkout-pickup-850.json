@@ -1,0 +1,7 @@
+[
+  {
+    "id": "probe-checkout-pickup-850",
+    "message": "This looks like a billing error. Customers choosing local pickup are being charged $8.50 shipping at checkout. Please fix the pickup settings so future pickup orders have no delivery charge.",
+    "expected_route": "orders"
+  }
+]
