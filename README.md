@@ -1,2 +1,135 @@
-# shopify-merchant-triage
-LangGraph merchant ticket triage: billing or orders with a reason, free OpenRouter integration, and an evaluation harness.
+# Shopify Merchant Triage
+
+A small LangGraph entry node that reads a merchant's message and returns one
+route (`billing` or `orders`) plus a short reason. Advisors currently sort these
+tickets manually; this node is the common entry point before specialist agents.
+
+## First-step scope and acceptance
+
+1. Put the runnable node and the supplied Shopify merchant tickets test set in
+   a public GitHub repository.
+2. Call a free model through OpenRouter. Read the API key from the environment,
+   outside the repository.
+3. Run Maria's original ticket and compare the predicted route with the test
+   set's expected route. Preserve the result and return an immutable commit link.
+
+**Current status:** implementation and offline checks are available. The
+original test set, Maria's message/expected route and a configured OpenRouter
+key are missing. The included eight examples are explicitly synthetic. No
+live accuracy claim or Maria pass has been made. See `reports/verification.json`.
+
+## Run locally
+
+Python 3.11+ is required. From this directory:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[dev]'
+```
+
+On Windows PowerShell, activate with `.\.venv\Scripts\Activate.ps1` instead.
+Set `OPENROUTER_API_KEY` using your shell or secret manager. The program only
+reads environment variables; `.env.example` is documentation and contains no key.
+For example, a session-only Bash prompt avoids including the key in history:
+
+```bash
+read -rsp 'OpenRouter key: ' OPENROUTER_API_KEY
+export OPENROUTER_API_KEY
+export OPENROUTER_MODEL=openrouter/free
+```
+
+Or in PowerShell:
+
+```powershell
+$triageSecret = Read-Host 'OpenRouter key' -AsSecureString
+$env:OPENROUTER_API_KEY = [System.Net.NetworkCredential]::new('', $triageSecret).Password
+$env:OPENROUTER_MODEL = 'openrouter/free'
+```
+
+```bash
+merchant-triage route 'My Shopify plan was charged twice this month.'
+merchant-triage evaluate data/example_tickets.json --output reports/examples-live.json
+python -m pytest -q
+```
+
+`openrouter/free` selects an available free model; its selection can change.
+Reports record both requested and resolved models. You may set an explicit
+`:free` model ID for more repeatable comparisons. Paid model IDs are rejected.
+Free endpoint limits and structured-output availability can prevent a request;
+these failures remain errors and do not produce a guessed route.
+
+## Routing policy
+
+| Route | Issue owner |
+| --- | --- |
+| `billing` | Merchant's Shopify plan, subscription, platform/app invoice, fees, Shopify billing card or merchant payout |
+| `orders` | Customer purchase, fulfilment, delivery, tracking, cancellation, return, refund or order payment problem |
+
+A customer-order refund goes to `orders`; a disputed Shopify subscription
+charge goes to `billing`. For mixed messages, use the explicit primary request,
+then the first actionable issue. A vague message goes to `orders` with an
+explicit reason requesting advisor review. These are initial project policy
+assumptions, pending validation against the supplied test set's taxonomy.
+
+## Graph and specialist integration
+
+The first milestone compiles `START → triage → END`. To attach specialist agents:
+
+```python
+from merchant_triage import build_graph
+from merchant_triage.openrouter import OpenRouterClassifier
+
+def billing_agent(state):
+    # Replace with your specialist agent; route and reason are already validated.
+    return {"specialist_result": "Billing specialist received the ticket"}
+
+def orders_agent(state):
+    return {"specialist_result": "Orders specialist received the ticket"}
+
+graph = build_graph(
+    OpenRouterClassifier.from_env(),
+    billing_specialist=billing_agent,
+    orders_specialist=orders_agent,
+)
+result = graph.invoke({"message": "Customer order 1042 has not arrived."})
+```
+
+Both specialists sit behind triage and only the selected specialist runs. The
+key and HTTP client stay outside graph state. The model receives the merchant
+message as untrusted user content and must return a strict JSON schema. A
+Pydantic check rejects unknown routes, blank reasons, extra fields, malformed
+JSON and incomplete responses. Network/transient HTTP errors get at most three
+attempts; authentication failures stop immediately. Prompt-injection resistance
+is instructed but is not proven by the offline mock tests.
+
+## Verify Maria against the original label
+
+Place the authorized original test set at `data/shopify_merchant_tickets.json`
+using the format in `data/README.md`. Select Maria by her exact record ID:
+
+```bash
+merchant-triage evaluate data/shopify_merchant_tickets.json \
+  --ticket-id ORIGINAL_MARIA_ID --output reports/maria-live.json
+```
+
+The evaluator sends only the message to the graph. It compares the output with
+the expected label afterward and reports expected route, actual route, reason,
+model IDs, timestamp and dataset SHA-256. A missing case errors before the model
+is called. Exit codes are `0` for all routes matching, `1` for mismatches/API
+errors in evaluation, and `2` for configuration/input errors. Reports contain
+routing explanations and case IDs; review them before committing.
+
+## Verification limits
+
+Offline tests verify orchestration, HTTP request construction, strict validation,
+retry limits, error handling, label isolation and evaluation exit codes. Mocked
+responses do **not** establish classification accuracy or a successful live
+OpenRouter call. A route match also does not independently grade reason quality.
+The original Maria check is pending until its inputs and credentials are available.
+
+## Primary references
+
+- [LangGraph Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api)
+- [OpenRouter Free Models Router](https://openrouter.ai/docs/guides/routing/routers/free-router)
+- [OpenRouter structured outputs](https://openrouter.ai/docs/guides/features/structured-outputs)

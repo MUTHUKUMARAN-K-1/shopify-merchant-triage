@@ -1,0 +1,20 @@
+{
+  "offline_tests": {
+    "command": "python -m pytest -q",
+    "passed": 32,
+    "failed": 0,
+    "uses_mock_model_responses": true
+  },
+  "live_openrouter": {
+    "status": "not_run",
+    "reason": "OPENROUTER_API_KEY is not configured"
+  },
+  "original_shopify_test_set": {
+    "status": "awaiting_source",
+    "included_examples": "8 synthetic examples, not the requested original dataset"
+  },
+  "maria": {
+    "status": "not_run",
+    "reason": "Original message and expected route unavailable; no substitute fabricated"
+  }
+}

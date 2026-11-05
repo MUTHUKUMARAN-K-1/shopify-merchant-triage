@@ -1,0 +1,10 @@
+[
+  {"id":"example-platform-invoice","message":"My Shopify monthly plan invoice shows two subscription charges. Please check the extra charge.","expected_route":"billing"},
+  {"id":"example-order-tracking","message":"A customer says order 1042 has not arrived. Can you investigate its tracking status?","expected_route":"orders"},
+  {"id":"example-bill-card","message":"How do I update the card used to pay my Shopify subscription?","expected_route":"billing"},
+  {"id":"example-order-refund","message":"I need help refunding a customer for the damaged items in order 2088.","expected_route":"orders"},
+  {"id":"example-payout","message":"The payout from my Shopify sales has not reached my bank account.","expected_route":"billing"},
+  {"id":"example-order-address","message":"Please help change the delivery address on an unfulfilled customer order.","expected_route":"orders"},
+  {"id":"example-app-invoice","message":"An app subscription is still appearing on my Shopify bill after I uninstalled it.","expected_route":"billing"},
+  {"id":"example-order-payment","message":"A buyer was charged twice for order 3100 and needs a refund of the duplicate payment.","expected_route":"orders"}
+]
