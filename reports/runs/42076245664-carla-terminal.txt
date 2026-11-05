@@ -1,0 +1,20 @@
+PUBLIC CALL/CHECK EXCERPT — customer-level results and narrative omitted
+Carla Jennings (SUP-48197) | northfork-coffee.myshopify.com
+Route: billing | expected: billing
+Reason: Merchant is disputing a $29 ReviewPop app charge on their monthly Shopify bill after uninstalling the app; this concerns a platform/app invoice charge on the merchant's account, not a customer order.
+Confidence: 0.97 (uncalibrated)
+Agent: billing | status: completed
+  READ get_shop {"shop_domain": "northfork-coffee.myshopify.com"} | status=completed | store_check=True
+  READ get_app_subscriptions {"shop_domain": "northfork-coffee.myshopify.com"} | status=completed | store_check=True
+  READ list_billing_charges {"shop_domain": "northfork-coffee.myshopify.com", "billing_period": null} | status=completed | store_check=True
+  WRITE issue_billing_credit {"shop_domain": "northfork-coffee.myshopify.com", "amount": 29.0, "description": "Credit for ReviewPop app subscription charge billed 2024-11-20 after app was uninstalled on 2024-11-08", "charge_id": "chg_nf_reviewpop_2901"} | status=completed | store_check=True
+  CHECK reviewpop_subscription_and_charges_read: PASS
+  CHECK seed_establishes_post_uninstall_charge: PASS
+  CHECK one_reviewpop_credit_29_usd: PASS
+  CHECK original_charge_preserved: PASS
+  CHECK cancelled_subscription_preserved: PASS
+  CHECK orders_and_shipping_unchanged: PASS
+  CHECK exactly_one_targeted_credit_write: PASS
+  CHECK other_shops_unchanged: PASS
+Case: PASS
+Summary: 1/1 passed; missing fixtures: 0

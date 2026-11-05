@@ -43,7 +43,7 @@ original charge, orders and all four supplied stores unchanged.
 
 The supplied `mock_admin.py` remains byte-for-byte unchanged. Execution will
 explicitly opt into this separate supplemental seed, with reset/isolation
-between cases. No merchant-domain substitution is used. **Live run: pending.**
+between cases. No merchant-domain substitution is used. **Live run: passed**, as recorded below.
 
 Seed values were pushed first in
 [`6a09ad6`](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/commit/6a09ad68f70e6d812b78c92500b615d3a77a29b6),
@@ -57,6 +57,79 @@ Offline regression suite: **71 passed**, including supplemental-store
 isolation on normal and exceptional exits, rejection of supplied-store
 replacement, and independent detection of a missing required credit. Those
 tests use scripted model replies and do not count as live evidence.
+
+### Carla live run: original SUP-48197 completed
+
+[Live run 42076245664](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42076245664)
+passed on source [`8f6ff5d`](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/commit/8f6ff5dbb552d56611bc1b833147b83347f552f2),
+after seed commit `6a09ad6`. This is the **original CSV ticket**, not the
+Owen fixture or a rewritten message. The pinned free model selected triage
+and all specialist tool calls. Its expected route was withheld. No model
+choices were scripted, no arguments were rewritten, and no rerun was used.
+
+Exact public output from Actions job `127417077847` (tool results/final
+narrative omitted by the existing audit script; call arguments retained):
+
+```text
+PUBLIC CALL/CHECK EXCERPT — customer-level results and narrative omitted
+Carla Jennings (SUP-48197) | northfork-coffee.myshopify.com
+Route: billing | expected: billing
+Reason: Merchant is disputing a $29 ReviewPop app charge on their monthly Shopify bill after uninstalling the app; this concerns a platform/app invoice charge on the merchant's account, not a customer order.
+Confidence: 0.97 (uncalibrated)
+Agent: billing | status: completed
+  READ get_shop {"shop_domain": "northfork-coffee.myshopify.com"} | status=completed | store_check=True
+  READ get_app_subscriptions {"shop_domain": "northfork-coffee.myshopify.com"} | status=completed | store_check=True
+  READ list_billing_charges {"shop_domain": "northfork-coffee.myshopify.com", "billing_period": null} | status=completed | store_check=True
+  WRITE issue_billing_credit {"shop_domain": "northfork-coffee.myshopify.com", "amount": 29.0, "description": "Credit for ReviewPop app subscription charge billed 2024-11-20 after app was uninstalled on 2024-11-08", "charge_id": "chg_nf_reviewpop_2901"} | status=completed | store_check=True
+  CHECK reviewpop_subscription_and_charges_read: PASS
+  CHECK seed_establishes_post_uninstall_charge: PASS
+  CHECK one_reviewpop_credit_29_usd: PASS
+  CHECK original_charge_preserved: PASS
+  CHECK cancelled_subscription_preserved: PASS
+  CHECK orders_and_shipping_unchanged: PASS
+  CHECK exactly_one_targeted_credit_write: PASS
+  CHECK other_shops_unchanged: PASS
+Case: PASS
+Summary: 1/1 passed; missing fixtures: 0
+```
+
+### Carla live run: each argument checked against the separate seed
+
+| Live call | Argument actually used | Seed value or API contract checked |
+| --- | --- | --- |
+| `get_shop` | `shop_domain="northfork-coffee.myshopify.com"` | Exact supplemental fixture key and `shop.domain`; owner Carla Jennings, currency USD. Matches original CSV domain. |
+| `get_app_subscriptions` | `shop_domain="northfork-coffee.myshopify.com"` | Reads this shop's ReviewPop subscription `sub_nf_reviewpop_2901`, USD 29, cancelled `2024-11-08`. Subscription ID is returned evidence, not a supplied argument. |
+| `list_billing_charges` | `shop_domain="northfork-coffee.myshopify.com"` | Reads this shop's bill lines, containing `chg_nf_reviewpop_2901`. No other merchant substituted. |
+| `list_billing_charges` | `billing_period=null` | API contract: no period filter, so all this shop's bill lines are returned. The actual seed contains one USD 29 ReviewPop line billed `2024-11-20`, period `2024-11`, after the November 8 uninstall. Null is the actual call argument; it was not silently changed to November. |
+| `issue_billing_credit` | `shop_domain="northfork-coffee.myshopify.com"` | Writes to the same verified supplemental shop. |
+| `issue_billing_credit` | `charge_id="chg_nf_reviewpop_2901"` | Exact observed non-credit app charge; links to `sub_nf_reviewpop_2901`. Charge ID was fixed in README before execution and returned by the read. |
+| `issue_billing_credit` | `amount=29.0` | Matches seed charge USD 29.00; no prior credits, available balance USD 29.00. Recorded credit is USD -29.00, linked to the selected charge. |
+| `issue_billing_credit` | `description="Credit for ReviewPop app subscription charge billed 2024-11-20 after app was uninstalled on 2024-11-08"` | Generated explanation agrees with the seeded app, billed date and uninstall date. It is not a pre-existing fixture string. The API copies it into the credit, and the call-log match verifies the submitted text. |
+
+All four calls have `checked_against_store=true` and `call_log_matches=true`.
+Read hashes stayed unchanged; the only changed path was
+`/northfork-coffee.myshopify.com/billing_charges`. Independent checks confirm
+one targeted USD 29 credit, preservation of the original charge and cancelled
+subscription, and no changes to orders, shipping or any supplied shop.
+Final status: **completed / PASS**, 1/1; exit code 0. Confidence 0.97 remains
+an uncalibrated model self-report.
+
+Evidence: [audit JSON](reports/runs/42076245664-carla-audit.json) and
+[printed trace](reports/runs/42076245664-carla-terminal.txt).
+The source CSV hash is unchanged:
+`9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294`.
+Supplemental seed hash:
+`3331b19e73f4d73707f5a68fe1aee831794e9fb1ce3dc7008ea3edd2577574c9`.
+
+**What changed and what remains:** the earlier Carla attempt stopped at
+`get_shop` because Northfork was absent. After explicit approval to extend
+fixtures, the isolated supplemental seed supplied that shop; the graph,
+triage prompt, tool ownership and specialist prompt were unchanged for this
+rerun. This closes the original-set billing completion gap on authored mock
+data. Original Maria Sousa still has no matching supplemental seed or
+successful repair; all-24 completion and policy calibration remain open.
+Historical missing-store traces and the Santos/Owen fixture passes below
+remain separate.
 
 ## Billing invoice probe: prediction recorded before live triage
 
@@ -171,7 +244,12 @@ This is the other side of a two-case, authored ownership probe. It is not an
 independently labelled held-out evaluation, and the original-24 supervisor
 completion gap remains open pending Erik's fixture/scope decision.
 
-## Design question for Erik: original 24 tickets versus mock scope — pending
+## Earlier design question for Erik: original 24 tickets versus mock scope
+
+**Current resolution:** the task owner approved retaining the original 24
+and adding separate matching fixtures in this conversation. Carla's seed
+values were committed before the live run; her completed result is above.
+The following preserves the earlier question and pre-approval blocker.
 
 Erik, as the mock owner, which evaluation contract should this stage use?
 
@@ -347,7 +425,7 @@ its printed decisions/calls and the prior partial failure are recorded below.
 Validation is covered by `test_missing_confidence_is_rejected_without_a_default_or_dispatch`,
 `test_invalid_confidence_never_dispatches_a_specialist`, and
 `test_confidence_endpoints_preserve_only_the_validated_route`, alongside the
-existing invalid-route test. Current suite: **68 passed**.
+existing invalid-route test. Current suite: **71 passed**.
 
 ## Latest live confidence run — 2/2 passed
 

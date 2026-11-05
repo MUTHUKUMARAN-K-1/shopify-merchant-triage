@@ -7,7 +7,7 @@
     "command": "python -m pytest -q",
     "captured_stdout": "reports/runs/confidence-tests.txt",
     "uses_scripted_or_mocked_model_replies": true,
-    "scope": "Current guard regression tests; historical live run source is recorded separately in live_supervisor",
+    "scope": "Historical confidence/write-guard suite at source 55f0eb4; see current_offline_tests for supplemental fixture support.",
     "ci_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42059805370",
     "tested_source_commit": "55f0eb4d357605a4c3c5eeaa46bbdf5da5b5ce87"
   },
@@ -32,12 +32,14 @@
     "remapped_domains": 0,
     "status": "needs_human",
     "report": "reports/runs/42053378698-original.json",
-    "terminal_output": "reports/runs/42053378698-original-terminal.txt"
+    "terminal_output": "reports/runs/42053378698-original-terminal.txt",
+    "scope": "Historical run before approved supplemental seed; not the current Carla outcome."
   },
   "full_original_set": {
     "cases": 24,
     "matching_fixture_domains": 0,
-    "live_supervisor_run": "not_run"
+    "live_supervisor_run": "not_run",
+    "matching_fixture_domains_with_carla_supplement": 1
   },
   "live_supervisor": {
     "status": "passed_fixture_smoke",
@@ -205,5 +207,33 @@
     "terminal_output": "reports/runs/42053378698-fixture-terminal.txt",
     "evidence_source": "Captured machine-readable report and terminal stdout from GitHub Actions job 127335128220; log timestamp prefixes removed from terminal text only",
     "limits": "Two authored fixture-backed cases; not a full-24 or unseen-ticket accuracy claim. Original CSV missing-store cases are not passes."
+  },
+  "original_carla_live": {
+    "status": "passed_original_csv_ticket_with_supplemental_fixture",
+    "run_id": 42076245664,
+    "run_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42076245664",
+    "tested_source_commit": "8f6ff5dbb552d56611bc1b833147b83347f552f2",
+    "seed_precommitted_at": "6a09ad68f70e6d812b78c92500b615d3a77a29b6",
+    "approval": "Task owner explicitly approved keeping original 24 and adding separate fixtures, requiring seed values written in README before execution.",
+    "ticket_id": "SUP-48197",
+    "shop_domain": "northfork-coffee.myshopify.com",
+    "dataset_sha256": "9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294",
+    "seed_sha256": "3331b19e73f4d73707f5a68fe1aee831794e9fb1ce3dc7008ea3edd2577574c9",
+    "agent_status": "completed",
+    "passed": 1,
+    "total": 1,
+    "tool_calls": 4,
+    "all_arguments_checked": true,
+    "report": "reports/runs/42076245664-carla-audit.json",
+    "terminal_output": "reports/runs/42076245664-carla-terminal.txt",
+    "limits": "Authored supplemental mock data; original CSV untouched; original Maria and full-24 completion still open."
+  },
+  "current_offline_tests": {
+    "passed": 71,
+    "failed": 0,
+    "command": "python -m pytest -q",
+    "tested_source_commit": "8f6ff5dbb552d56611bc1b833147b83347f552f2",
+    "ci_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42076245664",
+    "scope": "Regression suite before live Carla step, including separate seed isolation, exceptional cleanup, supplied-store replacement rejection and missing-credit detection."
   }
 }

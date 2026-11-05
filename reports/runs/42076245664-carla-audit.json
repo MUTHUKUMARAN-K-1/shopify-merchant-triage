@@ -1,0 +1,157 @@
+{
+  "evaluated_at": "2026-11-05T17:36:53.143230+00:00",
+  "dataset_sha256": "9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294",
+  "mode": "mock_admin_only",
+  "total": 1,
+  "passed": 1,
+  "fixture_missing": 0,
+  "results": [
+    {
+      "id": "SUP-48197",
+      "merchant_name": "Carla Jennings",
+      "shop_domain": "northfork-coffee.myshopify.com",
+      "expected_route": "billing",
+      "fixture_available": true,
+      "decision": {
+        "route": "billing",
+        "reason": "Merchant is disputing a $29 ReviewPop app charge on their monthly Shopify bill after uninstalling the app; this concerns a platform/app invoice charge on the merchant's account, not a customer order.",
+        "confidence": 0.97
+      },
+      "actual_route": "billing",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "specialist": {
+        "agent": "billing",
+        "status": "completed",
+        "bound_tools": [
+          "get_shop",
+          "get_app_subscriptions",
+          "list_billing_charges",
+          "cancel_app_subscription",
+          "issue_billing_credit"
+        ],
+        "resolved_models": [
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_shop",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northfork-coffee.myshopify.com"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "41abbb80615d83b06632d823a62a46e119962ef7a19d770a6d38d297d56d8374",
+            "after_sha256": "41abbb80615d83b06632d823a62a46e119962ef7a19d770a6d38d297d56d8374",
+            "changed_paths": []
+          },
+          {
+            "tool": "get_app_subscriptions",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northfork-coffee.myshopify.com"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "41abbb80615d83b06632d823a62a46e119962ef7a19d770a6d38d297d56d8374",
+            "after_sha256": "41abbb80615d83b06632d823a62a46e119962ef7a19d770a6d38d297d56d8374",
+            "changed_paths": []
+          },
+          {
+            "tool": "list_billing_charges",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northfork-coffee.myshopify.com",
+              "billing_period": null
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "41abbb80615d83b06632d823a62a46e119962ef7a19d770a6d38d297d56d8374",
+            "after_sha256": "41abbb80615d83b06632d823a62a46e119962ef7a19d770a6d38d297d56d8374",
+            "changed_paths": []
+          },
+          {
+            "tool": "issue_billing_credit",
+            "effect": "write",
+            "arguments": {
+              "shop_domain": "northfork-coffee.myshopify.com",
+              "amount": 29,
+              "description": "Credit for ReviewPop app subscription charge billed 2024-11-20 after app was uninstalled on 2024-11-08",
+              "charge_id": "chg_nf_reviewpop_2901"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "41abbb80615d83b06632d823a62a46e119962ef7a19d770a6d38d297d56d8374",
+            "after_sha256": "986b37eed0cc497496d75123030aee6c719c62fdd63126f593d79a731aef9340",
+            "changed_paths": [
+              "/billing_charges"
+            ]
+          }
+        ]
+      },
+      "fixture_checks": {
+        "checks": {
+          "reviewpop_subscription_and_charges_read": true,
+          "seed_establishes_post_uninstall_charge": true,
+          "one_reviewpop_credit_29_usd": true,
+          "original_charge_preserved": true,
+          "cancelled_subscription_preserved": true,
+          "orders_and_shipping_unchanged": true,
+          "exactly_one_targeted_credit_write": true,
+          "other_shops_unchanged": true
+        },
+        "passed": true
+      },
+      "changed_paths": [
+        "/northfork-coffee.myshopify.com/billing_charges"
+      ],
+      "before_sha256": "a78ff5af744efcbd65d886389baee048d2111dd072586818d0c369c2ad2ab018",
+      "after_sha256": "7b4f2f7bdd147effa656bb3aa0feb2ba0365a81a633120005d89c7ed21ee2a51",
+      "call_log": [
+        {
+          "tool": "get_shop",
+          "args": {
+            "shop_domain": "northfork-coffee.myshopify.com"
+          },
+          "timestamp": "2026-11-05T17:36:48+00:00"
+        },
+        {
+          "tool": "get_app_subscriptions",
+          "args": {
+            "shop_domain": "northfork-coffee.myshopify.com"
+          },
+          "timestamp": "2026-11-05T17:36:48+00:00"
+        },
+        {
+          "tool": "list_billing_charges",
+          "args": {
+            "shop_domain": "northfork-coffee.myshopify.com",
+            "billing_period": null
+          },
+          "timestamp": "2026-11-05T17:36:48+00:00"
+        },
+        {
+          "tool": "issue_billing_credit",
+          "args": {
+            "shop_domain": "northfork-coffee.myshopify.com",
+            "amount": 29,
+            "description": "Credit for ReviewPop app subscription charge billed 2024-11-20 after app was uninstalled on 2024-11-08",
+            "charge_id": "chg_nf_reviewpop_2901"
+          },
+          "timestamp": "2026-11-05T17:36:49+00:00"
+        }
+      ],
+      "route_passed": true,
+      "passed": true
+    }
+  ],
+  "supplemental_fixture_sha256": "3331b19e73f4d73707f5a68fe1aee831794e9fb1ce3dc7008ea3edd2577574c9",
+  "publication": "Customer-level tool results and free-text final responses omitted; decisions, arguments, status, hashes and checks retained."
+}
