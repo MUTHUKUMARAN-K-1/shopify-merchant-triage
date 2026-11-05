@@ -1,0 +1,21 @@
+{
+  "evaluated_at": "2026-11-05T17:13:21.521709+00:00",
+  "dataset_sha256": "5ffb74d9e81b371d6d4c264689ef31a43acd99a78d010df94b784a62ade10035",
+  "total": 1,
+  "passed": 1,
+  "errors": 0,
+  "route_accuracy": 1.0,
+  "results": [
+    {
+      "id": "probe-checkout-pickup-850",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The issue is shipping charged to buyers at checkout for local pickup; checkout shipping rates always belong to orders even if the merchant calls it a billing error.",
+      "confidence": 0.98,
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    }
+  ]
+}

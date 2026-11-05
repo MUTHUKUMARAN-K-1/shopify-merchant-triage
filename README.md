@@ -77,7 +77,41 @@ The exact message and expected route are frozen in
 its scoped workflow executes. As with the billing probe, the evaluator sends
 only the message, withholding the ID and expected label. The triage prompt
 and pinned model `nvidia/nemotron-3.5-super-vl:free` are unchanged; no Admin
-calls are made. Live result: **pending**.
+calls are made.
+
+**Live result: `orders`, matching the recorded prediction.** The prediction
+was committed in
+[`c1c53a7`](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/commit/c1c53a7c6378905d76e99710fbba00f2f3f5a97f)
+before [run 42072387843](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42072387843)
+executed that source. The unchanged model returned:
+
+```json
+{
+  "id": "probe-checkout-pickup-850",
+  "expected_route": "orders",
+  "actual_route": "orders",
+  "reason": "The issue is shipping charged to buyers at checkout for local pickup; checkout shipping rates always belong to orders even if the merchant calls it a billing error.",
+  "confidence": 0.98,
+  "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+  "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+  "passed": true,
+  "status": "completed"
+}
+```
+
+Confidence 0.98 is an uncalibrated self-report. The expected label was
+withheld from the model; no prompt changes or reruns were used. Exit code: 0.
+The [complete printed evaluation](reports/runs/42072387843-checkout-probe-terminal.txt)
+and [JSON report](reports/runs/42072387843-checkout-probe.json) were captured
+from Actions job `127403504592`; only log timestamp prefixes were removed
+from the printed evaluation. Dataset SHA-256:
+`5ffb74d9e81b371d6d4c264689ef31a43acd99a78d010df94b784a62ade10035`.
+
+Together, the two prospective probes returned `billing` for the merchant's
+own invoice and `orders` for buyer-facing pickup shipping configuration,
+despite price words in both. This demonstrates the intended ownership
+distinction on these two specific examples; it does not establish the
+boundary's reliability across unseen tickets.
 
 This is the other side of a two-case, authored ownership probe. It is not an
 independently labelled held-out evaluation, and the original-24 supervisor
