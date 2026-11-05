@@ -210,4 +210,22 @@ only the validated billing/orders route can activate a specialist. Confidence
 is propagated to state, reports and printed output. It is self-reported,
 uncalibrated and is not used as an automatic escalation threshold. Older live
 transcripts retain their original two-field decisions. 68 offline tests pass;
-a fresh live schema check is pending.
+live schema check 42058395511 returned valid scores (Maria 0.97, Owen 0.98).
+Its full smoke scored 1/2 because Maria first sent ISO datetimes to list_orders
+which expects date-only values. Even though the model corrected the read and
+all end-state assertions passed, the failed argument check stays visible and
+was not counted as a pass. Tool-schema descriptions and the specialist prompt
+now state YYYY-MM-DD explicitly; a fresh run is pending.
+
+## Narrow public confidence-run evidence
+
+Automatic approval review rejected publishing the new run's full customer-level
+payloads. The targeted `Supervisor confidence smoke` workflow now keeps raw
+model output and raw tool results in temporary runner files and publishes only
+the routing/confidence decisions, call names/arguments, statuses, hashes and
+independent checks. `scripts/public_supervisor_audit.py` performs this output
+redaction after the real OpenRouter path; it does not select routes or tools.
+No new customer-level tool result or final narrative is committed for these
+confidence checks. The `42058395511-*` report copies are similarly redacted,
+with the omitted fields explicitly declared. A successful workflow requires
+the original full in-memory report to pass all checks before publication.

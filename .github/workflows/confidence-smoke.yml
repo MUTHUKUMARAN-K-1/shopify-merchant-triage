@@ -1,0 +1,38 @@
+name: Supervisor confidence smoke
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  confidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: nvidia/nemotron-3.5-super-vl:free
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Live Maria and Owen with mandatory confidence
+        run: |
+          set +e
+          merchant-triage supervise data/supervisor_demo_tickets.json --output "$RUNNER_TEMP/supervisor-confidence-private.json" > "$RUNNER_TEMP/supervisor-confidence-private.txt"
+          outcome=$?
+          set -e
+          if [ -f "$RUNNER_TEMP/supervisor-confidence-private.json" ]; then
+            python scripts/public_supervisor_audit.py "$RUNNER_TEMP/supervisor-confidence-private.json" reports/supervisor-confidence.json
+          fi
+          exit "$outcome"
+      - name: Preserve full evidence in logs
+        if: always()
+        run: |
+          if [ -f reports/supervisor-confidence.json ]; then cat reports/supervisor-confidence.json; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: supervisor-confidence-report
+          path: reports/supervisor-confidence.json
+          if-no-files-found: ignore

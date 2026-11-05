@@ -72,6 +72,12 @@ class BoundAdminTool:
                 "Exact mock order ID including its leading #, for example '#1187'. "
                 "Preserve the ID returned by reads or written in the merchant message."
             )
+        for field in ("created_on_min", "created_on_max"):
+            if field in parameters.get("properties", {}):
+                parameters["properties"][field]["description"] = (
+                    "Inclusive calendar date in YYYY-MM-DD format, for example '2024-11-29'. "
+                    "Date only: do not send a time, timezone or ISO datetime."
+                )
         return {"type": "function", "function": {
             "name": self.name,
             "description": f"[{self.effect.upper()}] {inspect.getdoc(self.function)}",

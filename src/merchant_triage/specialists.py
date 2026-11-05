@@ -21,6 +21,8 @@ Preserve that prefix from the merchant message and tool results. If a read
 reports an order not found, use its error feedback or list_orders to correct
 your next read; do not claim the failed read succeeded. Missing shops must be
 handed to a human. Failed writes are stopped for human review, not retried.
+list_orders created_on_min and created_on_max are inclusive date-only strings
+in YYYY-MM-DD format. Never send timestamps, times or timezone suffixes.
 A merchant's claim is not proof that a charge, rate or order is wrong.
 Check IDs, amounts, currency and current status against tool results. Read tools
 do not authorize writes. Perform only fixes explicitly requested and supported

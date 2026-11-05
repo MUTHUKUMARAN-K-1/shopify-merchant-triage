@@ -1,0 +1,359 @@
+{
+  "evaluated_at": "2026-11-05T15:47:35.416089+00:00",
+  "dataset_sha256": "c949343512a87f94f8804e84bbd7f74e1f4997be9b3c96cb92ac92d0b01eebf0",
+  "mode": "mock_admin_only",
+  "total": 2,
+  "passed": 1,
+  "fixture_missing": 0,
+  "results": [
+    {
+      "id": "fixture-maria-shipping",
+      "merchant_name": "Maria Santos",
+      "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+      "expected_route": "orders",
+      "fixture_available": true,
+      "decision": {
+        "route": "orders",
+        "reason": "The merchant is reporting an incorrect free EU Standard checkout shipping rate and wants to restore it for future checkouts, review the delivery profile, and identify affected customer orders; checkout shipping rates charged to buyers always route to orders, not billing.",
+        "confidence": 0.97
+      },
+      "actual_route": "orders",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "specialist": {
+        "agent": "orders",
+        "status": "completed",
+        "bound_tools": [
+          "get_shop",
+          "get_order",
+          "list_orders",
+          "list_order_transactions",
+          "calculate_refund",
+          "get_delivery_profile",
+          "create_refund",
+          "update_shipping_rate",
+          "recalculate_order_shipping",
+          "update_order_shipping_address",
+          "cancel_order",
+          "add_order_note"
+        ],
+        "resolved_models": [
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_shop",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "changed_paths": []
+          },
+          {
+            "tool": "get_delivery_profile",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "changed_paths": []
+          },
+          {
+            "tool": "get_order",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "order_id": "#1158"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "changed_paths": []
+          },
+          {
+            "tool": "update_shipping_rate",
+            "effect": "write",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "rate_id": "rate_eu_standard",
+              "price": 14.9
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "39f5fa78feac38f8e4ca3f190e87ed0fbdf3b3fc0223e680398a13ceb73438e7",
+            "after_sha256": "5cfe1245d62482565873ce6de51281e534f63a8e10d5b41c3cb98719c35c55f8",
+            "changed_paths": [
+              "/delivery_profile/zones/1/rates/0/price",
+              "/delivery_profile/zones/1/rates/0/updated_at"
+            ]
+          },
+          {
+            "tool": "list_orders",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "created_on_min": "2024-11-29T00:00:00+00:00",
+              "created_on_max": "2024-12-02T23:59:59+00:00",
+              "shipping_rate_title": "EU Standard"
+            },
+            "status": "tool_error",
+            "error": "created_on_min must be an ISO date like '2024-11-29', got '2024-11-29T00:00:00+00:00'.",
+            "store_changed": false,
+            "checked_against_store": false,
+            "call_log_matches": true
+          },
+          {
+            "tool": "list_orders",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+              "created_on_min": "2024-11-29",
+              "created_on_max": "2024-12-02",
+              "shipping_rate_title": "EU Standard"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "5cfe1245d62482565873ce6de51281e534f63a8e10d5b41c3cb98719c35c55f8",
+            "after_sha256": "5cfe1245d62482565873ce6de51281e534f63a8e10d5b41c3cb98719c35c55f8",
+            "changed_paths": []
+          }
+        ]
+      },
+      "fixture_checks": {
+        "checks": {
+          "eu_standard_corrected_from_zero_to_14_90": true,
+          "domestic_rate_preserved_at_4_90": true,
+          "all_existing_orders_unchanged": true,
+          "billing_unchanged": true,
+          "exactly_one_targeted_shipping_write": true,
+          "all_40_affected_orders_discovered": true,
+          "historical_rate_evidence_read": true,
+          "other_shops_unchanged": true
+        },
+        "passed": true
+      },
+      "changed_paths": [
+        "/azulejo-ceramica-lisboa.myshopify.com/delivery_profile/zones/1/rates/0/price",
+        "/azulejo-ceramica-lisboa.myshopify.com/delivery_profile/zones/1/rates/0/updated_at"
+      ],
+      "before_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "after_sha256": "550c5084970e82b541df608b351e5fd6275942a7957dc14bafd5465e659d4cb4",
+      "call_log": [
+        {
+          "tool": "get_shop",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:47:04+00:00"
+        },
+        {
+          "tool": "get_delivery_profile",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:47:04+00:00"
+        },
+        {
+          "tool": "get_order",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+            "order_id": "#1158"
+          },
+          "timestamp": "2026-11-05T15:47:04+00:00"
+        },
+        {
+          "tool": "update_shipping_rate",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+            "rate_id": "rate_eu_standard",
+            "price": 14.9
+          },
+          "timestamp": "2026-11-05T15:47:07+00:00"
+        },
+        {
+          "tool": "list_orders",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+            "created_on_min": "2024-11-29T00:00:00+00:00",
+            "created_on_max": "2024-12-02T23:59:59+00:00",
+            "shipping_rate_title": "EU Standard"
+          },
+          "timestamp": "2026-11-05T15:47:07+00:00"
+        },
+        {
+          "tool": "list_orders",
+          "args": {
+            "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+            "created_on_min": "2024-11-29",
+            "created_on_max": "2024-12-02",
+            "shipping_rate_title": "EU Standard"
+          },
+          "timestamp": "2026-11-05T15:47:09+00:00"
+        }
+      ],
+      "route_passed": true,
+      "passed": false
+    },
+    {
+      "id": "fixture-billing-duplicate",
+      "merchant_name": "Owen Brooks",
+      "shop_domain": "northwind-coffee-roasters.myshopify.com",
+      "expected_route": "billing",
+      "fixture_available": true,
+      "decision": {
+        "route": "billing",
+        "reason": "Merchant reports a duplicate app subscription charge on their November 2024 Shopify bill/invoice and requests a credit for the duplicate USD 19.99 charge, explicitly excluding customer orders; this concerns the merchant's own account invoice and app charges, not a customer order.",
+        "confidence": 0.98
+      },
+      "actual_route": "billing",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "specialist": {
+        "agent": "billing",
+        "status": "completed",
+        "bound_tools": [
+          "get_shop",
+          "get_app_subscriptions",
+          "list_billing_charges",
+          "cancel_app_subscription",
+          "issue_billing_credit"
+        ],
+        "resolved_models": [
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free",
+          "nvidia/nemotron-3.5-super-vl:free"
+        ],
+        "tool_calls": [
+          {
+            "tool": "get_shop",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "changed_paths": []
+          },
+          {
+            "tool": "get_app_subscriptions",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "changed_paths": []
+          },
+          {
+            "tool": "list_billing_charges",
+            "effect": "read",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com",
+              "billing_period": "2024-11"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "changed_paths": []
+          },
+          {
+            "tool": "issue_billing_credit",
+            "effect": "write",
+            "arguments": {
+              "shop_domain": "northwind-coffee-roasters.myshopify.com",
+              "amount": 19.99,
+              "description": "Credit for duplicate ReviewStream Product Reviews - Growth charge on November 2024 bill",
+              "charge_id": "chg_nw_5503"
+            },
+            "status": "completed",
+            "checked_against_store": true,
+            "call_log_matches": true,
+            "before_sha256": "bc51a9f8858dd5f00956aeb59db4e9cb28f42c75df2720d6ba644677dfeecdec",
+            "after_sha256": "47f840f4a803e4c34b55b35d018587a642d38f7529afa2011daf59bfc7b0fe54",
+            "changed_paths": [
+              "/billing_charges"
+            ]
+          }
+        ]
+      },
+      "fixture_checks": {
+        "checks": {
+          "one_duplicate_charge_credited_19_99": true,
+          "original_charge_lines_preserved": true,
+          "active_subscription_not_cancelled": true,
+          "orders_unchanged": true,
+          "exactly_one_billing_credit_write": true,
+          "other_shops_unchanged": true
+        },
+        "passed": true
+      },
+      "changed_paths": [
+        "/northwind-coffee-roasters.myshopify.com/billing_charges"
+      ],
+      "before_sha256": "d5406d74734653f2a89d01b0e10a2ff160ab7fda754768d63f821be72874a4b6",
+      "after_sha256": "0c63ad0a3f3f920d6cb9465526743b8e616d4906403bb29aaa9d38eb459718ae",
+      "call_log": [
+        {
+          "tool": "get_shop",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:47:32+00:00"
+        },
+        {
+          "tool": "get_app_subscriptions",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com"
+          },
+          "timestamp": "2026-11-05T15:47:32+00:00"
+        },
+        {
+          "tool": "list_billing_charges",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com",
+            "billing_period": "2024-11"
+          },
+          "timestamp": "2026-11-05T15:47:32+00:00"
+        },
+        {
+          "tool": "issue_billing_credit",
+          "args": {
+            "shop_domain": "northwind-coffee-roasters.myshopify.com",
+            "amount": 19.99,
+            "description": "Credit for duplicate ReviewStream Product Reviews - Growth charge on November 2024 bill",
+            "charge_id": "chg_nw_5503"
+          },
+          "timestamp": "2026-11-05T15:47:33+00:00"
+        }
+      ],
+      "route_passed": true,
+      "passed": true
+    }
+  ],
+  "publication": "Customer-level tool results and free-text final responses omitted; decisions, arguments, status, hashes and checks retained."
+}
+

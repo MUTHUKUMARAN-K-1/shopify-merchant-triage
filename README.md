@@ -29,8 +29,12 @@ Confidence is model-reported and **uncalibrated**. It is not a measured
 probability, held-out accuracy, or evidence that a two-problem ticket is fully
 resolved. The scripted test harness uses an explicit 0.0 fixture value, not
 claimed model confidence. Older live transcripts are preserved unchanged:
-those earlier code versions returned route/reason only. A fresh live check
-of the new mandatory-confidence schema is pending.
+those earlier code versions returned route/reason only. Live run 42058395511
+returned valid model confidence for Maria (0.97) and Owen (0.98), but its full
+smoke scored 1/2 because Maria initially sent datetime strings to date-only
+list_orders arguments. The model corrected the read after tool feedback; the
+invalid call remains in the audit. The API date-only contract is now explicit
+in tool descriptions and the specialist prompt, with a fresh rerun pending.
 
 Validation is covered by `test_missing_confidence_is_rejected_without_a_default_or_dispatch`,
 `test_invalid_confidence_never_dispatches_a_specialist`, and

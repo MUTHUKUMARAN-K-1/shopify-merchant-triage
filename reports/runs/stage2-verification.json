@@ -141,6 +141,17 @@
     "confidence_finite": true,
     "confidence_default": null,
     "confidence_interpretation": "uncalibrated model self-report; not held-out accuracy or authorization",
-    "live_confidence_schema_check": "pending; prior live source returned route/reason only"
+    "live_confidence_schema_check": {
+      "status": "schema_valid_full_smoke_partial",
+      "run_id": 42058395511,
+      "source_commit": "abc0b4ce6bb8d2cd094fcec37ba4f5e80f2da7f7",
+      "maria_confidence": 0.97,
+      "owen_confidence": 0.98,
+      "fixture_passed": 1,
+      "fixture_total": 2,
+      "reason": "Maria initial list_orders arguments used datetimes rather than date-only; recovery recorded but failed call not counted as pass",
+      "report": "reports/runs/42058395511-fixture.json",
+      "follow_up": "Date-only contract explicit in schemas/prompt; fresh live check pending"
+    }
   }
 }
