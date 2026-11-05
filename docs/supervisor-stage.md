@@ -137,5 +137,8 @@ every triage request. Neither fixture case nor original CSV case reached a
 specialist. No model route or tool choice is available from this attempt.
 Reports `42050052555-fixture.json` and `42050052555-original.json` preserve the
 actual failure. Stage-1 live triage remains separate historical evidence.
-A single minimal diagnostic probe is prepared to distinguish a free daily cap
-from a temporary rate limit without exposing the key or raw provider body.
+A single minimal diagnostic probe in workflow 42051079177 confirmed
+`free-models-per-day`: 50 requests allowed, zero remaining, reset at
+2026-11-06 00:00 UTC / 05:30 IST. The key and raw error body were not printed.
+The README now includes the exact live failure output and quota metadata.
+Model-selected specialist actions remain unverified until quota is available.

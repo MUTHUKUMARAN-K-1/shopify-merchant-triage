@@ -33,7 +33,7 @@
     "live_supervisor_run": "not_run"
   },
   "live_supervisor": {
-    "status": "attempted_http_429_before_triage",
+    "status": "blocked_by_openrouter_free_daily_quota",
     "launched": true,
     "user_approved": true,
     "run_id": 42050052555,
@@ -43,7 +43,12 @@
     "fixture_cases_total": 2,
     "model_routes_emitted": 0,
     "agent_tool_calls": 0,
-    "reason": "OpenRouter returned HTTP 429 on all triage requests; limit scope not yet diagnosed",
-    "report": "reports/runs/42050052555-fixture.json"
+    "reason": "Provider confirmed free-models-per-day; limit 50, remaining 0",
+    "report": "reports/runs/42050052555-fixture.json",
+    "diagnostic_run_id": 42051079177,
+    "diagnostic_report": "reports/runs/42051079177-limit-diagnostic.json",
+    "reset_utc": "2026-11-06T00:00:00+00:00",
+    "reset_ist": "2026-11-06T05:30:00+05:30",
+    "terminal_output": "reports/runs/42050052555-fixture-terminal.txt"
   }
 }

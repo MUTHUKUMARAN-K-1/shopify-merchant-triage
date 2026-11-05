@@ -1,0 +1,5 @@
+Maria Santos (fixture-maria-shipping) | azulejo-ceramica-lisboa.myshopify.com
+ERROR: OpenRouter returned HTTP 429; no route emitted.
+Owen Brooks (fixture-billing-duplicate) | northwind-coffee-roasters.myshopify.com
+ERROR: OpenRouter returned HTTP 429; no route emitted.
+Summary: 0/2 passed; missing fixtures: 0

@@ -1,0 +1,16 @@
+{
+  "http_status": 429,
+  "model": "nvidia/nemotron-3.5-super-vl:free",
+  "probe": "one minimal request; no merchant/store data",
+  "limit_scope": "free_models_per_day",
+  "rate_limit_headers": {
+    "x-ratelimit-limit": "50",
+    "x-ratelimit-remaining": "0",
+    "x-ratelimit-reset": "1793923200000"
+  },
+  "diagnostic_run_id": 42051079177,
+  "diagnostic_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42051079177",
+  "reset_utc": "2026-11-06T00:00:00+00:00",
+  "reset_ist": "2026-11-06T05:30:00+05:30"
+}
+

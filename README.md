@@ -44,8 +44,9 @@ separately. Stage-1 triage evidence below remains unchanged.
 Stage-2 status: 51 offline tests pass; scripted integration runs verify the
 actual mock rate update and billing credit. After explicit user approval, live
 workflow [42050052555](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42050052555)
-ran against OpenRouter but every triage request returned HTTP 429. No live route
-or agent tool call was emitted; the live specialist requirement remains open.
+ran against OpenRouter but every triage request returned HTTP 429. The diagnostic confirmed the daily free quota is exhausted (50 allowed, 0
+remaining), resetting 6 November 2026 at 05:30 IST. No live route or agent tool
+call was emitted; the live specialist requirement remains open.
 See the stage-2 notes and committed reports for the exact limits.
 
 ### Mock Admin function ownership and effects
@@ -93,6 +94,59 @@ changing existing store state.
 | `_require_order` | Read | Neither; internal | Look up or reject an order ID. |
 | `_refundable` | Read | Neither; internal | Compute remaining refundable balance. |
 | `_parse_day` | Read | Neither; internal | Parse and validate a date. |
+
+### Stage 2 live OpenRouter attempt — daily quota exhausted
+
+With explicit user approval, [live workflow 42050052555](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42050052555)
+ran on source commit `6c545d38d1a02712b4e381d755004dedf427539c`.
+This was an actual OpenRouter attempt, not the scripted smoke test below.
+
+Command:
+
+```bash
+merchant-triage supervise data/supervisor_demo_tickets.json --output reports/supervisor-smoke.json
+```
+
+Exact terminal stdout:
+
+```text
+Maria Santos (fixture-maria-shipping) | azulejo-ceramica-lisboa.myshopify.com
+ERROR: OpenRouter returned HTTP 429; no route emitted.
+Owen Brooks (fixture-billing-duplicate) | northwind-coffee-roasters.myshopify.com
+ERROR: OpenRouter returned HTTP 429; no route emitted.
+Summary: 0/2 passed; missing fixtures: 0
+```
+
+The CLI exited with code 1 and the workflow failed. Triage never returned a
+decision, so neither agent ran and no mock Admin function was called. These
+failures are not route mismatches or successful live agent evidence. The
+original CSV identity-check step also stopped at HTTP 429 before any store
+lookup; its earlier offline `needs_human` results remain separate.
+
+A single minimal request in [diagnostic run 42051079177](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42051079177)
+confirmed the provider error category `free-models-per-day`. It sent only
+“Reply OK.” and printed allowlisted metadata, never the key or raw error body:
+
+```json
+{
+  "http_status": 429,
+  "model": "nvidia/nemotron-3.5-super-vl:free",
+  "probe": "one minimal request; no merchant/store data",
+  "limit_scope": "free_models_per_day",
+  "rate_limit_headers": {
+    "x-ratelimit-limit": "50",
+    "x-ratelimit-remaining": "0",
+    "x-ratelimit-reset": "1793923200000"
+  }
+}
+```
+
+The reset timestamp is **6 November 2026, 00:00 UTC / 05:30 IST**.
+The diagnostic workflow succeeding means that the diagnosis completed, not
+that model inference succeeded. The live supervisor requirement remains open
+until quota is available and Maria Santos and Owen actually complete the
+model-driven path. Full failure reports and the diagnostic are in
+`reports/runs/`. Run **Supervisor mock-store smoke** again after quota resets.
 
 ### Stage 2 printed run output — scripted offline
 
