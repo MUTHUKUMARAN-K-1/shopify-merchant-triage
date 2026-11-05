@@ -4,6 +4,51 @@ A small LangGraph entry node that reads a merchant's message and returns one
 route (`billing` or `orders`) plus a short reason. Advisors currently sort these
 tickets manually; this node is the common entry point before specialist agents.
 
+## Request for Erik: policy limits and reviewer nominations — pending
+
+Erik, please confirm or change the following proposals before they are wired
+into the supervisor. These are **unapproved candidates**, not active constants
+or validated operating limits.
+
+| Proposed named constant | Proposed behavior | Reason and decision needed |
+| --- | --- | --- |
+| `REFUND_LIMIT = 500.00` | Per customer-order refund, in the order's currency; above 500.00 requires human review; exactly 500.00 is allowed subject to all other checks. | Adds a policy cap beyond the existing available-balance check. The amount is provisional, not derived from evidence. Please confirm/change the amount, currency basis and inclusive boundary. Equal numeric caps in different currencies have different financial exposure. |
+| `CONFIDENCE_ESCALATION_THRESHOLD = 0.80` | Routing confidence below 0.80 requires human review before any write; exactly 0.80 clears this confidence gate only. | Candidate for balancing routing errors against review workload. Confidence is uncalibrated; approval alone cannot establish that 0.80 is a useful cutoff. Please confirm/change the candidate and boundary, and agree acceptable routing error and review workload targets for evaluation. |
+
+The current code enforces available-balance and tool-call limits, but has no
+fixed refund policy cap or confidence escalation threshold. The Pydantic
+confidence range of 0 to 1 validates the schema; it is not an escalation rule.
+After your decision, both policy values will be named constants with pytest
+cases below, at and above each boundary, including proof that a blocked write
+never reaches a mock Admin write function. Policy approval and empirical
+validation of the confidence cutoff will be recorded separately.
+
+Please nominate **two human support advisors** to label fresh tickets
+independently and confirm who will adjudicate disagreements (proposed: you).
+No reviewers have been appointed. The labelling template waits for your
+nominations. The proposed evaluation sequence is:
+
+1. Agree the labelling policy, evaluation targets and split procedure before
+   model runs. Use fresh tickets, excluding the original 24 development cases,
+   including tickets that mix price words with a different issue owner.
+2. The nominated advisors label the expected `billing` or `orders` owner and
+   required human handoff, without seeing model predictions or confidence.
+   Adjudicate disagreements while still blind to model outputs.
+3. Freeze and version the labels and calibration/test split **before any model
+   run or calibration results**. Keep related or near-duplicate tickets in the
+   same partition so they cannot leak between calibration and test.
+4. Use only the calibration partition to assess/select a threshold. Lock the
+   threshold, model and prompt before the untouched test run; test labels stay
+   with the reviewers until that lock. Do not tune on the test results.
+5. Score the untouched test once and report routing error among accepted
+   routes, automated coverage, human-review workload, per-route results and
+   uncertainty. If targets are missed, record that result and use a new test
+   set for later revisions.
+
+**Status:** this request is recorded here and in this commit message for your
+code review. It does not establish that you have seen or approved it. No fresh
+labels, calibration results or held-out test results exist yet.
+
 ## Current RouteDecision contract: route, reason and confidence
 
 The current Pydantic decision has three **required** fields:
