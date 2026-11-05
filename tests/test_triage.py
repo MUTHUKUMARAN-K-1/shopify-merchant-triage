@@ -233,3 +233,28 @@ def test_validate_rejects_bad_dataset_without_echoing_content(tmp_path, capsys):
     assert not captured.out
     assert "private merchant text" not in captured.err
     assert "Test set must" in captured.err
+
+
+def test_supplied_set_preserves_all_source_messages_and_labels():
+    import csv
+    from collections import Counter
+
+    with Path("data/source/shopify_merchant_tickets.csv").open(encoding="utf-8-sig", newline="") as stream:
+        source = list(csv.DictReader(stream))
+    tickets, _ = load_tickets(Path("data/shopify_merchant_tickets.json"))
+    assert len(source) == len(tickets) == 24
+    assert Counter(t.expected_route for t in tickets) == {"billing": 12, "orders": 12}
+    for raw, ticket in zip(source, tickets):
+        assert ticket.id == raw["ticket_id"]
+        assert ticket.message == raw["subject"] + "\n\n" + raw["message_body"]
+        assert ticket.expected_route == raw["expected_route"]
+        assert "expected_fix" not in ticket.model_dump()
+        assert "expected_tool_calls" not in ticket.model_dump()
+
+
+def test_original_maria_selection_is_available_without_model(capsys):
+    assert main(["validate", "data/shopify_merchant_tickets.json", "--ticket-id", "SUP-48213"]) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["selected_tickets"] == 1
+    assert result["expected_routes"] == {"billing": 0, "orders": 1}
+    assert result["model_called"] is False

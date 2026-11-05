@@ -1,0 +1,46 @@
+name: Live ticket evaluation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: openrouter/free
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Check key configuration
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo 'Configure the OPENROUTER_API_KEY repository Actions secret first.'
+            exit 1
+          fi
+      - name: Validate supplied cases and Maria selection
+        run: merchant-triage validate data/shopify_merchant_tickets.json --ticket-id SUP-48213
+      - name: Check Maria against orders
+        id: maria
+        continue-on-error: true
+        run: merchant-triage evaluate data/shopify_merchant_tickets.json --ticket-id SUP-48213 --output reports/maria-live.json
+      - name: Evaluate all 24 cases
+        id: all
+        continue-on-error: true
+        run: merchant-triage evaluate data/shopify_merchant_tickets.json --output reports/tickets-live.json
+      - name: Save live evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-triage-reports
+          path: |
+            reports/maria-live.json
+            reports/tickets-live.json
+          if-no-files-found: ignore
+      - name: Require matching routes
+        if: steps.maria.outcome == 'failure' || steps.all.outcome == 'failure'
+        run: exit 1

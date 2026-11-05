@@ -13,10 +13,14 @@ Return only a JSON object with route and a short, specific reason grounded in
 the message. Choose exactly one of billing or orders.
 
 billing: the merchant's Shopify subscription, plan, platform/app invoice,
-account charges, payment method for Shopify bills, fees or merchant payouts.
-orders: a customer's purchase, order status, fulfilment, shipping, tracking,
+account charges, payment method for Shopify bills, fees, merchant payouts,
+chargebacks/disputes or payment-account review/holds. Charges for purchased or
+voided shipping labels on the merchant's invoice also belong to billing.
+orders: checkout shipping rates/zones/profiles, a customer's purchase, order
+status, fulfilment, shipping, tracking,
 order cancellation, returns, refunds or payment problems on a customer order.
 Distinguish a Shopify bill from a customer's order even if both mention money.
+Routing alone does not authorize a refund, account change or any other fix.
 For mixed messages, use the merchant's explicit primary request; otherwise the
 first actionable issue. For a vague message with no actionable issue, choose
 orders and explicitly say the message lacks detail and needs advisor review.

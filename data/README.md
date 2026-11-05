@@ -1,50 +1,59 @@
 # Test set provenance
 
-`example_tickets.json` contains eight original synthetic examples created for
-this project. They are NOT an official Shopify dataset or the user's supplied
-merchant tickets test set. None is presented as Maria's original ticket.
+The user supplied **Shopify Merchant Ticket Test Set (24 labelled tickets).csv**
+alongside **Meeting-Notes.md** for this public-repository task on 5 November
+2026. The original CSV is preserved byte-for-byte at
+`source/shopify_merchant_tickets.csv`. No upstream public source or license was
+supplied; no third-party dataset license is asserted here.
 
-The requested test set, Maria's original message and her expected route have
-not been supplied or found. Add the actual publishable, anonymized test set as
-`data/shopify_merchant_tickets.json`, preserving its original expected labels.
-Document its source and redistribution permission here before publishing it.
+Source SHA-256:
+`9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294`
 
-Accepted format is a nonempty JSON array. Each record has exactly three fields:
+## Reproducible evaluation input
 
-```json
-{"id": "original-case-id", "message": "Original merchant message", "expected_route": "billing"}
-```
+Run `python scripts/import_tickets.py` from the repository root to recreate
+`shopify_merchant_tickets.json`. The conversion preserves all 24 records, in
+source order, with this mapping:
 
-`expected_route` must be `billing` or `orders`. IDs must be unique. The evaluator
-passes only `message` to the graph and keeps the expected label separate.
+| JSON field | CSV source |
+| --- | --- |
+| `id` | `ticket_id`, unchanged |
+| `message` | `subject` + two newlines + `message_body`, unchanged |
+| `expected_route` | `expected_route`, unchanged |
 
-## Import the original cases
+The JSON contains 12 `billing` and 12 `orders` labels. Merchant names, domains,
+dates, amounts and order IDs remain in the source CSV. Expected tool calls,
+fixes, escalation flags and mixed-issue flags also remain there for subsequent
+milestones. They are never included in model input for this triage evaluation.
+The current node returns only route and reason and does not execute fixes or
+implement escalation. The source has four escalation cases and one mixed-issue
+case; their route labels still apply at this milestone.
 
-Preserve the source's messages and expected labels. If its columns have different
-names, map those columns to the three fields above and document the mapping. Do
-not infer Maria's expected route from this model's prediction. If the source uses
-more than two routes, record the agreed mapping to `billing`/`orders` before
-evaluating it; do not silently discard cases or relabel them.
+## Maria's acceptance case
 
-Record the source URL or supplied filename, revision/date, license or permission
-to publish, any anonymization, and Maria's exact case ID here when available.
+- Merchant: Maria Sousa, Barro Azul Cerâmica.
+- Exact ID: `SUP-48213`.
+- Expected route: `orders`.
+- Issue: checkout rates for domestic Portugal and Europe are swapped.
+- Reference routing justification: the request concerns shipping rate
+  configuration and affected customer orders.
 
-Before configuring credentials, check the imported file locally:
+The justification above is a human reference, not a model response or a live
+test result. Source `expected_fix` belongs to a future orders specialist:
+restore the shipping-zone rates and list affected orders. This triage node
+does not perform those actions.
 
 ```bash
 merchant-triage validate data/shopify_merchant_tickets.json
-merchant-triage validate data/shopify_merchant_tickets.json --ticket-id ORIGINAL_MARIA_ID
+merchant-triage validate data/shopify_merchant_tickets.json --ticket-id SUP-48213
+merchant-triage evaluate data/shopify_merchant_tickets.json \
+  --ticket-id SUP-48213 --output reports/maria-live.json
 ```
 
-## Public-source search
+## Supplemental examples
 
-A web, GitHub and Hugging Face search did not establish the requested original
-dataset or Maria's case. These candidates were inspected but are not imported:
-
-- [Customer-Support-AI-Employee evaluations](https://github.com/Ismail-2001/Customer-Support-AI-Employee/tree/e125e7c7bf5f2b8e039966a7ed22065ecb459ca0/evals):
-  Shopify support examples with a different category taxonomy; no Maria case
-  was present in `golden_dataset.json` at this revision.
-- [Bitext customer support dataset](https://huggingface.co/datasets/bitext/Bitext-customer-support-llm-chatbot-training-dataset):
-  general support intents; not verified as the requested Shopify test set.
-
-Neither candidate supplies evidence for Maria's expected route in this project.
+`example_tickets.json` contains eight original synthetic examples created before
+the supplied set was available. They are separate from the 24 supplied tickets.
+The earlier web search did not establish the original dataset; the uploaded CSV
+is now the authoritative source for this project. No public alternative was
+substituted and no original expected label was inferred or changed.

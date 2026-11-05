@@ -13,10 +13,11 @@ tickets manually; this node is the common entry point before specialist agents.
 3. Run Maria's original ticket and compare the predicted route with the test
    set's expected route. Preserve the result and return an immutable commit link.
 
-**Current status:** implementation and offline checks are available. The
-original test set, Maria's message/expected route and a configured OpenRouter
-key are missing. The included eight examples are explicitly synthetic. No
-live accuracy claim or Maria pass has been made. See `reports/verification.json`.
+**Current status:** the supplied 24-ticket test set is imported, with 12 billing
+and 12 orders labels. Maria Sousa is `SUP-48213`, expected `orders`: her Portugal
+and Europe checkout shipping rates are swapped. The node and offline checks are
+available. A configured OpenRouter key is still needed for a live prediction;
+Maria has not yet been marked as passed. See `reports/verification.json`.
 
 ## Run locally
 
@@ -49,7 +50,8 @@ $env:OPENROUTER_MODEL = 'openrouter/free'
 
 ```bash
 merchant-triage route 'My Shopify plan was charged twice this month.'
-merchant-triage evaluate data/example_tickets.json --output reports/examples-live.json
+merchant-triage validate data/shopify_merchant_tickets.json
+merchant-triage evaluate data/shopify_merchant_tickets.json --output reports/tickets-live.json
 python -m pytest -q
 ```
 
@@ -63,14 +65,16 @@ these failures remain errors and do not produce a guessed route.
 
 | Route | Issue owner |
 | --- | --- |
-| `billing` | Merchant's Shopify plan, subscription, platform/app invoice, fees, Shopify billing card or merchant payout |
-| `orders` | Customer purchase, fulfilment, delivery, tracking, cancellation, return, refund or order payment problem |
+| `billing` | Merchant's Shopify plan, subscription, platform/app invoice, fees, billing card, payout, chargeback/dispute, payment-account hold or shipping-label invoice charge |
+| `orders` | Checkout shipping rates/zones/profiles, customer purchase, fulfilment, delivery, tracking, cancellation, return, refund or order payment problem |
 
 A customer-order refund goes to `orders`; a disputed Shopify subscription
 charge goes to `billing`. For mixed messages, use the explicit primary request,
 then the first actionable issue. A vague message goes to `orders` with an
-explicit reason requesting advisor review. These are initial project policy
-assumptions, pending validation against the supplied test set's taxonomy.
+explicit reason requesting advisor review. The supplied labels establish the
+shipping-rate, shipping-label billing and chargeback boundaries above. Mixed
+and vague-message tie-breaking remain project policy assumptions. This is a
+development evaluation set used to clarify the policy, not an unseen benchmark.
 
 ## Graph and specialist integration
 
@@ -105,13 +109,13 @@ is instructed but is not proven by the offline mock tests.
 
 ## Verify Maria against the original label
 
-Place the authorized original test set at `data/shopify_merchant_tickets.json`
-using the format in `data/README.md`. Select Maria by her exact record ID:
+The original CSV is in `data/source/`; its reproducible evaluation mapping is
+documented in `data/README.md`. Select Maria by her exact record ID:
 
 ```bash
-merchant-triage validate data/shopify_merchant_tickets.json --ticket-id ORIGINAL_MARIA_ID
+merchant-triage validate data/shopify_merchant_tickets.json --ticket-id SUP-48213
 merchant-triage evaluate data/shopify_merchant_tickets.json \
-  --ticket-id ORIGINAL_MARIA_ID --output reports/maria-live.json
+  --ticket-id SUP-48213 --output reports/maria-live.json
 ```
 
 `validate` works without an API key or network access. It checks the JSON schema,
@@ -132,17 +136,25 @@ Offline tests verify orchestration, HTTP request construction, strict validation
 retry limits, error handling, label isolation and evaluation exit codes. Mocked
 responses do **not** establish classification accuracy or a successful live
 OpenRouter call. A route match also does not independently grade reason quality.
-The original Maria check is pending until its inputs and credentials are available.
+Maria's original inputs and label are now available; her live check is pending
+only the configured API key. The meeting notes describe eventual autonomous
+specialists, simulated admin tools and human handoffs. Those later milestones
+are outside this first route-and-reason node. The notes mention Anthropic;
+this implementation uses OpenRouter as explicitly requested for this step.
 
 ## Remaining handoff
 
-1. Receive the original test set or its source, including Maria's exact record
-   and expected route. See `data/README.md` for import and provenance requirements.
-2. Run `merchant-triage validate` against the complete set and Maria's exact ID.
-3. Configure `OPENROUTER_API_KEY` outside the repository using the session-only
+1. Configure `OPENROUTER_API_KEY` outside the repository using the session-only
    instructions above, then run the Maria evaluation and the complete set.
-4. Inspect mismatches and reasons, record the live model and results, and push
-   the publishable dataset and reviewed reports at a new immutable commit.
+2. Inspect mismatches and reasons, record the live model and results, and push
+   reviewed reports at a new immutable commit.
+
+Alternatively, add an Actions repository secret named `OPENROUTER_API_KEY`, then
+run **Live ticket evaluation** from the repository's Actions tab. This manually
+triggered workflow checks Maria and all 24 cases and saves the JSON reports as
+the `live-triage-reports` artifact. It fails for mismatched routes or API errors;
+offline push/PR checks never use a key. Reports are ignored by Git until reviewed
+and deliberately added.
 
 The repository is ready for these steps. Offline tests and synthetic examples
 do not replace the pending original-ticket acceptance check.

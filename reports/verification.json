@@ -1,14 +1,19 @@
 {
   "offline_tests": {
     "command": "python -m pytest -q",
-    "passed": 35,
+    "passed": 37,
     "failed": 0,
     "uses_mock_model_responses": true
   },
   "offline_dataset_validation": {
-    "command": "merchant-triage validate data/example_tickets.json",
+    "command": "merchant-triage validate data/shopify_merchant_tickets.json",
     "status": "valid",
-    "selected_tickets": 8,
+    "selected_tickets": 24,
+    "expected_routes": {
+      "billing": 12,
+      "orders": 12
+    },
+    "dataset_sha256": "237d2697c5fc05451844ccf041c65c69b62d720371a19b4f1bfa2c708bcf0653",
     "model_called": false
   },
   "live_openrouter": {
@@ -16,11 +21,19 @@
     "reason": "OPENROUTER_API_KEY is not configured"
   },
   "original_shopify_test_set": {
-    "status": "awaiting_source",
-    "included_examples": "8 synthetic examples, not the requested original dataset"
+    "status": "imported",
+    "source_file": "data/source/shopify_merchant_tickets.csv",
+    "source_sha256": "9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294",
+    "tickets": 24,
+    "mapping": "ticket_id -> id; subject + two newlines + message_body -> message; expected_route unchanged",
+    "supplemental_examples": "8 separate synthetic examples"
   },
   "maria": {
     "status": "not_run",
-    "reason": "Original message and expected route unavailable; no substitute fabricated"
+    "ticket_id": "SUP-48213",
+    "merchant_name": "Maria Sousa",
+    "expected_route": "orders",
+    "input_validation": "passed; exact record selected without model call",
+    "reason": "OPENROUTER_API_KEY is not configured; no live prediction or route match recorded"
   }
 }

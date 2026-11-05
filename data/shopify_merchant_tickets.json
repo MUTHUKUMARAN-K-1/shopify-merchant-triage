@@ -1,0 +1,122 @@
+[
+  {
+    "id": "SUP-48197",
+    "message": "app still charging me\n\nhi, I uninstalled the ReviewPop app on nov 8 because it was slowing down my product pages and I switched to a different one, but my bill this month still shows ReviewPop at $29. I checked apps and its definitely not installed anymore, I even reinstalled the other one to make sure. I dont want to pay for something I'm not using esp right before black friday when every dollar counts. can you take that off or refund it please. store is northfork coffee, thanks",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48204",
+    "message": "payout?\n\nHello, my shopify payments payout from wednesday has not arrived to my bank, usually it comes in 2 days and now it is saturday. the payout page says in transit since 20/11 for €1.062,40 and nothing more. I have suppliers to pay monday for the christmas candles and I cant wait more. my bank says nothing came and they dont see anything pending. did something change with my account? I did not change the bank details. please tell me where is the money",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48213",
+    "message": "shipping is broken since the weekend\n\nOlá, since saturday my shipping rates are all wrong, buyers in europe pay the domestic portugal rate and buyers in portugal got charged international?? about 40 orders already since the black friday promo started... I didnt change anything in the settings, só abri a loja de manhã e vi as encomendas assim. one customer from Braga paid €14,90 postage for a small mug that costs €4,50 to send inside portugal, she is very upset and wrote me. and the ones going to France and Germany paid almost nothing for big boxes. please fix before more people buy, I have the cyber monday email going out today at 12h. obrigada, Maria - Barro Azul Cerâmica",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48226",
+    "message": "order stuck\n\norder #1043 has been sitting on unfulfilled for 4 days. I bought the label through shopify, printed it, the package is literally scanned by USPS already (customer sent me a screenshot) but the order page still says unfulfilled and the customer keeps getting no tracking email. this is the 2nd time this week. can someone push it through or tell me what button I'm supposed to press, I have like 200 orders coming friday and cant babysit each one",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48241",
+    "message": "Adresse ändern bitte\n\nHallo, eine Kundin hat bei Bestellung 1187 die falsche Hausnummer angegeben, richtig ist die 14 und nicht 41, sie hat mir direkt nach dem Kauf geschrieben. Die Bestellung ist noch nicht verschickt, DHL holt erst morgen früh ab. Ich finde im Admin nicht wo ich die Lieferadresse ändern kann, bei mir ist das Feld irgendwie grau. Bitte schnell ändern bevor das Paket rausgeht, sonst kommt es zurück und ich zahle den Versand zweimal. Vielen Dank, Sabine / Black Forest Botanicals",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48258",
+    "message": "WHY is this app charging $480\n\nWe run the BundleBoost upsell app and it's meant to cap at AUD 150 a month on the usage plan, thats what I agreed to when I installed it in october. Woke up this morning (black friday here already) and the billing shows usage charges of 480 dollars and counting. I never approved a higher cap, I'd remember. Either the app raised it or your system ignored the cap. Need the extra refunded and need to know it wont keep going all weekend, this is our biggest weekend of the year",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48266",
+    "message": "help w/ order not shipping\n\nhey so ord no. 10-88 (or maybe it shows as 1088 on your end?) is stuck as in progress with our fulfillment app since tuesday, the app says it sent it to the warehouse but warehouse says they never got it. customer already emailed twice asking where her 6 pack is and its a gift. every other order from that day went out fine. can you check whats going on and resend it to the warehouse or whatever needs to happen, happy to do it manually if you tell me how",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48279",
+    "message": "shipping costs on my bill are mad\n\nMorning. My shipping is costing me a fortune this week and I dont understand why. I bought Royal Mail labels in Shopify for the black friday orders, about 60, but then had to void 14 of them because I printed them with the wrong service (tracked 48 not tracked 24). The bill still has all 60 on it, I've added it up and it's £92.40 for labels I never used. Customers paid the right shipping at checkout, thats fine, it's the labels. Can I get that back, it's not small money for me",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48288",
+    "message": "refund help\n\nHi, customer ordered 2 cutting boards order 2215 and only wants to keep one, the other one arrived with a crack in it, she sent pictures. I want to refund just the one board CAD 89 plus the HST on it but not the shipping, and the refund screen is confusing me because it keeps adding the shipping. I already told her she will get it today so please help me do this right. I dont want her to send the cracked one back, it costs more to ship than it is worth",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48302",
+    "message": "wrong amount for app\n\nHello, I installed the PrintPilot app last week for the black friday rush and picked the monthly plan of €19. Today I see on my shopify bill a charge of €190 for the same app, it says annual. I never clicked annual, I am sure because I read the pricing two times before. I want only monthly. Please refund the 190 and I will pay monthly like I chose, I dont know if I keep the app after december anyway",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48315",
+    "message": "SCAMMER chargeback\n\nI need someone to reverse this chargeback TODAY. guy ordered a $640 chef knife set, it was delivered and signed for, I have the tracking, now his bank says 'item not received' and you already pulled the money out of my payout. this is fraud plain and simple. I want the money back in my account and I want this guy blocked from every shopify store. dont send me a help article, I've read them. if this isnt fixed I'm moving to another platform",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48327",
+    "message": "cancelar pedido / cancel order\n\nHola, un cliente me escribió que hizo el pedido dos veces por error, #1532 y #1533 son lo mismo, the second one (1533) is the duplicate, same aceite de oliva box and same address. He paid both. Quiero cancelar el segundo y devolverle el dinero completo, the first one I ship tomorrow morning. I tried to cancel but it asks me about restock and refund and I'm not sure what to select, no quiero equivocarme con el stock porque me quedan pocas cajas. Gracias!",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48339",
+    "message": "charged twice??\n\nI just got two charges of $105 for my shopify plan on my card on the same day, Dec 1. I only have one store and I'm on Grow, I didn't add anything or change plans. my bank shows both as pending then both posted this morning. I need one of them refunded asap, money is tight after buying inventory for BFCM and $105 is a lot to have floating. please confirm which one is real and refund the other. also order 1290 has been unfulfilled since friday even though I shipped it",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48346",
+    "message": "URGENT!!\n\nBonjour, I have a big problem, my orders from the weekend show as partially fulfilled, the tracking goes to the customer only for 1 item but I shipped everything in one parcel with Colissimo. order 3071 for example the customer has 3 linen napkin sets and only 1 is marked shipped so she thinks the rest are missing and wrote me angry. can you fix this order and tell me why it does that, I do it the same way since 2 years and never had this",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48361",
+    "message": "discount code leaked need to cancel everything\n\nOur 60% off code meant for our email VIPs got posted on a deal forum last night and we've had 38 orders since midnight using it, about $2,850 in revenue we basically lose money on. I want ALL orders with code VIP60 cancelled and refunded right now and the code killed. some of them might be legit VIPs, I dont really care at this point, just cancel them all. we cant afford to ship these at that price and our warehouse picks at 3pm",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48377",
+    "message": "change address on order\n\nHiya, quick one hopefully. A customer in Galway ordered a jumper (order 4419) but she's moved since her last order and the checkout autofilled her old address. She's asked me to send it to her new place in Salthill instead, she gave me the full address by email. It hasn't been collected by An Post yet. Can you update it on the order for me, when I try it says I cant edit because the order is paid? sorry if this is a silly question, its my first christmas with the shop",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48394",
+    "message": "refund a customer\n\nHello, need to refund a customer for order 1906, its the walnut dining table, she's changed her mind before we've even sent it out of the workshop. Full refund please, £1,480, I've had a chat with her on the phone and we're both fine with it. The refund button wants me to do something with the payment and it keeps erroring so I thought I'd ask you to just do it from your end. Nothing complicated, just a normal refund like the small ones I do all the time.",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48412",
+    "message": "app charge after trial\n\nHi, I installed the CountdownPro timer app on 22 Nov for black friday, it said 14 days free trial. Today 3 Dec I see already a charge of €4,99 on my bill for it. Trial should run until 6 Dec. Its small money but its the principle, and I want to uninstall it after cyber monday anyway because sales are over. please refund the 4,99 and tell me if I uninstall now will I be charged again next month. Danke",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48436",
+    "message": "orders not moving\n\nG'day, order #2764 has said 'on hold' since saturday and I cant fulfil it, the fulfil button is greyed out. Customer paid with afterpay if that matters. I've got about 15 others from the same day that went through fine. She needs it before she flies out on the 12th so its getting tight with Aus Post at christmas. what is the hold and can you release it so I can get it in the post today. thanks heaps",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48455",
+    "message": "where is my money\n\nMy payout for black friday weekend was supposed to deposit yesterday, its CAD 2,140.75 and the payouts page just says scheduled still. Every other week it lands on monday no problem. Did the thanksgiving holiday in the US mess it up or something? I have rent for the studio coming out on the 5th and I was counting on this one. please tell me when its actually coming and if something is wrong with my account or my bank info",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48478",
+    "message": "partial refund\n\ncustomer got her belt (order 5102) but the engraving has a typo, our mistake. she wants to keep it and we agreed on a $25 partial refund instead of redoing it, she's happy with that. I just need to send her $25 back without refunding the whole order or the shipping. can you do it or walk me through it, last time I did a partial it refunded the full thing and I had to chase the money back from the customer which was super awkward",
+    "expected_route": "orders"
+  },
+  {
+    "id": "SUP-48502",
+    "message": "account blocked??\n\nHello, since this morning my payouts are on hold and there is a banner saying my account is under review and I must upload documents. We had our best black friday ever, 5 times normal sales, is that why? The hold is on €1.870,20 and I have nothing coming in now. I uploaded my KvK extract already this morning. please remove the hold today, I am a real business since 2019, you can see my history. I have staff to pay friday",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48531",
+    "message": "billed 2 times for plan\n\nHi, my shopify invoice for this month shows the Basic plan twice, 2 lines of €36 each with the same date 28 Nov. I have only one store, I checked in settings and there is only one plan. The bank took €72 from my account. Maybe because I updated my card that week because the old one expired? I need the second charge back please, I am a small shop and this month I spend a lot on stock for black friday",
+    "expected_route": "billing"
+  },
+  {
+    "id": "SUP-48577",
+    "message": "why did my bill go up\n\nHi there, my Shopify bill jumped this month and there's a POS Pro charge of £89 on it. We did a pop-up stall at a christmas market last weekend and used the POS app on my phone for it, but I never upgraded to Pro, I just logged in and took card payments. Nobody asked me to confirm a new subscription. I'd like it removed and refunded, and I don't want Pro going forward. We're tiny, it's me and my sister doing this from a kitchen",
+    "expected_route": "billing"
+  }
+]
