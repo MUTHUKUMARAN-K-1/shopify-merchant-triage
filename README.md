@@ -156,6 +156,49 @@ stage requirement before its runs are presented as satisfying that bar.
 for supervisor completion. This question is recorded in the README and this
 commit message for code review. Receipt or approval has not been confirmed.
 
+### Original-ticket blocker: exact live output
+
+The fixture keys were checked in [`mock_admin.py`](src/merchant_triage/mock_admin.py).
+Neither original shop is present. Each call's sole argument is checked below:
+
+| Ticket | Actual `get_shop` argument | Fixture check |
+| --- | --- | --- |
+| Carla Jennings, `SUP-48197` | `shop_domain="northfork-coffee.myshopify.com"` | Matches Carla's original CSV domain exactly; absent from `FIXTURES`. |
+| Maria Sousa, `SUP-48213` | `shop_domain="barro-azul-ceramica.myshopify.com"` | Matches Maria's original CSV domain exactly; absent from `FIXTURES`. |
+
+The following is the complete printed original-ticket output from
+[live run 42053378698](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053378698),
+preserved in [the terminal file](reports/runs/42053378698-original-terminal.txt).
+This is historical evidence, with no new model run:
+
+```text
+Carla Jennings (SUP-48197) | northfork-coffee.myshopify.com
+Route: billing | expected: billing
+Reason: The merchant is disputing a $29 app subscription charge on their Shopify bill for ReviewPop after uninstalling it, which concerns their merchant account invoice rather than a customer order.
+Agent: billing | status: needs_human
+  READ get_shop {"shop_domain": "northfork-coffee.myshopify.com"} | status=tool_error | store_check=True
+    Error: Shop 'northfork-coffee.myshopify.com' not found. Use the full *.myshopify.com domain.
+Response: Shop 'northfork-coffee.myshopify.com' not found. Use the full *.myshopify.com domain.
+Case: NOT PASSED
+Maria Sousa (SUP-48213) | barro-azul-ceramica.myshopify.com
+Route: orders | expected: orders
+Reason: Merchant reports wrong checkout shipping rates/zones since Saturday—European buyers charged domestic Portugal rates and Portugal buyers charged international rates—affecting customer orders at checkout; checkout shipping rates always route to orders.
+Agent: orders | status: needs_human
+  READ get_shop {"shop_domain": "barro-azul-ceramica.myshopify.com"} | status=tool_error | store_check=True
+    Error: Shop 'barro-azul-ceramica.myshopify.com' not found. Use the full *.myshopify.com domain.
+Response: Shop 'barro-azul-ceramica.myshopify.com' not found. Use the full *.myshopify.com domain.
+Case: NOT PASSED
+Summary: 0/2 passed; missing fixtures: 2
+```
+
+Here `store_check=True` confirms that the reported absence matches the store
+and that it remained unchanged. It does not indicate a successful lookup or
+completed repair. Both cases reached the terminal status `needs_human`,
+with no writes and neither case passing. The observed blocker is missing
+matching fixture data; this does not prove either specialist's eventual
+repair would succeed once data is supplied. Erik's decision on adding
+fixtures or revising evaluation scope remains pending.
+
 ## Request for Erik: policy limits and reviewer nominations — pending
 
 Erik, please confirm or change the following proposals before they are wired
