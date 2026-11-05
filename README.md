@@ -47,6 +47,52 @@ not run: automatic approval review requires approval for sending the new
 ticket/store payloads to OpenRouter and publishing full public run artifacts.
 See the stage-2 notes and committed offline traces for the exact limits.
 
+### Mock Admin function ownership and effects
+
+Source: [`src/merchant_triage/mock_admin.py`](src/merchant_triage/mock_admin.py),
+the supplied **Mock Shopify Admin API tools for the merchant support agents.py**.
+Read/write describes effects on existing business/store state. Read calls still
+append an audit entry to `CALL_LOG`. `get_shop` is the only tool shared between
+agents; triage receives none. These assignments match the executable
+`TOOL_OWNERS` registry and each node's `bind_tools(role)` allowlist.
+
+| Mock Admin function | Read or write | Bound agent | Effect |
+| --- | --- | --- | --- |
+| `get_shop` | Read | Billing and Orders | Inspect shop identity, country, currency and plan. |
+| `get_order` | Read | Orders | Inspect one customer order. |
+| `list_orders` | Read | Orders | Find customer orders using date/shipping filters. |
+| `list_order_transactions` | Read | Orders | Inspect sale/refund transactions on an order. |
+| `calculate_refund` | Read | Orders | Preview refund balance/status; leaves the order unchanged. |
+| `create_refund` | Write | Orders | Append a customer refund and transaction; update financial status. |
+| `get_delivery_profile` | Read | Orders | Inspect shipping zones and rates. |
+| `update_shipping_rate` | Write | Orders | Change a rate for future checkouts. |
+| `recalculate_order_shipping` | Write | Orders | Change an existing order's shipping price, total and outstanding balance. |
+| `update_order_shipping_address` | Write | Orders | Change address fields on an unfulfilled order. |
+| `cancel_order` | Write | Orders | Cancel an unfulfilled order; does not refund its payment. |
+| `add_order_note` | Write | Orders | Append a staff note to an order. |
+| `get_app_subscriptions` | Read | Billing | Inspect app subscription plans, prices and status. |
+| `list_billing_charges` | Read | Billing | Inspect Shopify invoice charge and credit lines. |
+| `cancel_app_subscription` | Write | Billing | Cancel an active app subscription. |
+| `issue_billing_credit` | Write | Billing | Append a credit to the merchant's Shopify bill. |
+
+For completeness, the file also defines these ten host/internal functions.
+Neither specialist can call them as a bound tool. Pure fixture constructors
+are marked Read/non-mutating because they return new local data rather than
+changing existing store state.
+
+| Host/internal function | Read or write | Agent | Purpose |
+| --- | --- | --- | --- |
+| `_now` | Read | Neither; internal | Return the current timestamp. |
+| `_make_order` | Read (non-mutating constructor) | Neither; fixture setup | Build a new order dictionary. |
+| `_lisbon_orders` | Read (non-mutating constructor) | Neither; fixture setup | Build the initial Lisbon order dictionaries. |
+| `_charge` | Read (non-mutating constructor) | Neither; internal | Build a charge dictionary; callers perform any append. |
+| `reset_store` | Write | Neither; test/run harness | Restore `FIXTURES` and clear `CALL_LOG`. |
+| `_log_call` | Write (audit log only) | Neither; internal | Append an entry to `CALL_LOG`. |
+| `_require_shop` | Read | Neither; internal | Look up or reject a shop domain. |
+| `_require_order` | Read | Neither; internal | Look up or reject an order ID. |
+| `_refundable` | Read | Neither; internal | Compute remaining refundable balance. |
+| `_parse_day` | Read | Neither; internal | Parse and validate a date. |
+
 ## Run locally
 
 Python 3.11+ is required. From this directory:
