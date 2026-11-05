@@ -42,10 +42,11 @@ fixture-backed demos and original-ticket missing-store checks are reported
 separately. Stage-1 triage evidence below remains unchanged.
 
 Stage-2 status: 51 offline tests pass; scripted integration runs verify the
-actual mock rate update and billing credit. The live specialist workflow has
-not run: automatic approval review requires approval for sending the new
-ticket/store payloads to OpenRouter and publishing full public run artifacts.
-See the stage-2 notes and committed offline traces for the exact limits.
+actual mock rate update and billing credit. After explicit user approval, live
+workflow [42050052555](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42050052555)
+ran against OpenRouter but every triage request returned HTTP 429. No live route
+or agent tool call was emitted; the live specialist requirement remains open.
+See the stage-2 notes and committed reports for the exact limits.
 
 ### Mock Admin function ownership and effects
 

@@ -33,8 +33,17 @@
     "live_supervisor_run": "not_run"
   },
   "live_supervisor": {
-    "status": "blocked_by_automatic_approval_review",
-    "launched": false,
-    "reason": "Specific approval required to send stage-2 ticket and mock store results through OpenRouter and publish full reports as public GitHub Actions artifacts."
+    "status": "attempted_http_429_before_triage",
+    "launched": true,
+    "user_approved": true,
+    "run_id": 42050052555,
+    "tested_source_commit": "6c545d38d1a02712b4e381d755004dedf427539c",
+    "run_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42050052555",
+    "fixture_cases_passed": 0,
+    "fixture_cases_total": 2,
+    "model_routes_emitted": 0,
+    "agent_tool_calls": 0,
+    "reason": "OpenRouter returned HTTP 429 on all triage requests; limit scope not yet diagnosed",
+    "report": "reports/runs/42050052555-fixture.json"
   }
 }

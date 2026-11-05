@@ -1,0 +1,29 @@
+{
+  "evaluated_at": "2026-11-05T14:57:59.036317+00:00",
+  "dataset_sha256": "9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294",
+  "mode": "mock_admin_only",
+  "total": 2,
+  "passed": 0,
+  "fixture_missing": 2,
+  "results": [
+    {
+      "id": "SUP-48197",
+      "merchant_name": "Carla Jennings",
+      "shop_domain": "northfork-coffee.myshopify.com",
+      "expected_route": "billing",
+      "fixture_available": false,
+      "passed": false,
+      "error": "OpenRouter returned HTTP 429; no route emitted."
+    },
+    {
+      "id": "SUP-48213",
+      "merchant_name": "Maria Sousa",
+      "shop_domain": "barro-azul-ceramica.myshopify.com",
+      "expected_route": "orders",
+      "fixture_available": false,
+      "passed": false,
+      "error": "OpenRouter returned HTTP 429; no route emitted."
+    }
+  ]
+}
+

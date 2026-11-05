@@ -1,0 +1,29 @@
+{
+  "evaluated_at": "2026-11-05T14:57:51.836152+00:00",
+  "dataset_sha256": "c949343512a87f94f8804e84bbd7f74e1f4997be9b3c96cb92ac92d0b01eebf0",
+  "mode": "mock_admin_only",
+  "total": 2,
+  "passed": 0,
+  "fixture_missing": 0,
+  "results": [
+    {
+      "id": "fixture-maria-shipping",
+      "merchant_name": "Maria Santos",
+      "shop_domain": "azulejo-ceramica-lisboa.myshopify.com",
+      "expected_route": "orders",
+      "fixture_available": true,
+      "passed": false,
+      "error": "OpenRouter returned HTTP 429; no route emitted."
+    },
+    {
+      "id": "fixture-billing-duplicate",
+      "merchant_name": "Owen Brooks",
+      "shop_domain": "northwind-coffee-roasters.myshopify.com",
+      "expected_route": "billing",
+      "fixture_available": true,
+      "passed": false,
+      "error": "OpenRouter returned HTTP 429; no route emitted."
+    }
+  ]
+}
+

@@ -129,9 +129,13 @@ Checked audit reports and exact terminal summaries are committed under `reports/
   they were checked locally. Arguments, call log, hashes, changed paths and
   check outcomes remain available.
 
-Automatic approval review rejected the stage-2 live workflow dispatch. Its
-stated reason was that the workflow would send ticket data through OpenRouter
-and publish full machine-readable reports as public GitHub artifacts without
-approval of that specific processing/publication scope. No stage-2 live run
-was launched. The manual workflow is prepared for approval; stage-1 live
-triage results remain historical evidence, not stage-2 specialist evidence.
+Automatic approval review initially rejected the live workflow dispatch until
+its processing/publication scope was explicitly approved. The user then
+approved it. Live workflow 42050052555 ran on source commit
+`6c545d38d1a02712b4e381d755004dedf427539c`, but OpenRouter returned HTTP 429 on
+every triage request. Neither fixture case nor original CSV case reached a
+specialist. No model route or tool choice is available from this attempt.
+Reports `42050052555-fixture.json` and `42050052555-original.json` preserve the
+actual failure. Stage-1 live triage remains separate historical evidence.
+A single minimal diagnostic probe is prepared to distinguish a free daily cap
+from a temporary rate limit without exposing the key or raw provider body.
