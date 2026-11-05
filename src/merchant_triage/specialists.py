@@ -7,7 +7,7 @@ import time
 import httpx
 
 from . import mock_admin
-from .admin_tools import ToolBoundaryError, ToolSession, bind_tools
+from .admin_tools import ToolBoundaryError, ToolSession, WriteLimitError, bind_tools
 from .graph import build_graph
 from .openrouter import DEFAULT_MODEL, OpenRouterClassifier, TriageError
 
@@ -144,6 +144,8 @@ class SpecialistAgent:
                     messages.append({"role": "tool", "tool_call_id": call_id, "name": function["name"],
                                      "content": json.dumps(value, ensure_ascii=False)})
             except mock_admin.ToolError as exc:
+                return finish("needs_human", str(exc))
+            except WriteLimitError as exc:
                 return finish("needs_human", str(exc))
             except (TriageError, ToolBoundaryError, ValueError, KeyError, TypeError) as exc:
                 return finish("error", str(exc) if isinstance(exc, (TriageError, ToolBoundaryError)) else "Invalid specialist tool call")

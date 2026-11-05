@@ -152,14 +152,16 @@ paths are preserved in
 The exact stdout is also in
 [`reports/runs/42053378698-fixture-terminal.txt`](reports/runs/42053378698-fixture-terminal.txt).
 
-**What was checked and changed:** the first updated-key live run
-`42052313736` passed Owen but failed Maria because the model sent order ID
+**What was checked and changed:** the `#1158` read fix came from the **1/2 live
+run `42052313736`**. That run passed Owen but failed Maria because the model sent order ID
 `1158` rather than `#1158`. I made the literal ID format explicit in the
 tool schema and specialist prompt and allowed actual read errors to return
 to the model for a corrected call. IDs are never silently rewritten, and
 failed writes still stop for review. On the successful rerun, Maria used
 `#1158` correctly on her first lookup; no read-error recovery was needed.
-The earlier 1/2 run and quota failure remain in `reports/runs/`.
+The earlier 1/2 run and quota failure remain in `reports/runs/`. The quota
+failure (`42050052555`) stopped before triage, so it did not reveal the order-ID
+bug and was not the source of the `#1158` fix.
 
 **Original CSV cases remain separate:** in the same workflow, Maria Sousa
 (`SUP-48213`) and Carla Jennings (`SUP-48197`) were routed by the live model
@@ -170,6 +172,38 @@ completed. See
 [`42053378698-original.json`](reports/runs/42053378698-original.json).
 These two authored fixture demos do not establish full-set or unseen-ticket
 performance.
+
+### Pytest: no write tool executes past a limit
+
+The dispatcher checks the current mock-store balance **before invoking**
+`issue_billing_credit` or `create_refund`. Excessive proposals end
+`needs_human` with a blocked audit record (`executed=False`). The original
+mock file remains unchanged. Monetary limits here are the mock's remaining
+charge/refundable balances; no global approval threshold was supplied.
+
+[`tests/test_supervisor.py`](tests/test_supervisor.py) includes:
+
+| Test | Limit exercised | Proof |
+| --- | --- | --- |
+| `test_over_charge_limit_hands_off_before_write_tool_runs` | USD 100 proposed against a USD 19.99 charge | Write spy not called; no credit call in `CALL_LOG`; store unchanged. |
+| `test_refund_over_captured_balance_never_invokes_write_tool` | USD 132.01 proposed against USD 132.00 refundable | Write spy not called; no refund call in `CALL_LOG`; store unchanged. |
+| `test_credit_limit_accounts_for_prior_credits` | Earlier credits exhaust the USD 19.99 charge | The next USD 0.01 is blocked; write count stays at two; store unchanged. |
+| `test_tool_call_budget_blocks_a_valid_write_after_24_reads` | The 25th proposed call is a valid USD 19.99 credit | Write spy not called; only the 24 reads are logged; store unchanged. |
+| `test_write_at_exact_available_balance_is_allowed` | Exact credit/refund balance | Both parametrized valid boundary writes execute once and pass store checks. |
+
+The negative tests assert `spy.assert_not_called()` (or an unchanged spy call
+count after prior valid credits), inspect the actual mock `CALL_LOG`, and
+compare full `FIXTURES` snapshots. This proves the forbidden write does not
+execute; it does not merely check that the mock rejects a write after entry.
+
+```bash
+python -m pytest -q
+```
+
+The current suite has **58 passing tests**; its captured output is in
+[`reports/runs/write-limit-tests.txt`](reports/runs/write-limit-tests.txt).
+These deterministic guard tests are separate from the model-selected live
+trace above, whose tested source commit remains explicitly recorded.
 
 ### Exact specialist prompt used in this successful run
 
@@ -245,8 +279,8 @@ Stage-2 status: **live fixture smoke passed 2/2** in
 [run 42053378698](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053378698).
 The model routed Maria Santos to orders, restored her EU Standard rate to EUR
 14.90, and routed Owen to billing, crediting one USD 19.99 duplicate charge.
-All actual calls and store assertions passed. 53 offline tests and the tested
-source commit's CI passed. Exact live stdout and prompts are below; historical
+All actual calls and store assertions passed. The current suite has 58 passing
+offline tests; the tested live source commit's CI also passed. Exact live stdout and prompts are below; historical
 scripted runs, partial failures and original missing-store results remain
 separately identified.
 

@@ -2,12 +2,12 @@
   "stage": "supervisor",
   "implementation_commit": "40b56969bfb5aec952c6ceb3329852903ce3cf61",
   "offline_tests": {
-    "passed": 53,
+    "passed": 58,
     "failed": 0,
     "command": "python -m pytest -q",
+    "captured_stdout": "reports/runs/write-limit-tests.txt",
     "uses_scripted_or_mocked_model_replies": true,
-    "ci_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053178688",
-    "tested_source_commit": "343f7a46bccd305f1288e66e64565d435e837da8"
+    "scope": "Current guard regression tests; historical live run source is recorded separately in live_supervisor"
   },
   "mock_api_sha256": "6b84780323dd50abb331bb9828fc72772acbf9bd3ba14242c70b5f2021c4d91d",
   "fixture_integration": {
@@ -107,5 +107,21 @@
     "remapped_domains": 0,
     "report": "reports/runs/stage2-offline-original.json",
     "terminal_output": "reports/runs/stage2-offline-original.txt"
+  },
+  "write_limits": {
+    "enforced_before_mock_dispatch": true,
+    "credit_limit": "target charge amount less prior credits",
+    "refund_limit": "successful captured sales less existing refunds",
+    "tool_call_budget": 24,
+    "blocked_write_status": "needs_human",
+    "tests": [
+      "test_over_charge_limit_hands_off_before_write_tool_runs",
+      "test_refund_over_captured_balance_never_invokes_write_tool",
+      "test_credit_limit_accounts_for_prior_credits",
+      "test_tool_call_budget_blocks_a_valid_write_after_24_reads",
+      "test_write_at_exact_available_balance_is_allowed"
+    ],
+    "assertions": "No forbidden write-function invocation, no extra write in CALL_LOG, unchanged full store; positive controls execute valid boundary writes once",
+    "global_monetary_approval_threshold": "not supplied; not invented"
   }
 }

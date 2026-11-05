@@ -37,6 +37,10 @@ class ToolBoundaryError(ValueError):
     pass
 
 
+class WriteLimitError(ToolBoundaryError):
+    """A proposed write exceeded the current fixture's permitted balance."""
+
+
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
@@ -212,6 +216,32 @@ class ToolSession:
             for item in value.values():
                 self._observe(item)
 
+    def _check_write_limit(self, name, args):
+        """Enforce the supplied mock's monetary ceilings BEFORE dispatch."""
+        store = mock_admin.FIXTURES[self.shop_domain]
+        if name == "issue_billing_credit":
+            charge = next((c for c in store["billing_charges"] if c["id"] == args["charge_id"] and c["type"] != "credit"), None)
+            if charge is None:
+                raise ToolBoundaryError("Credit target must be an existing non-credit charge")
+            already = sum(-c["amount"] for c in store["billing_charges"]
+                          if c["type"] == "credit" and c.get("credits_charge_id") == args["charge_id"])
+            available = round(charge["amount"] - already, 2)
+            kind = "remaining_charge_balance"
+        elif name == "create_refund":
+            order = store["orders"][args["order_id"]]
+            captured = sum(t["amount"] for t in order["transactions"] if t["kind"] == "sale" and t["status"] == "success")
+            available = round(captured - sum(r["amount"] for r in order["refunds"]), 2)
+            kind = "remaining_refundable_balance"
+        else:
+            return
+        requested = round(args["amount"], 2)
+        if requested <= 0 or requested > available:
+            error = f"Write blocked before execution: amount {requested:.2f} must be positive and at most the {kind} {available:.2f}."
+            self.audit.append({"tool": name, "effect": "write", "arguments": args,
+                "status": "blocked", "executed": False, "checked_against_store": True,
+                "limit_kind": kind, "available": available, "requested": requested, "error": error})
+            raise WriteLimitError(error)
+
     def execute(self, name, arguments):
         if name not in self.tools:
             raise ToolBoundaryError(f"Tool {name!r} is not bound to this specialist")
@@ -231,6 +261,7 @@ class ToolSession:
                     raise ToolBoundaryError(f"Read and verify {key} before writing")
             if name == "issue_billing_credit" and not args["charge_id"]:
                 raise ToolBoundaryError("A verified charge_id is required for a credit")
+            self._check_write_limit(name, args)
         before = copy.deepcopy(mock_admin.FIXTURES.get(self.shop_domain))
         log_start = len(mock_admin.CALL_LOG)
         try:

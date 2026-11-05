@@ -1,12 +1,15 @@
 import json
+import copy
+from dataclasses import replace
 from pathlib import Path
+from unittest.mock import Mock
 
 import httpx
 import pytest
 from pydantic import ValidationError
 
 from merchant_triage import mock_admin
-from merchant_triage.admin_tools import TOOL_OWNERS, ToolBoundaryError, ToolSession, bind_tools
+from merchant_triage.admin_tools import TOOL_OWNERS, ToolBoundaryError, ToolSession, WriteLimitError, bind_tools
 from merchant_triage.models import RouteDecision
 from merchant_triage.openrouter import Classification, TriageError
 from merchant_triage.specialists import OpenRouterToolModel, SpecialistAgent, build_supervisor_graph
@@ -185,13 +188,110 @@ def test_model_can_correct_a_failed_read_without_silent_id_rewriting():
     assert [c["args"]["order_id"] for c in row["call_log"] if c["tool"] == "get_order"] == ["1158", "#1158"]
 
 
-def test_failed_write_stops_without_retrying_or_claiming_completion():
+def test_over_charge_limit_hands_off_before_write_tool_runs():
     domain = "northwind-coffee-roasters.myshopify.com"
     args = {"shop_domain": domain}
     agent = SpecialistAgent("billing", ScriptedTools("billing", [
         ("get_shop", args), ("list_billing_charges", {**args, "billing_period": "2024-11"}),
         ("issue_billing_credit", {**args, "amount": 100.0, "description": "Too much", "charge_id": "chg_nw_5503"})]))
+    write = next(tool for tool in agent.bound_tools if tool.name == "issue_billing_credit")
+    spy = Mock(wraps=write.function)
+    agent.bound_tools = tuple(replace(tool, function=spy) if tool.name == write.name else tool for tool in agent.bound_tools)
+    before = copy.deepcopy(mock_admin.FIXTURES)
     result = agent({"shop_domain": domain, "message": "Credit my duplicate app charge"})["specialist_result"]
     assert result["status"] == "needs_human"
-    assert sum(call["tool"] == "issue_billing_credit" for call in mock_admin.CALL_LOG) == 1
+    spy.assert_not_called()
+    assert not any(call["tool"] == "issue_billing_credit" for call in mock_admin.CALL_LOG)
+    assert mock_admin.FIXTURES == before
+    assert result["tool_calls"][-1]["status"] == "blocked"
+    assert result["tool_calls"][-1]["executed"] is False
+    assert result["tool_calls"][-1]["available"] == 19.99
     assert not any(c["type"] == "credit" for c in mock_admin.FIXTURES[domain]["billing_charges"])
+
+
+def test_refund_over_captured_balance_never_invokes_write_tool():
+    domain = "maple-and-thread.myshopify.com"
+    args = {"shop_domain": domain}
+    agent = SpecialistAgent("orders", ScriptedTools("orders", [
+        ("get_shop", args), ("get_order", {**args, "order_id": "#2101"}),
+        ("create_refund", {**args, "order_id": "#2101", "amount": 132.01, "reason": "Over balance"})]))
+    write = next(tool for tool in agent.bound_tools if tool.name == "create_refund")
+    spy = Mock(wraps=write.function)
+    agent.bound_tools = tuple(replace(tool, function=spy) if tool.name == write.name else tool for tool in agent.bound_tools)
+    before = copy.deepcopy(mock_admin.FIXTURES)
+    result = agent({"shop_domain": domain, "message": "Refund this order"})["specialist_result"]
+    assert result["status"] == "needs_human"
+    spy.assert_not_called()
+    assert not any(call["tool"] == "create_refund" for call in mock_admin.CALL_LOG)
+    assert result["tool_calls"][-1]["available"] == 132.00
+    assert mock_admin.FIXTURES == before
+
+
+def test_credit_limit_accounts_for_prior_credits():
+    domain = "northwind-coffee-roasters.myshopify.com"
+    tools = bind_tools("billing")
+    write = next(tool for tool in tools if tool.name == "issue_billing_credit")
+    spy = Mock(wraps=write.function)
+    session = ToolSession(tuple(replace(tool, function=spy) if tool.name == write.name else tool for tool in tools), domain)
+    session.execute("get_shop", {"shop_domain": domain})
+    session.execute("list_billing_charges", {"shop_domain": domain, "billing_period": "2024-11"})
+    args = {"shop_domain": domain, "charge_id": "chg_nw_5503", "description": "Partial credit"}
+    session.execute("issue_billing_credit", {**args, "amount": 10.0})
+    session.execute("issue_billing_credit", {**args, "amount": 9.99})
+    before = copy.deepcopy(mock_admin.FIXTURES)
+    with pytest.raises(WriteLimitError, match="0.00"):
+        session.execute("issue_billing_credit", {**args, "amount": 0.01})
+    assert spy.call_count == 2
+    assert sum(c["tool"] == "issue_billing_credit" for c in mock_admin.CALL_LOG) == 2
+    assert mock_admin.FIXTURES == before
+
+
+@pytest.mark.parametrize("role,name,domain,read,arguments", [
+    ("billing", "issue_billing_credit", "northwind-coffee-roasters.myshopify.com", "list_billing_charges",
+     {"amount": 19.99, "charge_id": "chg_nw_5503", "description": "Exact allowed credit"}),
+    ("orders", "create_refund", "maple-and-thread.myshopify.com", "get_order",
+     {"amount": 132.0, "order_id": "#2101", "reason": "Exact refundable balance"}),
+])
+def test_write_at_exact_available_balance_is_allowed(role, name, domain, read, arguments):
+    tools = bind_tools(role)
+    write = next(tool for tool in tools if tool.name == name)
+    spy = Mock(wraps=write.function)
+    session = ToolSession(tuple(replace(tool, function=spy) if tool.name == name else tool for tool in tools), domain)
+    session.execute("get_shop", {"shop_domain": domain})
+    session.execute(read, {"shop_domain": domain, **({"order_id": "#2101"} if role == "orders" else {})})
+    session.execute(name, {"shop_domain": domain, **arguments})
+    spy.assert_called_once()
+    assert session.audit[-1]["status"] == "completed" and session.audit[-1]["checked_against_store"]
+
+
+def test_tool_call_budget_blocks_a_valid_write_after_24_reads():
+    domain = "northwind-coffee-roasters.myshopify.com"
+
+    class ExhaustBudgetModel:
+        calls = 0
+
+        def reply(self, messages, tools):
+            self.calls += 1
+            if self.calls == 1:
+                names = ["get_shop", "list_billing_charges"] + ["get_shop"] * 22
+                calls = [{"id": f"read-{i}", "type": "function", "function": {
+                    "name": name, "arguments": json.dumps({"shop_domain": domain})}} for i, name in enumerate(names)]
+            else:
+                calls = [{"id": "blocked-write-25", "type": "function", "function": {
+                    "name": "issue_billing_credit", "arguments": json.dumps({"shop_domain": domain,
+                        "amount": 19.99, "charge_id": "chg_nw_5503", "description": "Within balance but past call budget"})}}]
+            return {"role": "assistant", "content": None, "tool_calls": calls}, "scripted:free"
+
+    model = ExhaustBudgetModel()
+    agent = SpecialistAgent("billing", model)
+    write = next(tool for tool in agent.bound_tools if tool.name == "issue_billing_credit")
+    spy = Mock(wraps=write.function)
+    agent.bound_tools = tuple(replace(tool, function=spy) if tool.name == write.name else tool for tool in agent.bound_tools)
+    before = copy.deepcopy(mock_admin.FIXTURES)
+    result = agent({"shop_domain": domain, "message": "Credit the duplicate charge"})["specialist_result"]
+    assert model.calls == 2
+    assert result["status"] == "error" and "tool-call limit exceeded" in result["response"]
+    spy.assert_not_called()
+    assert len(mock_admin.CALL_LOG) == 24
+    assert not any(call["tool"] == "issue_billing_credit" for call in mock_admin.CALL_LOG)
+    assert mock_admin.FIXTURES == before

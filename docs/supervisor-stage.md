@@ -183,3 +183,19 @@ exact specialist prompt. Raw reports and exact stdout are under
 cases in that same run ended `needs_human`, with missing stores and no writes;
 they are not counted as passed. The 2/2 claim applies only to the two authored
 fixture-backed integration cases.
+
+## Limit guard regression checks
+
+The `#1158` fix came from the 1/2 live run **42052313736**, which omitted the
+leading `#`; the earlier quota-only run never reached an order lookup.
+
+The current dispatcher blocks customer refunds beyond the remaining captured
+balance and billing credits beyond the remaining amount on the target charge,
+including prior credits, before calling the supplied mock write function.
+Both limits already exist in the mock; the file itself stays unmodified.
+Blocked writes produce `needs_human` and an audit record with `executed=False`.
+The call-budget test also proves a valid monetary write cannot execute as the
+25th call after 24 reads. Write-function spies, `CALL_LOG` and full snapshots
+prove no forbidden execution or mutation. Exact-boundary credit/refund writes
+are positive controls. The README names each test and contains the checks.
+58 tests pass; the captured pytest output is `reports/runs/write-limit-tests.txt`.

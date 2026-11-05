@@ -1,0 +1,16 @@
+Command: python -m pytest -q
+..........................................................               [100%]
+58 passed in 0.51s
+
+The new limit tests assert the write-function spy is not called, no write
+entry appears in the supplied mock CALL_LOG, and FIXTURES remain unchanged:
+- test_over_charge_limit_hands_off_before_write_tool_runs
+- test_refund_over_captured_balance_never_invokes_write_tool
+- test_credit_limit_accounts_for_prior_credits
+- test_tool_call_budget_blocks_a_valid_write_after_24_reads
+
+test_write_at_exact_available_balance_is_allowed covers the allowed boundary
+for both a billing credit and a customer-order refund.
+
+Monetary ceilings come from the supplied mock's remaining charge/refundable
+balances, not an invented global refund-approval threshold.
