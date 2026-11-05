@@ -4,6 +4,45 @@ A small LangGraph entry node that reads a merchant's message and returns one
 route (`billing` or `orders`) plus a short reason. Advisors currently sort these
 tickets manually; this node is the common entry point before specialist agents.
 
+## Design question for Erik: original 24 tickets versus mock scope — pending
+
+Erik, as the mock owner, which evaluation contract should this stage use?
+
+1. **Keep the original 24 tickets and add their missing shop fixtures.** This
+   is the recommended option: preserve the supplied tickets and expected
+   outcomes, and supply matching store evidence for the agents to inspect.
+2. **Scope the evaluation set to the four existing mock shops.** If those
+   shops define the intended scope, please provide or approve a corresponding
+   labelled ticket set and explicitly confirm how it replaces the original
+   24 for this stage. A fixture demo is not an original-ticket pass.
+
+The supplied mock contains Azulejo Cerâmica Lisboa (Maria Santos), Northwind
+Coffee Roasters (Owen Brooks), Maple & Thread (Chloe Tremblay), and Harbour
+Lane Books (Fiona Hale). None of the original 24 ticket domains matches those
+four fixtures. In particular, original billing ticket **SUP-48197**, Carla
+Jennings at `northfork-coffee.myshopify.com`, asks about a **USD 29 ReviewPop
+charge after uninstalling on November 8**. The coffee fixture instead belongs
+to Owen at `northwind-coffee-roasters.myshopify.com`, with an active
+ReviewStream subscription and duplicate USD 19.99 charges. Changing Carla's
+domain to Northwind would change the merchant and the billing problem.
+
+[The live original-ticket trace](reports/runs/42053378698-original-terminal.txt)
+shows Carla routed to billing, then `get_shop` returning shop not found:
+`needs_human`, no writes, `Case: NOT PASSED`. Original Maria Sousa
+**SUP-48213** similarly lacks a Barro Azul fixture. The two passing authored
+fixture cases, Maria Santos and Owen Brooks, remain separate evidence.
+
+**Next step after your decision:** obtain the approved matching fixtures or
+ticket set, then run one billing ticket from the original 24 to completion
+against matching store data and paste the live model's every tool call,
+exact arguments, store checks and final status into this README. If you
+choose a replacement set instead, please explicitly confirm the revised
+stage requirement before its runs are presented as satisfying that bar.
+
+**Status:** awaiting Erik's scope decision; the original 24 remain blocked
+for supervisor completion. This question is recorded in the README and this
+commit message for code review. Receipt or approval has not been confirmed.
+
 ## Request for Erik: policy limits and reviewer nominations — pending
 
 Erik, please confirm or change the following proposals before they are wired
