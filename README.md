@@ -16,12 +16,19 @@ tickets manually; this node is the common entry point before specialist agents.
 **Current status:** the supplied 24-ticket test set is imported, with 12 billing
 and 12 orders labels. Maria Sousa is `SUP-48213`, expected `orders`: her Portugal
 and Europe checkout shipping rates are swapped. The node and offline checks are
-available. The first live run authenticated successfully but exposed inconsistent
-routes across the free router's selected models: Maria failed standalone and
-passed within the full set; the full set scored 22/24 with one wrong route and
-one invalid response. The default is now pinned to a single free model with
-clearer checkout-rate and partial-refund rules, pending a fresh live check.
-See `reports/verification.json` and the preserved baseline in `reports/runs/`.
+available. **Live acceptance passed:** Maria routed to `orders` in both her
+standalone check and the full-set run, and all 24 routes matched with zero
+response/API errors. The model was `nvidia/nemotron-3.5-super-vl:free`.
+See [the successful live run](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42038182624),
+`reports/verification.json` and the preserved reports in `reports/runs/`.
+
+The evaluated implementation commit is
+`2c5b3447f075a206dd752247b89ae2da413d3c27`; subsequent evidence-only changes
+do not change the evaluated code or dataset. The earlier free-router run is
+also retained: Maria failed standalone and passed within the full set; the
+full set scored 22/24 with one wrong route and one invalid response. Pinning
+the free model and clarifying checkout-rate and partial-refund rules fixed
+these observed failures on this development set.
 
 ## Run locally
 
@@ -142,18 +149,19 @@ Offline tests verify orchestration, HTTP request construction, strict validation
 retry limits, error handling, label isolation and evaluation exit codes. Mocked
 responses do **not** establish classification accuracy or a successful live
 OpenRouter call. A route match also does not independently grade reason quality.
-Maria's original inputs and label are available, and the repository Actions
-secret is configured. Her initial standalone prediction was wrong, while the
-separate full-set prediction matched; neither is hidden by rerunning. The
-meeting notes describe eventual autonomous
+Maria's original inputs and label are available, the repository Actions secret
+is configured, and the updated standalone and full-set checks both passed.
+The initial failures remain in the baseline reports. These 24 development
+cases were used to clarify policy; a 24/24 route match is not an estimate of
+accuracy on unseen merchant traffic. The meeting notes describe eventual autonomous
 specialists, simulated admin tools and human handoffs. Those later milestones
 are outside this first route-and-reason node. The notes mention Anthropic;
 this implementation uses OpenRouter as explicitly requested for this step.
 
-## Remaining handoff
+## Repeat the live evaluation
 
-1. Configure `OPENROUTER_API_KEY` outside the repository using the session-only
-   instructions above, then run the Maria evaluation and the complete set.
+1. For local runs, configure `OPENROUTER_API_KEY` outside the repository using
+   the session-only instructions above, then run Maria and the complete set.
 2. Inspect mismatches and reasons, record the live model and results, and push
    reviewed reports at a new immutable commit.
 
@@ -164,8 +172,8 @@ the `live-triage-reports` artifact. It fails for mismatched routes or API errors
 offline push/PR checks never use a key. Reports are ignored by Git until reviewed
 and deliberately added.
 
-The repository is ready for these steps. Offline tests and synthetic examples
-do not replace the pending original-ticket acceptance check.
+The first route-and-reason milestone is complete. Specialist fixes, simulated
+admin tools, escalation and mixed-issue resolution remain later milestones.
 
 ## Primary references
 

@@ -1,0 +1,21 @@
+{
+  "evaluated_at": "2026-11-05T13:43:04.242528+00:00",
+  "dataset_sha256": "237d2697c5fc05451844ccf041c65c69b62d720371a19b4f1bfa2c708bcf0653",
+  "total": 1,
+  "passed": 1,
+  "errors": 0,
+  "route_accuracy": 1,
+  "results": [
+    {
+      "id": "SUP-48213",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant reports incorrect checkout shipping rates/zones since Saturday—European buyers charged domestic Portugal rates and Portugal buyers charged international rates—affecting customer orders at checkout; checkout shipping rates always route to orders even when charges are mentioned.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    }
+  ]
+}
+

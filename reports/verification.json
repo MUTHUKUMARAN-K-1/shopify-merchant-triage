@@ -17,6 +17,44 @@
     "model_called": false
   },
   "live_openrouter": {
+    "status": "passed",
+    "run_id": 42038182624,
+    "source_commit": "2c5b3447f075a206dd752247b89ae2da413d3c27",
+    "workflow_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42038182624",
+    "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+    "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+    "passed": 24,
+    "total": 24,
+    "errors": 0,
+    "mismatches": 0,
+    "route_accuracy": 1.0,
+    "report": "reports/runs/42038182624-tickets.json",
+    "evidence_source": "JSON reports reconstructed from job 127281715581 stdout; original downloadable workflow artifact also retained by GitHub",
+    "limits": "Development set used to clarify policy; route matching does not independently grade reason quality or unseen-traffic accuracy."
+  },
+  "original_shopify_test_set": {
+    "status": "imported",
+    "source_file": "data/source/shopify_merchant_tickets.csv",
+    "source_sha256": "9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294",
+    "tickets": 24,
+    "mapping": "ticket_id -> id; subject + two newlines + message_body -> message; expected_route unchanged",
+    "supplemental_examples": "8 separate synthetic examples"
+  },
+  "maria": {
+    "id": "SUP-48213",
+    "expected_route": "orders",
+    "actual_route": "orders",
+    "reason": "The merchant reports incorrect checkout shipping rates/zones since Saturday\u2014European buyers charged domestic Portugal rates and Portugal buyers charged international rates\u2014affecting customer orders at checkout; checkout shipping rates always route to orders even when charges are mentioned.",
+    "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+    "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+    "passed": true,
+    "status": "passed",
+    "merchant_name": "Maria Sousa",
+    "standalone_passed": true,
+    "full_set_passed": true,
+    "report": "reports/runs/42038182624-maria.json"
+  },
+  "baseline_live_openrouter": {
     "status": "completed_with_failures",
     "run_id": 42037117474,
     "source_commit": "693fee199b5b921bbdbe54e8c36957c401846c86",
@@ -30,15 +68,7 @@
     "report": "reports/runs/42037117474-tickets.json",
     "evidence_source": "JSON reports reconstructed from job 127278038246 stdout; original downloadable workflow artifact also retained by GitHub"
   },
-  "original_shopify_test_set": {
-    "status": "imported",
-    "source_file": "data/source/shopify_merchant_tickets.csv",
-    "source_sha256": "9aa9f5f90263bad16092a961ddf9bd86a8f8de7127c3eaaf85ec0d37c07fe294",
-    "tickets": 24,
-    "mapping": "ticket_id -> id; subject + two newlines + message_body -> message; expected_route unchanged",
-    "supplemental_examples": "8 separate synthetic examples"
-  },
-  "maria": {
+  "baseline_maria": {
     "ticket_id": "SUP-48213",
     "merchant_name": "Maria Sousa",
     "expected_route": "orders",
@@ -48,14 +78,5 @@
     "full_set_route": "orders",
     "full_set_passed": true,
     "report": "reports/runs/42037117474-maria.json"
-  },
-  "follow_up": {
-    "status": "awaiting_live_run",
-    "model": "nvidia/nemotron-3.5-super-vl:free",
-    "changes": [
-      "Pin one free model rather than changing model per case",
-      "Clarify checkout shipping rates and all customer-order refunds route to orders",
-      "Increase completion budget to 2048 tokens; incomplete output still fails validation"
-    ]
   }
 }

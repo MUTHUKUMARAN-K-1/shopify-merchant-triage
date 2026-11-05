@@ -1,0 +1,251 @@
+{
+  "evaluated_at": "2026-11-05T13:44:38.844882+00:00",
+  "dataset_sha256": "237d2697c5fc05451844ccf041c65c69b62d720371a19b4f1bfa2c708bcf0653",
+  "total": 24,
+  "passed": 24,
+  "errors": 0,
+  "route_accuracy": 1,
+  "results": [
+    {
+      "id": "SUP-48197",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a $29 ReviewPop app subscription charge on their Shopify bill after uninstalling the app, which is a merchant account/invoice charge rather than a customer order issue.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48204",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is asking about a Shopify Payments payout to their bank account that is stuck in transit, which is a merchant payout/account issue.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48213",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant reports incorrect checkout shipping rates/zones (European buyers charged domestic Portugal rates and Portugal buyers charged international rates) affecting customer orders; checkout shipping rates always route to orders, not billing.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48226",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "Order #1043 is stuck unfulfilled despite a purchased and scanned USPS label, with missing tracking emails; this concerns order fulfilment, tracking, and customer order status rather than a Shopify account invoice or payout issue.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48241",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant needs to correct a customer's delivery address on order 1187 before DHL pickup, which is an order shipping/fulfillment issue, not a Shopify account invoice or billing charge.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48258",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing app usage charges on their Shopify invoice (BundleBoost exceeding a $150 AUD monthly cap), which is a merchant account/app billing issue rather than a customer order.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48266",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant is asking about a specific customer order (10-88/1088) stuck in fulfillment since Tuesday, with the warehouse not receiving it and the customer chasing delivery; this is an order status/fulfilment issue, not a Shopify account bill or invoice charge.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48279",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing charges for purchased and voided Royal Mail shipping labels on their Shopify invoice/bill, not checkout rates or a customer order.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48288",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant needs help issuing a partial refund for one damaged item on customer order 2215 while excluding shipping, which is a customer-order refund issue rather than a Shopify account bill.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48302",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing an app subscription charge on their Shopify bill (€190 annual vs €19 monthly), which is a merchant account/app invoice issue, not a customer order.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48315",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a chargeback that removed funds from their payout; chargebacks/disputes and payout holds are billing issues.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48327",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant wants to cancel a duplicate customer order (#1533) and issue a full refund for that customer order, with questions about restocking inventory; this is a customer-order cancellation/refund, not a Shopify account bill or invoice.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48339",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant's primary request is a duplicate $105 Shopify plan charge on their card for a single store/plan and a refund of the extra charge; this concerns their Shopify subscription/account invoice, which is billing. The order 1290 fulfillment issue is raised secondarily.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48346",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant reports a customer order (3071) marked partially fulfilled with tracking for only one item despite shipping all three linen napkin sets in one Colissimo parcel, which is an order status, fulfillment, and tracking issue.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48361",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant wants to cancel and refund customer orders that used a leaked discount code, which is customer order management rather than a Shopify account invoice or billing issue.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48377",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant wants to change the shipping address on customer order 4419 before carrier collection, which is an order fulfilment/shipping issue rather than a Shopify account bill or invoice charge.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48394",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant is requesting a full customer refund for order 1906 (walnut dining table) before shipment; customer-order refunds belong to orders, not merchant billing.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48412",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a €4.99 app subscription charge on their Shopify bill after a free trial, which concerns their merchant account/app invoice rather than a customer order.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48436",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant is asking about a customer order stuck on hold with the fulfil button greyed out and wants it released for shipping; this concerns order status and fulfilment, not a Shopify account invoice or billing charge.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48455",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is asking about a delayed Shopify payout (CAD 2,140.75) still showing as scheduled on their payouts page, which concerns merchant payout timing and account/bank payout status rather than a customer order.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48478",
+      "expected_route": "orders",
+      "actual_route": "orders",
+      "reason": "The merchant is requesting a partial refund on a specific customer order (order 5102) for an engraving error, which is a customer-order refund issue rather than a Shopify account billing or invoice issue.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48502",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant reports payouts on hold, an account review banner, and document requests tied to their Shopify account, which are merchant payout and payment-account review issues.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48531",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant reports duplicate Basic plan charges on their Shopify invoice (two €36 lines dated 28 Nov) for a single store and wants the duplicate reversed, which concerns their Shopify subscription bill and payment method rather than a customer order.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    },
+    {
+      "id": "SUP-48577",
+      "expected_route": "billing",
+      "actual_route": "billing",
+      "reason": "The merchant is disputing a £89 POS Pro charge on their monthly Shopify bill/invoice, which is a merchant account subscription charge rather than a customer order issue.",
+      "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+      "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+      "passed": true,
+      "status": "completed"
+    }
+  ]
+}
+
