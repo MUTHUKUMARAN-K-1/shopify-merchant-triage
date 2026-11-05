@@ -1,0 +1,38 @@
+PUBLIC CALL/CHECK EXCERPT — customer-level results and narrative omitted
+Maria Santos (fixture-maria-shipping) | azulejo-ceramica-lisboa.myshopify.com
+Route: orders | expected: orders
+Reason: The issue concerns an incorrect free EU Standard checkout shipping rate charged to buyers and customer orders charged zero shipping. Checkout shipping rates always route to orders, not billing, regardless of monetary amounts mentioned.
+Confidence: 0.99 (uncalibrated)
+Agent: orders | status: completed
+  READ get_shop {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com"} | status=completed | store_check=True
+  READ get_delivery_profile {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com"} | status=completed | store_check=True
+  READ get_order {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com", "order_id": "#1158"} | status=completed | store_check=True
+  WRITE update_shipping_rate {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com", "rate_id": "rate_eu_standard", "price": 14.9} | status=completed | store_check=True
+  READ list_orders {"shop_domain": "azulejo-ceramica-lisboa.myshopify.com", "created_on_min": "2024-11-29", "created_on_max": "2024-12-02", "shipping_rate_title": "EU Standard"} | status=completed | store_check=True
+  CHECK eu_standard_corrected_from_zero_to_14_90: PASS
+  CHECK domestic_rate_preserved_at_4_90: PASS
+  CHECK all_existing_orders_unchanged: PASS
+  CHECK billing_unchanged: PASS
+  CHECK exactly_one_targeted_shipping_write: PASS
+  CHECK all_40_affected_orders_discovered: PASS
+  CHECK historical_rate_evidence_read: PASS
+  CHECK other_shops_unchanged: PASS
+Case: PASS
+Owen Brooks (fixture-billing-duplicate) | northwind-coffee-roasters.myshopify.com
+Route: billing | expected: billing
+Reason: Merchant reports a duplicate app subscription charge on their November 2024 Shopify invoice and requests a credit for the duplicate, explicitly excluding customer orders.
+Confidence: 0.99 (uncalibrated)
+Agent: billing | status: completed
+  READ get_shop {"shop_domain": "northwind-coffee-roasters.myshopify.com"} | status=completed | store_check=True
+  READ get_app_subscriptions {"shop_domain": "northwind-coffee-roasters.myshopify.com"} | status=completed | store_check=True
+  READ list_billing_charges {"shop_domain": "northwind-coffee-roasters.myshopify.com", "billing_period": "2024-11"} | status=completed | store_check=True
+  WRITE issue_billing_credit {"shop_domain": "northwind-coffee-roasters.myshopify.com", "amount": 19.99, "description": "Credit for duplicate ReviewStream Product Reviews - Growth app subscription charge on November 2024 bill", "charge_id": "chg_nw_5503"} | status=completed | store_check=True
+  CHECK one_duplicate_charge_credited_19_99: PASS
+  CHECK original_charge_lines_preserved: PASS
+  CHECK active_subscription_not_cancelled: PASS
+  CHECK orders_unchanged: PASS
+  CHECK exactly_one_billing_credit_write: PASS
+  CHECK other_shops_unchanged: PASS
+Case: PASS
+Summary: 2/2 passed; missing fixtures: 0
+

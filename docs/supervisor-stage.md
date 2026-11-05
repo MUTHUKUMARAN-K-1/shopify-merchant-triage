@@ -229,3 +229,19 @@ No new customer-level tool result or final narrative is committed for these
 confidence checks. The `42058395511-*` report copies are similarly redacted,
 with the omitted fields explicitly declared. A successful workflow requires
 the original full in-memory report to pass all checks before publication.
+
+## Latest mandatory-confidence live result
+
+Targeted workflow [42059977921](https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42059977921)
+passed on source `55f0eb4d357605a4c3c5eeaa46bbdf5da5b5ce87`.
+Maria returned `orders`, confidence 0.99; Owen returned `billing`, confidence
+0.99. Both passed the required Pydantic schema before tools ran. All nine
+live model-selected calls completed and every store assertion passed. Scores
+are uncalibrated routing self-reports, not accuracy estimates or write grants.
+The README contains the exact public call/check output; the narrow audit is
+`reports/runs/42059977921-audit.json`, with terminal text alongside it. Customer
+result payloads and free-text final responses were omitted from publication.
+The prior 1/2 date-argument run remains recorded and is not relabelled a pass.
+The corrected API descriptions require YYYY-MM-DD and the new run used those
+arguments correctly. 68 tests and the tested source's CI passed. Original CSV
+missing-store cases remain separate and are not counted as fixed.

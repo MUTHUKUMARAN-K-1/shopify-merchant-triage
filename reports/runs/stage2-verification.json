@@ -7,7 +7,9 @@
     "command": "python -m pytest -q",
     "captured_stdout": "reports/runs/confidence-tests.txt",
     "uses_scripted_or_mocked_model_replies": true,
-    "scope": "Current guard regression tests; historical live run source is recorded separately in live_supervisor"
+    "scope": "Current guard regression tests; historical live run source is recorded separately in live_supervisor",
+    "ci_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42059805370",
+    "tested_source_commit": "55f0eb4d357605a4c3c5eeaa46bbdf5da5b5ce87"
   },
   "mock_api_sha256": "6b84780323dd50abb331bb9828fc72772acbf9bd3ba14242c70b5f2021c4d91d",
   "fixture_integration": {
@@ -41,9 +43,9 @@
     "status": "passed_fixture_smoke",
     "launched": true,
     "user_approved": true,
-    "run_id": 42053378698,
-    "run_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053378698",
-    "tested_source_commit": "343f7a46bccd305f1288e66e64565d435e837da8",
+    "run_id": 42059977921,
+    "run_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42059977921",
+    "tested_source_commit": "55f0eb4d357605a4c3c5eeaa46bbdf5da5b5ce87",
     "workflow_conclusion": "success",
     "model_mode": "live_openrouter",
     "requested_model": "nvidia/nemotron-3.5-super-vl:free",
@@ -58,10 +60,14 @@
     "maria_new_price_eur": 14.9,
     "billing_charge_id": "chg_nw_5503",
     "billing_credit_usd": 19.99,
-    "report": "reports/runs/42053378698-fixture.json",
-    "terminal_output": "reports/runs/42053378698-fixture-terminal.txt",
-    "evidence_source": "Captured machine-readable report and terminal stdout from GitHub Actions job 127335128220; log timestamp prefixes removed from terminal text only",
-    "limits": "Two authored fixture-backed cases; not a full-24 or unseen-ticket accuracy claim. Original CSV missing-store cases are not passes."
+    "report": "reports/runs/42059977921-audit.json",
+    "terminal_output": "reports/runs/42059977921-terminal.txt",
+    "evidence_source": "Public call/check output and redacted audit captured from GitHub Actions job 127358621991; exact model decisions and arguments retained, customer-level results/narrative omitted",
+    "limits": "Two authored fixture cases; routing confidence is self-reported and uncalibrated. Not full-24 or held-out accuracy. Original missing-store cases remain separate.",
+    "confidence": {
+      "fixture-maria-shipping": 0.99,
+      "fixture-billing-duplicate": 0.99
+    }
   },
   "prior_live_quota_failure": {
     "status": "blocked_by_openrouter_free_daily_quota",
@@ -142,6 +148,26 @@
     "confidence_default": null,
     "confidence_interpretation": "uncalibrated model self-report; not held-out accuracy or authorization",
     "live_confidence_schema_check": {
+      "status": "passed_fixture_smoke",
+      "run_id": 42059977921,
+      "source_commit": "55f0eb4d357605a4c3c5eeaa46bbdf5da5b5ce87",
+      "workflow_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42059977921",
+      "fixture_passed": 2,
+      "fixture_total": 2,
+      "maria_route": "orders",
+      "maria_confidence": 0.99,
+      "owen_route": "billing",
+      "owen_confidence": 0.99,
+      "model": "nvidia/nemotron-3.5-super-vl:free",
+      "all_9_calls_completed_and_checked": true,
+      "all_state_assertions_passed": true,
+      "model_mode": "live_openrouter",
+      "public_evidence": "Customer-level tool results and narrative omitted; exact decisions/call arguments and checks retained",
+      "report": "reports/runs/42059977921-audit.json",
+      "terminal_output": "reports/runs/42059977921-terminal.txt",
+      "score_interpretation": "uncalibrated routing self-report, not held-out accuracy or write authorization"
+    },
+    "prior_live_confidence_check": {
       "status": "schema_valid_full_smoke_partial",
       "run_id": 42058395511,
       "source_commit": "abc0b4ce6bb8d2cd094fcec37ba4f5e80f2da7f7",
@@ -153,5 +179,31 @@
       "report": "reports/runs/42058395511-fixture.json",
       "follow_up": "Date-only contract explicit in schemas/prompt; fresh live check pending"
     }
+  },
+  "prior_live_supervisor_without_confidence": {
+    "status": "passed_fixture_smoke",
+    "launched": true,
+    "user_approved": true,
+    "run_id": 42053378698,
+    "run_url": "https://github.com/MUTHUKUMARAN-K-1/shopify-merchant-triage/actions/runs/42053378698",
+    "tested_source_commit": "343f7a46bccd305f1288e66e64565d435e837da8",
+    "workflow_conclusion": "success",
+    "model_mode": "live_openrouter",
+    "requested_model": "nvidia/nemotron-3.5-super-vl:free",
+    "resolved_model": "nvidia/nemotron-3.5-super-vl:free",
+    "fixture_cases_passed": 2,
+    "fixture_cases_total": 2,
+    "successful_admin_calls": 9,
+    "all_call_checks_passed": true,
+    "all_scenario_state_checks_passed": true,
+    "maria_order_id": "#1158",
+    "maria_rate_id": "rate_eu_standard",
+    "maria_new_price_eur": 14.9,
+    "billing_charge_id": "chg_nw_5503",
+    "billing_credit_usd": 19.99,
+    "report": "reports/runs/42053378698-fixture.json",
+    "terminal_output": "reports/runs/42053378698-fixture-terminal.txt",
+    "evidence_source": "Captured machine-readable report and terminal stdout from GitHub Actions job 127335128220; log timestamp prefixes removed from terminal text only",
+    "limits": "Two authored fixture-backed cases; not a full-24 or unseen-ticket accuracy claim. Original CSV missing-store cases are not passes."
   }
 }
